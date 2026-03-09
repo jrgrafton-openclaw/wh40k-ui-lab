@@ -149,7 +149,53 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 </div>
 
 
+
+<h2>4 · Iterations & Graveyard</h2>
+<div class="note">These are the previous iterations of the Chainsword to show the prompting evolution and the raw API cut-off issues before ffmpeg filtering.</div>
+<div class="sfx-grid">
+  <!-- Original -->
+  <div class="sfx-item" style="opacity:0.7">
+    <div class="sfx-info">
+      <span class="sfx-name">Chainsword (V1 Original)</span>
+      <span class="sfx-promptPrompt">Prompt: "Sputtering two-stroke heavy engine idling spiking into a violent high-rpm roaring chainsaw tearing metal and meat"</span>
+      <div style="color:#ffcc40;font-size:10px;margin-top:4px"><b>ISSUE:</b> Clipped hard at the end.</div>
+    </div>
+    <button class="play-btn" onclick="play('../assets/sfx/weapon-chainsword.mp3')">▶ PLAY</button>
+  </div>
+  
+  <!-- V2 -->
+  <div class="sfx-item" style="opacity:0.7">
+    <div class="sfx-info">
+      <span class="sfx-name">Chainsword (V2)</span>
+      <span class="sfx-promptPrompt">Prompt: "Violent mechanical chainsaw revving instantly followed by a high-pitch screeching tear of grinding metal and wet flesh, harsh motor noise grinding through armor"</span>
+      <div style="color:#ffcc40;font-size:10px;margin-top:4px"><b>ISSUE:</b> Still clipped. The algorithm hated the "wet flesh" + "grinding" combo.</div>
+    </div>
+    <button class="play-btn" onclick="play('../assets/sfx/weapon-chainsword-v2.mp3')">▶ PLAY</button>
+  </div>
+  
+  <!-- V3 -->
+  <div class="sfx-item" style="opacity:0.7">
+    <div class="sfx-info">
+      <span class="sfx-name">Chainsword (V3 Raw)</span>
+      <span class="sfx-promptPrompt">Prompt: "Violent roaring heavy mechanical chainsaw tearing into thick steel armor, violently grinding, sparks flying, long fading motor deceleration rounding off to silence, uninterrupted tail"</span>
+      <div style="color:#ffcc40;font-size:10px;margin-top:4px"><b>ISSUE:</b> Much better mechanical sound, but still didn't safely decay to zero.</div>
+    </div>
+    <button class="play-btn" onclick="play('../assets/sfx/weapon-chainsword-v3.mp3')">▶ PLAY</button>
+  </div>
+  
+  <!-- V5 (V4 was the faded V3) -->
+  <div class="sfx-item" style="opacity:0.7">
+    <div class="sfx-info">
+      <span class="sfx-name">Chainsword (V5 Foley Raw)</span>
+      <span class="sfx-promptPrompt">Prompt: "A large heavy-duty mechanical chainsaw revving once aggressively, then the engine sputters, decelerates, and smoothly powers down into absolute silence. No sudden stops."</span>
+      <div style="color:#ffcc40;font-size:10px;margin-top:4px"><b>NOTE:</b> The raw 4-second render of the purely mechanical prompt, before the ffmpeg fade was applied.</div>
+    </div>
+    <button class="play-btn" onclick="play('../assets/sfx/weapon-chainsword-v5.mp3')">▶ PLAY</button>
+  </div>
+</div>
+
 <script>
+
   let currentAudio = null;
   function play(src) {
     if(currentAudio) {
