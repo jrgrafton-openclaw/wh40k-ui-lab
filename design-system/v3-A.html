@@ -589,7 +589,7 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 
 <!-- ═══ 11. TERRAIN ═══ -->
 <h2>11 · Terrain — actual GW Chapter Approved 2025–26 types</h2>
-<div class="note">Two types from GW Chapter Approved 2025–26. Grey = "Tall terrain ≥4"" (L-shaped ruins, two-tone). Blue = "Low terrain ≤2"" (can see/shoot over). Same primitive, rotated/scaled variants.</div>
+<div class="note">Two types from GW Chapter Approved 2025–26. Grey = "Tall terrain ≥4"" (L-shaped ruins, two-tone, blocks LoS). Warm earth = "Low terrain ≤2"" (craters/rubble, can see/shoot over). Blue (#065475) from GW layout file is a planning tool colour — not used in game UI (blue = water/impassable universally).</div>
 <svg width="580" height="160" viewBox="-10 -10 600 180" style="background:#080c10;display:block;margin-bottom:1.5rem">
   <defs><pattern id="grid3" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M 24 0 L 0 0 0 24" fill="none" stroke="#ffffff06" stroke-width="0.5"/></pattern></defs>
   <rect x="-10" y="-10" width="600" height="180" fill="url(#grid3)"/>
@@ -612,9 +612,13 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 
   <!-- Water / impassable -->
   <g transform="translate(400,20)">
-    <rect x="0" y="0" width="80" height="80" fill="#065475" stroke="#033a52" stroke-width="1" vector-effect="non-scaling-stroke" opacity="0.9"/>
-    <text x="40" y="105" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="10" fill="#4a6080" letter-spacing="0.12em">LOW TERRAIN ≤2"</text>
-    <text x="40" y="116" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="9" fill="#2a3a4a">can see / shoot over</text>
+    <rect x="0" y="0" width="80" height="80" fill="#3a3018" stroke="#5a5028" stroke-width="1" vector-effect="non-scaling-stroke" opacity="0.9"/>
+    <!-- subtle texture lines suggest rubble/craters -->
+    <line x1="10" y1="20" x2="30" y2="18" stroke="#5a5028" stroke-width="1" opacity="0.5"/>
+    <line x1="40" y1="35" x2="65" y2="38" stroke="#5a5028" stroke-width="1" opacity="0.4"/>
+    <line x1="15" y1="55" x2="45" y2="52" stroke="#5a5028" stroke-width="1" opacity="0.4"/>
+    <text x="40" y="108" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="10" fill="#6a6040" letter-spacing="0.12em">LOW TERRAIN ≤2"</text>
+    <text x="40" y="119" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="9" fill="#3a3020">craters / rubble — see &amp; shoot over</text>
   </g>
 </svg>
 

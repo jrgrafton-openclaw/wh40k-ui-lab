@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V4 · Animations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-primary:#080c10;--bg-surface:#0f1520;--bg-raised:#162030;--bg-selected:#1e2d44;
+  --imp:#00d4ff;--imp-dim:#0088aa;--imp-tint:#00d4ff12;--imp-tint2:#00d4ff22;
+  --ork:#ff4020;--ork-dim:#aa2810;--ork-tint:#ff402012;
+  --text-primary:#e0e8f0;--text-sec:#8090a0;--text-muted:#4a6080;--text-dis:#2a3a4a;
+  --bs:#cc2020;--strat:#cc8800;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg-primary);color:var(--text-sec);font-family:'Rajdhani',sans-serif;padding:2rem;max-width:900px;}
+.pg-header{margin-bottom:2.5rem;border-left:2px solid var(--imp);padding-left:1rem;font-family:'Courier New',monospace;}
+.pg-header h1{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--imp);}
+.pg-header p{font-size:10px;color:var(--text-muted);margin-top:.25rem;}
+h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--text-dis);margin:2.5rem 0 1rem;border-bottom:1px solid #0f1a28;padding-bottom:.5rem;}
+.note{font-size:10px;color:var(--text-dis);margin-bottom:1rem;font-family:'Courier New',monospace;font-style:italic;}
+.demo{background:var(--bg-surface);border:1px solid #00d4ff15;border-top:2px solid var(--imp);padding:2rem;margin-bottom:.5rem;display:flex;align-items:center;justify-content:center;min-height:140px;position:relative;}
+.demo-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dis);margin-bottom:1rem;}
+.row{display:flex;gap:2rem;flex-wrap:wrap;align-items:center;}
+.col{display:flex;flex-direction:column;align-items:center;gap:.5rem;}
+
+/* ══ TOKEN BASE ══ */
+.token{
+  width:58px;height:58px;border-radius:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  position:relative;
+}
+.tkn-icon{width:42%;height:42%;display:flex;align-items:center;justify-content:center;}
+.tkn-icon svg{width:100%;height:100%;}
+.tkn-models{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;letter-spacing:.06em;line-height:1;}
+.token-count{
+  position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;padding:0 4px;
+  font-size:10px;font-weight:700;font-family:'Rajdhani',sans-serif;z-index:1;
+}
+.token.player{background:#050c12;border:3px solid var(--imp-dim);}
+.token.player .tkn-icon{color:#3a7a90;}
+.token.player .tkn-models{color:var(--imp-dim);}
+.token.player .token-count{background:#0a1824;border:1.5px solid var(--imp-dim);color:var(--imp);}
+
+/* ══════════════════════════════════════════
+   1. TOKEN SELECTION PULSE
+   Triggered when unit becomes selected.
+   Plays once then settles into static glow.
+══════════════════════════════════════════ */
+@keyframes token-select-pulse {
+  0%   { box-shadow: 0 0 0 0px #00d4ff00, 0 0 8px #00d4ff30; }
+  30%  { box-shadow: 0 0 0 8px #00d4ff30, 0 0 28px #00d4ff70; }
+  60%  { box-shadow: 0 0 0 5px #00d4ff18, 0 0 22px #00d4ff55; }
+  100% { box-shadow: 0 0 0 4px #00d4ff18, 0 0 24px #00d4ff50, 0 0 50px #00d4ff18; }
+}
+.token-select-anim {
+  animation: token-select-pulse 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  border-color: var(--imp);
+}
+.token-select-anim .tkn-icon{color:var(--imp);}
+.token-select-anim .tkn-models{color:var(--imp);}
+/* Loop button restarts it */
+
+/* ══════════════════════════════════════════
+   2. SELECTED GLOW — steady state loop
+   Subtle breathing after selection settles.
+══════════════════════════════════════════ */
+@keyframes token-glow-breathe {
+  0%,100% { box-shadow: 0 0 0 4px #00d4ff18, 0 0 18px #00d4ff40, 0 0 40px #00d4ff12; }
+  50%     { box-shadow: 0 0 0 5px #00d4ff22, 0 0 28px #00d4ff60, 0 0 55px #00d4ff20; }
+}
+.token-breathe {
+  border-color: var(--imp);
+  animation: token-glow-breathe 2.4s ease-in-out infinite;
+}
+.token-breathe .tkn-icon{color:var(--imp);}
+.token-breathe .tkn-models{color:var(--imp);}
+
+/* ══════════════════════════════════════════
+   3. BATTLESHOCKED STATE
+   Plays when unit receives Battleshocked.
+   Red flicker on entry, then dim pulse.
+══════════════════════════════════════════ */
+@keyframes bs-enter {
+  0%  { filter:brightness(1);  }
+  15% { filter:brightness(2.5); background:#440000; }
+  35% { filter:brightness(0.6); }
+  55% { filter:brightness(1.8); }
+  75% { filter:brightness(0.7); }
+  100%{ filter:brightness(1); background:#120808; }
+}
+@keyframes bs-pulse {
+  0%,100%{ box-shadow: 0 0 8px #cc202030,  0 0 20px #cc202010; }
+  50%    { box-shadow: 0 0 14px #cc202055, 0 0 30px #cc202020; }
+}
+.token-bs-anim {
+  background:#120808;
+  border-color:#992020;
+  animation: bs-enter 0.9s ease forwards, bs-pulse 2.2s ease-in-out 0.9s infinite;
+}
+.token-bs-anim .tkn-icon{color:var(--bs);}
+.token-bs-anim .tkn-models{color:var(--bs);}
+.token-bs-anim .token-count{background:#180808;border-color:#881010;color:var(--bs);}
+
+/* ══════════════════════════════════════════
+   4. MOVEMENT PATH DRAW
+   Dashed line draws itself from token to
+   destination when Normal Move is selected.
+══════════════════════════════════════════ */
+@keyframes path-draw {
+  from { stroke-dashoffset: 400; }
+  to   { stroke-dashoffset: 0; }
+}
+@keyframes dest-appear {
+  from { opacity:0; transform:scale(0.5); }
+  to   { opacity:1; transform:scale(1); }
+}
+.path-line {
+  stroke: var(--imp);
+  stroke-width: 1.5;
+  stroke-dasharray: 8 5;
+  fill: none;
+  stroke-dashoffset: 400;
+  animation: path-draw 0.7s ease-out 0.1s forwards;
+}
+.dest-circle {
+  fill: var(--imp-tint);
+  stroke: var(--imp);
+  stroke-width: 1.5;
+  opacity: 0;
+  animation: dest-appear 0.25s ease-out 0.75s forwards;
+}
+
+/* ══════════════════════════════════════════
+   5. RANGE CIRCLES APPEAR
+   Fade + scale from token centre when unit
+   is selected and movement phase is active.
+══════════════════════════════════════════ */
+@keyframes range-in {
+  from { opacity:0; transform-origin:center; transform:scale(0.2); }
+  to   { opacity:1; transform:scale(1); }
+}
+.range-move  { animation: range-in 0.35s cubic-bezier(0.34,1.56,0.64,1) 0.1s both; }
+.range-adv   { animation: range-in 0.35s cubic-bezier(0.34,1.56,0.64,1) 0.2s both; }
+.range-charge{ animation: range-in 0.35s cubic-bezier(0.34,1.56,0.64,1) 0.3s both; }
+
+/* ══════════════════════════════════════════
+   6. COMBAT RESULT FLASH
+   Plays on the target token when hit/wounded.
+══════════════════════════════════════════ */
+@keyframes hit-flash {
+  0%  { filter:brightness(1);  box-shadow: 0 0 0px #ff402000; }
+  20% { filter:brightness(3.5); box-shadow: 0 0 30px #ff402099, 0 0 60px #ff402044; }
+  45% { filter:brightness(1.5); }
+  70% { filter:brightness(0.7); }
+  100%{ filter:brightness(1);  box-shadow: 0 0 8px #ff402030, 0 0 20px #ff402010; }
+}
+.token-hit-anim {
+  animation: hit-flash 0.8s ease-out forwards;
+}
+/* Wound counter badge shake */
+@keyframes badge-shake {
+  0%,100%{ transform:translateX(0); }
+  20%    { transform:translateX(-3px); }
+  40%    { transform:translateX(3px); }
+  60%    { transform:translateX(-2px); }
+  80%    { transform:translateX(2px); }
+}
+.badge-shake { animation: badge-shake 0.5s ease 0.15s; }
+
+/* ══════════════════════════════════════════
+   7. ABILITY PILL HOVER (Phase 3 transition,
+      shown here for completeness)
+══════════════════════════════════════════ */
+.ability-pill{
+  display:inline-block;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;padding:3px 10px;
+  background:var(--imp-tint);color:var(--imp);border:1px solid #00d4ff28;cursor:default;
+  transition:background .12s,border-color .12s,transform .12s,box-shadow .12s;
+}
+.ability-pill:hover{background:var(--imp-tint2);border-color:var(--imp-dim);transform:translateY(-1px);box-shadow:0 2px 8px #00d4ff14;}
+
+/* ══ Replay button ══ */
+.replay-btn{
+  font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:600;letter-spacing:.15em;
+  text-transform:uppercase;padding:.3rem .7rem;border:1px solid var(--text-dis);
+  background:transparent;color:var(--text-muted);cursor:pointer;margin-top:1rem;
+  transition:border-color .12s,color .12s;
+}
+.replay-btn:hover{border-color:var(--imp);color:var(--imp);}
+</style>
+</head>
+<body>
+<div class="pg-header">
+  <h1>V4 · Animations</h1>
+  <p>@keyframes animations only. CSS transitions (hover states) defined in V3 atoms. Click Replay to restart each.</p>
+</div>
+
+<!-- 1. TOKEN SELECTION PULSE -->
+<h2>1 · Token Selection Pulse — plays once on select</h2>
+<div class="note">Entry burst then settles into steady breathing. cubic-bezier(0.22,1,0.36,1) = snappy overshoot feel.</div>
+<div class="demo">
+  <div class="col">
+    <div class="demo-label">On select</div>
+    <div id="sel-token" class="token player token-select-anim">
+      <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2.5"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2.5"/></svg></div>
+      <span class="tkn-models">×5</span>
+      <span class="token-count">5</span>
+    </div>
+    <button class="replay-btn" onclick="replay('sel-token','token-select-anim')">↺ Replay</button>
+  </div>
+</div>
+
+<!-- 2. SELECTED GLOW BREATHE -->
+<h2>2 · Selected Glow — steady loop while selected</h2>
+<div class="note">Slow 2.4s breathing loop. Subtle — reinforces "this is the active unit" without demanding attention.</div>
+<div class="demo">
+  <div class="token player token-breathe">
+    <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2.5"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2.5"/></svg></div>
+    <span class="tkn-models">×5</span>
+    <span class="token-count">5</span>
+  </div>
+</div>
+
+<!-- 3. BATTLESHOCKED -->
+<h2>3 · Battleshocked — entry flicker + dim pulse</h2>
+<div class="note">Red flicker burst on entry (0.9s), then slow dim red pulse (2.2s loop). Communicates failure without being distracting.</div>
+<div class="demo">
+  <div class="col">
+    <div id="bs-token" class="token player token-bs-anim">
+      <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2.5"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2.5"/></svg></div>
+      <span class="tkn-models">×5</span>
+      <span class="token-count">5</span>
+    </div>
+    <button class="replay-btn" onclick="replay('bs-token','token-bs-anim')">↺ Replay</button>
+  </div>
+</div>
+
+<!-- 4. MOVEMENT PATH DRAW -->
+<h2>4 · Movement Path Draw — dashes draw to destination</h2>
+<div class="note">stroke-dashoffset animation 0.7s ease-out. Destination circle appears after path completes.</div>
+<div class="demo">
+  <div class="col">
+    <svg id="path-svg" width="280" height="100" viewBox="0 0 280 100" style="overflow:visible">
+      <!-- Source token -->
+      <circle cx="30" cy="50" r="22" fill="#050c12" stroke="#00d4ff" stroke-width="3" style="box-shadow:0 0 20px #00d4ff50"/>
+      <!-- Path -->
+      <path id="move-path" class="path-line" d="M 55 50 Q 120 20 225 50"/>
+      <!-- Destination marker -->
+      <circle id="dest-marker" class="dest-circle" cx="225" cy="50" r="14"/>
+      <line id="dest-cross-h" x1="218" y1="50" x2="232" y2="50" stroke="#00d4ff" stroke-width="1.5" opacity="0" style="animation:dest-appear 0.25s ease-out 0.75s forwards"/>
+      <line id="dest-cross-v" x1="225" y1="43" x2="225" y2="57" stroke="#00d4ff" stroke-width="1.5" opacity="0" style="animation:dest-appear 0.25s ease-out 0.75s forwards"/>
+    </svg>
+    <button class="replay-btn" onclick="replaySVG()">↺ Replay</button>
+  </div>
+</div>
+
+<!-- 5. RANGE CIRCLES APPEAR -->
+<h2>5 · Range Circles Appear — spring in on unit select</h2>
+<div class="note">Three circles staggered 100ms apart. Spring easing (overshoot) makes them feel physical. Centered on token.</div>
+<div class="demo">
+  <svg id="range-svg" width="320" height="320" viewBox="-10 -10 340 340" style="background:#080c10">
+    <defs><pattern id="rg" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M 24 0 L 0 0 0 24" fill="none" stroke="#ffffff06" stroke-width="0.5"/></pattern></defs>
+    <rect x="-10" y="-10" width="340" height="340" fill="url(#rg)"/>
+    <circle class="range-charge" cx="160" cy="160" r="148" fill="none" stroke="#cc8800" stroke-width="1.5" stroke-dasharray="6 5" opacity="0.7"/>
+    <text class="range-charge" x="160" y="8" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="10" font-weight="600" letter-spacing=".15em" fill="#cc8800" opacity="0.9">CHARGE</text>
+    <circle class="range-adv" cx="160" cy="160" r="108" fill="none" stroke="#00d4ff" stroke-width="1.5" stroke-dasharray="8 6" opacity="0.65"/>
+    <text class="range-adv" x="160" y="48" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="10" font-weight="600" letter-spacing=".15em" fill="#00d4ff" opacity="0.8">ADV</text>
+    <circle class="range-move" cx="160" cy="160" r="72" fill="#00d4ff04" stroke="#00d4ff" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.9"/>
+    <text class="range-move" x="160" y="84" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="10" font-weight="600" letter-spacing=".15em" fill="#00d4ff">MOVE</text>
+    <!-- Token at centre -->
+    <circle cx="160" cy="160" r="26" fill="#050c12" stroke="#00d4ff" stroke-width="3" style="filter:drop-shadow(0 0 8px #00d4ff60)"/>
+  </svg>
+  <button class="replay-btn" onclick="replayRange()">↺ Replay</button>
+</div>
+
+<!-- 6. COMBAT RESULT FLASH -->
+<h2>6 · Combat Result Flash — plays on target token when hit</h2>
+<div class="note">White-hot flash at 20% (brightness 3.5x), fades with brief dim. Badge shakes simultaneously.</div>
+<div class="demo">
+  <div class="col">
+    <div id="hit-token" class="token player" style="background:#140808;border:3px solid var(--ork-dim);box-shadow:0 0 8px #ff402018">
+      <div class="tkn-icon" style="color:#7a3820"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2.5"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2.5"/></svg></div>
+      <span class="tkn-models" style="color:#884030">×20</span>
+      <span id="hit-badge" class="token-count" style="background:#180c08;border:1.5px solid var(--ork-dim);color:var(--ork)">20</span>
+    </div>
+    <button class="replay-btn" onclick="replayHit()">↺ Replay flash</button>
+  </div>
+</div>
+
+<!-- 7. ABILITY PILL HOVER -->
+<h2>7 · Ability Pill Hover (transition, not keyframe)</h2>
+<div class="note">150ms ease. Part of Phase 3 spec, shown here for completeness. Hover the pill:</div>
+<div class="demo">
+  <span class="ability-pill">Shock Assault</span>
+</div>
+
+<script>
+function replay(id, cls) {
+  const el = document.getElementById(id);
+  el.classList.remove(cls);
+  void el.offsetWidth; // force reflow
+  el.classList.add(cls);
+}
+
+function replaySVG() {
+  const svg = document.getElementById('path-svg');
+  svg.innerHTML = svg.innerHTML; // re-parse to restart animations
+}
+
+function replayRange() {
+  const svg = document.getElementById('range-svg');
+  const els = svg.querySelectorAll('.range-move,.range-adv,.range-charge');
+  els.forEach(el => {
+    el.style.animation = 'none';
+    void el.offsetWidth;
+    el.style.animation = '';
+  });
+}
+
+function replayHit() {
+  const tok = document.getElementById('hit-token');
+  const badge = document.getElementById('hit-badge');
+  tok.classList.remove('token-hit-anim');
+  badge.classList.remove('badge-shake');
+  void tok.offsetWidth;
+  tok.classList.add('token-hit-anim');
+  badge.classList.add('badge-shake');
+}
+</script>
+</body>
+</html>
