@@ -54,8 +54,9 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 <div class="sfx-grid">
   <div class="sfx-item">
     <div class="sfx-info">
-      <span class="sfx-name">Hover (Token/Pill)</span>
+      <span class="sfx-name">Hover (Action Buttons)</span>
       <span class="sfx-promptPrompt">Prompt: "Subtle analog telemetry click, like a geiger counter registering a single tick or a camera lens focusing, extremely short, sci-fi military"</span>
+      <div style="color:#ffcc40;font-size:10px;margin-top:4px"><b>DESIGN NOTE:</b> Applied to main Action Bar buttons only to avoid hover-spam. Not on tokens.</div>
     </div>
     <button class="play-btn" onclick="play('../assets/sfx/ui-hover.mp3')">▶ PLAY</button>
   </div>
@@ -68,8 +69,9 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
   </div>
   <div class="sfx-item">
     <div class="sfx-info">
-      <span class="sfx-name">Select Unit (Glow/Loop)</span>
+      <span class="sfx-name"><strike>Select Unit (Glow/Loop)</strike> — DEPRECATED</span>
       <span class="sfx-promptPrompt">Prompt: "Faint low-frequency sub-audible mechanical hum, seamless loop, sci-fi engine idle"</span>
+      <div style="color:#ffcc40;font-size:10px;margin-top:4px"><b>DESIGN NOTE:</b> Removing ambient loops. They drive players crazy over a 2-hour game.</div>
     </div>
     <button class="play-btn" onclick="play('../assets/sfx/ui-loop.mp3')">▶ PLAY</button>
   </div>
@@ -93,10 +95,10 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 <div class="sfx-grid">
   <div class="sfx-item">
     <div class="sfx-info">
-      <span class="sfx-name">Bolter Fire (Standard)</span>
-      <span class="sfx-promptPrompt">Prompt: "Deep heavy bass physical thump immediately followed by a sharp high-explosive crack, rocket propelled heavy calibre gun, devastating, cinematic"</span>
+      <span class="sfx-name">Bolter Fire (V2)</span>
+      <span class="sfx-promptPrompt">Prompt: "Rapid-fire heavy explosive automatic weapon, loud deafening THUD-CRACK THUD-CRACK THUD-CRACK, large caliber shells blowing up on impact, sci-fi assault rifle, crisp, unclipped tail"</span>
     </div>
-    <button class="play-btn" onclick="play('../assets/sfx/weapon-bolter.mp3')">▶ PLAY</button>
+    <button class="play-btn" onclick="play('../assets/sfx/weapon-bolter-v2.mp3')">▶ PLAY</button>
   </div>
   <div class="sfx-item">
     <div class="sfx-info">
@@ -117,7 +119,21 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
       <span class="sfx-name">Chainsword Rev & Strike</span>
       <span class="sfx-promptPrompt">Prompt: "Sputtering two-stroke heavy engine idling spiking into a violent high-rpm roaring chainsaw tearing metal and meat"</span>
     </div>
-    <button class="play-btn" onclick="play('../assets/sfx/weapon-chainsword.mp3')">▶ PLAY</button>
+    <button class="play-btn" onclick="play('../assets/sfx/weapon-chainsword-v2.mp3')">▶ PLAY</button>
+  </div>
+  <div class="sfx-item">
+    <div class="sfx-info">
+      <span class="sfx-name">Power Axe / Choppa</span>
+      <span class="sfx-promptPrompt">Prompt: "Heavy metallic whoosh through air followed by a devastating, sharp electrical crack and a massive heavy blunt impact on steel armor"</span>
+    </div>
+    <button class="play-btn" onclick="play('../assets/sfx/weapon-poweraxe.mp3')">▶ PLAY</button>
+  </div>
+  <div class="sfx-item">
+    <div class="sfx-info">
+      <span class="sfx-name">Powerfist</span>
+      <span class="sfx-promptPrompt">Prompt: "Huge hydraulic motorized wind-up, followed by an earth-shattering concussive punch that sounds like a concrete building exploding, deep bass heavy impact"</span>
+    </div>
+    <button class="play-btn" onclick="play('../assets/sfx/weapon-powerfist.mp3')">▶ PLAY</button>
   </div>
 </div>
 
