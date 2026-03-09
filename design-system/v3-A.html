@@ -64,21 +64,21 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 .token.enemy  .token-count{background:#180c08;border:1.5px solid var(--ork-dim);color:var(--ork);}
 
 /* Colour states */
-.token.player         {background:#060e14;border:2px solid var(--imp-dim);box-shadow:0 0 8px #00d4ff18,0 0 20px #00d4ff08;}
-.token.player .tkn-icon{color:#4a8fa8;}
-.token.player:hover   {background:var(--imp-tint);border-color:var(--imp);box-shadow:0 0 0 3px #00d4ff14,0 0 16px #00d4ff22;}
-.token.player.selected{background:var(--imp-tint);border:2.5px solid var(--imp);box-shadow:0 0 0 4px #00d4ff18,0 0 24px #00d4ff30;}
+.token.player         {background:#050c12;border:3px solid var(--imp-dim);box-shadow:0 0 12px #00d4ff30,0 0 28px #00d4ff12;}
+.token.player .tkn-icon{color:#3a7a90;}
+.token.player:hover   {background:var(--imp-tint);border-color:var(--imp);box-shadow:0 0 0 4px #00d4ff20,0 0 20px #00d4ff40,0 0 40px #00d4ff14;}
+.token.player.selected{background:var(--imp-tint);border:3px solid var(--imp);box-shadow:0 0 0 5px #00d4ff25,0 0 28px #00d4ff60,0 0 60px #00d4ff20;}
 .token.player.selected .tkn-icon{color:var(--imp);}
-.token.player.activated{background:transparent;border:2px solid #00d4ff18;opacity:.38;box-shadow:none;}
-.token.player.bs      {background:#120808;border:2px solid #771010;box-shadow:0 0 8px #cc202018;}
+.token.player.activated{background:transparent;border:2px solid #00d4ff15;opacity:.35;box-shadow:none;}
+.token.player.bs      {background:#120808;border:2.5px solid #992020;box-shadow:0 0 12px #cc202035,0 0 28px #cc202012;}
 .token.player.bs .tkn-icon{color:var(--bs);}
 
-.token.enemy          {background:#140808;border:2px solid var(--ork-dim);box-shadow:0 0 8px #ff402018,0 0 20px #ff402008;}
-.token.enemy .tkn-icon{color:#884030;}
-.token.enemy:hover    {background:var(--ork-tint);border-color:var(--ork);box-shadow:0 0 0 3px #ff402014,0 0 16px #ff402022;}
-.token.enemy.selected {background:var(--ork-tint);border:2.5px solid var(--ork);box-shadow:0 0 0 4px #ff402018,0 0 24px #ff402030;}
+.token.enemy          {background:#120808;border:3px solid var(--ork-dim);box-shadow:0 0 12px #ff402030,0 0 28px #ff402012;}
+.token.enemy .tkn-icon{color:#7a3820;}
+.token.enemy:hover    {background:var(--ork-tint);border-color:var(--ork);box-shadow:0 0 0 4px #ff402020,0 0 20px #ff402040,0 0 40px #ff402014;}
+.token.enemy.selected {background:var(--ork-tint);border:3px solid var(--ork);box-shadow:0 0 0 5px #ff402025,0 0 28px #ff402060,0 0 60px #ff402020;}
 .token.enemy.selected .tkn-icon{color:var(--ork);}
-.token.enemy.bs       {background:#120808;border:2px solid #771010;box-shadow:0 0 8px #cc202018;}
+.token.enemy.bs       {background:#120808;border:2.5px solid #992020;box-shadow:0 0 12px #cc202035,0 0 28px #cc202012;}
 .token.enemy.bs .tkn-icon{color:var(--bs);}
 
 /* Token interior — icon + model count stacked */
@@ -468,7 +468,7 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 <!-- ═══ 6. PILLS ═══ -->
 <h2>6 · Keyword Pills — hover for tooltip card (V2-B chrome)</h2>
 <div class="note">Hover each pill to see the rule card. Tooltip uses locked V2-B panel chrome (2px top border, 1px side border).</div>
-<div style="padding-bottom:120px"> <!-- room for tooltips to render above -->
+<div>
   <span class="pill-wrap"><span class="pill pill-kw">Rapid Fire 1</span><div class="kw-tip"><div class="kw-tip-name">Rapid Fire 1</div><div class="kw-tip-body">Each time this weapon targets a unit within half range, the weapon has Attacks +1.</div></div></span>
   <span class="pill-wrap"><span class="pill pill-kw">Hazardous</span><div class="kw-tip"><div class="kw-tip-name">Hazardous</div><div class="kw-tip-body">Each time a unit shoots or fights with this weapon, after resolving attacks, roll one D6 per model. On a 1, that model's unit suffers 3 mortal wounds.</div></div></span>
   <span class="pill-wrap"><span class="pill pill-kw">Heavy</span><div class="kw-tip"><div class="kw-tip-name">Heavy</div><div class="kw-tip-body">Subtract 1 from Hit rolls unless the bearer Remained Stationary this turn. Add 1 to Hit rolls if the bearer Remained Stationary and this is a ranged weapon.</div></div></span>
