@@ -189,8 +189,9 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 .kw-tip{
   position:absolute;
   bottom:calc(100% + 8px);
-  left:0;
+  left:0; /* JS will override to right:0 when near right edge */
   width:220px;
+  text-align:left;
   background:var(--bg-raised);
   border:1px solid #00d4ff22;
   border-top:2px solid var(--imp);
@@ -205,8 +206,9 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 .kw-tip-name{
   font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;
   letter-spacing:.18em;text-transform:uppercase;color:var(--imp);margin-bottom:.3rem;
+  text-align:left;
 }
-.kw-tip-body{font-size:11px;color:var(--text-muted);line-height:1.55;}
+.kw-tip-body{font-size:11px;color:var(--text-muted);line-height:1.55;text-align:left;}
 
 /* ══════════════════════════════════════════
    7. ARMY ROSTER ROWS — plain rows
@@ -524,5 +526,21 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
   <div class="ph-item"><span class="ph-dot"></span>Fight</div>
 </div>
 
+<script>
+// Tooltip viewport collision — flip to right-anchored when near right edge
+document.querySelectorAll('.pill-wrap').forEach(wrap => {
+  wrap.addEventListener('mouseenter', () => {
+    const tip = wrap.querySelector('.kw-tip');
+    if (!tip) return;
+    tip.style.left = '0';
+    tip.style.right = 'auto';
+    const rect = tip.getBoundingClientRect();
+    if (rect.right > window.innerWidth - 16) {
+      tip.style.left = 'auto';
+      tip.style.right = '0';
+    }
+  });
+});
+</script>
 </body>
 </html>
