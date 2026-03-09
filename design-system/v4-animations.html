@@ -105,34 +105,24 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 .anim-die{animation:token-die .7s ease-out forwards;}
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   5. PROJECTILE TRAVEL (recolorable via --proj-color)
+   5. PROJECTILE TRAVEL
+   Straight line. Oval/rounded-rect shape.
+   offset-rotate:auto orients along path.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 @keyframes proj-travel{
-  0%  {offset-distance:0%;opacity:1;transform:scale(1);}
-  85% {opacity:1;}
-  100%{offset-distance:100%;opacity:0;transform:scale(.5);}
-}
-@keyframes proj-glow-pulse{
-  0%,100%{filter:blur(1px) brightness(1.5);}
-  50%    {filter:blur(2px) brightness(2.5);}
+  0%  {offset-distance:0%;opacity:0;transform:scaleX(1.4);}
+  8%  {opacity:1;}
+  88% {opacity:1;}
+  100%{offset-distance:100%;opacity:0;}
 }
 .projectile{
-  width:8px;height:8px;border-radius:50%;
+  width:18px;height:5px;border-radius:3px;
   background:var(--proj-color,var(--imp));
-  box-shadow:0 0 6px var(--proj-color,var(--imp)),0 0 16px var(--proj-color,var(--imp));
+  box-shadow:0 0 5px var(--proj-color,var(--imp)),0 0 14px var(--proj-color,var(--imp));
   position:absolute;
-  offset-path:path('M 40 90 Q 150 40 270 90');
-  animation:proj-travel .5s ease-in forwards,proj-glow-pulse .12s linear infinite;
-  pointer-events:none;
-}
-/* Tail using pseudo or sibling — simulated via multiple shifted copies */
-.projectile-tail{
-  width:16px;height:4px;border-radius:4px;
-  background:linear-gradient(90deg,transparent,var(--proj-color,var(--imp)));
-  position:absolute;
-  offset-path:path('M 40 90 Q 150 40 270 90');
-  animation:proj-travel .5s ease-in forwards;
-  transform-origin:right center;
+  offset-path:path('M 28 44 L 292 44');
+  offset-rotate:auto;
+  animation:proj-travel .45s cubic-bezier(.4,0,.8,1) forwards;
   pointer-events:none;
 }
 
@@ -168,29 +158,52 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 .anim-miss{animation:miss-flash .45s ease-out forwards;}
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   8. DICE ROLL — numbers cycle then land
+   7. DICE ROLL — attack resolution sequence
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-.dice{
-  width:48px;height:48px;background:var(--bg-raised);border:1px solid var(--text-dis);
+.dice-group{display:flex;flex-direction:column;gap:.75rem;align-items:flex-start;width:100%;}
+.dice-stage{display:flex;flex-direction:column;gap:.4rem;}
+.dice-stage-label{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dis);}
+.dice-row{display:flex;gap:.4rem;flex-wrap:wrap;}
+
+.die{
+  width:38px;height:38px;
+  background:var(--bg-raised);
+  border:1.5px solid var(--text-dis);
   display:flex;align-items:center;justify-content:center;
-  font-family:'Anton',sans-serif;font-size:28px;color:var(--text-primary);
+  font-family:'Anton',sans-serif;font-size:20px;color:var(--text-muted);
   position:relative;overflow:hidden;
+  transition:border-color .2s,box-shadow .2s,color .2s;
 }
-@keyframes dice-spin{
-  0%  {transform:translateY(0);}
-  100%{transform:translateY(-700%);}
+.die.success{border-color:var(--imp);color:var(--imp);box-shadow:0 0 8px #00d4ff35;}
+.die.fail{border-color:var(--bs);color:#664040;opacity:.5;}
+.die.enemy-success{border-color:var(--ork);color:var(--ork);box-shadow:0 0 8px #ff402035;}
+.die.enemy-fail{border-color:var(--text-dis);color:#664040;opacity:.5;}
+
+@keyframes die-roll-in{
+  0%  {transform:scale(.5) rotate(-20deg);opacity:0;}
+  60% {transform:scale(1.1) rotate(4deg);opacity:1;}
+  100%{transform:scale(1) rotate(0);}
 }
-@keyframes dice-settle{
-  0%  {transform:translateY(-700%) scaleY(1.3);}
-  60% {transform:translateY(8%) scaleY(.9);}
-  80% {transform:translateY(-3%);}
-  100%{transform:translateY(0) scaleY(1);}
+@keyframes die-flash-success{
+  0%  {background:var(--bg-raised);}
+  40% {background:#00d4ff18;}
+  100%{background:var(--bg-raised);}
 }
-.dice-strip{display:flex;flex-direction:column;align-items:center;gap:4px;line-height:1;font-family:'Anton',sans-serif;font-size:28px;color:var(--text-primary);}
-.dice-strip.rolling{animation:dice-spin .4s linear forwards;}
-.dice-strip.settling{animation:dice-settle .4s cubic-bezier(.34,1.56,.64,1) forwards;}
-.dice-result-success .dice{border-color:var(--imp);box-shadow:0 0 12px #00d4ff40;}
-.dice-result-fail .dice{border-color:var(--bs);box-shadow:0 0 12px #cc202040;}
+@keyframes die-flash-fail{
+  0%  {background:var(--bg-raised);}
+  40% {background:#cc202018;}
+  100%{background:var(--bg-raised);}
+}
+.die.rolling{animation:die-roll-in .35s cubic-bezier(.34,1.56,.64,1) both;}
+.die.success.flashing{animation:die-flash-success .4s ease forwards;}
+.die.fail.flashing{animation:die-flash-fail .4s ease forwards;}
+
+.dice-summary{
+  font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;
+  letter-spacing:.1em;color:var(--text-muted);margin-top:.1rem;
+}
+.dice-summary .hi{color:var(--imp);}
+.dice-summary .lo{color:var(--bs);}
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    9. PHASE TRANSITION
@@ -216,20 +229,24 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    10. SCORE COUNTER TICK
+   Fade + scale approach — no overflow clip.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-@keyframes score-tick{
-  0%  {transform:translateY(0);opacity:1;}
-  40% {transform:translateY(-140%);opacity:0;}
-  41% {transform:translateY(140%);opacity:0;}
-  100%{transform:translateY(0);opacity:1;}
+@keyframes score-out{
+  0%  {opacity:1;transform:scale(1) translateY(0);}
+  100%{opacity:0;transform:scale(1.4) translateY(-8px);}
+}
+@keyframes score-in{
+  0%  {opacity:0;transform:scale(.6) translateY(10px);}
+  100%{opacity:1;transform:scale(1) translateY(0);}
 }
 @keyframes score-flash{
   0%,100%{color:var(--imp);}
-  50%    {color:#fff;text-shadow:0 0 12px var(--imp);}
+  40%    {color:#fff;text-shadow:0 0 14px var(--imp),0 0 30px var(--imp);}
 }
-.score-wrap{overflow:hidden;height:1.2em;display:inline-block;vertical-align:middle;}
-.score-val{font-family:'Anton',sans-serif;font-size:28px;display:block;}
-.score-val.ticking{animation:score-tick .5s cubic-bezier(.4,0,.2,1) forwards,score-flash .5s ease forwards;}
+.score-wrap{display:inline-block;position:relative;vertical-align:middle;}
+.score-val{font-family:'Anton',sans-serif;font-size:28px;display:block;color:var(--imp);}
+.score-val.ticking-out{animation:score-out .2s ease-in forwards;}
+.score-val.ticking-in{animation:score-in .3s cubic-bezier(.34,1.56,.64,1) forwards,score-flash .4s ease forwards;}
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    11. MELEE CLASH
@@ -479,7 +496,7 @@ function fireProjectile(color){
   c.innerHTML='';
   const p=document.createElement('div');
   p.className='projectile';
-  p.style.cssText=`--proj-color:${color};offset-path:path('M 24 38 Q 160 0 296 38');`;
+  p.style.cssText=`--proj-color:${color};offset-path:path('M 28 44 L 292 44');`;
   c.appendChild(p);
   setTimeout(()=>{
     document.getElementById('proj-target').classList.remove('anim-hit');
@@ -496,19 +513,45 @@ function replayHit(){
   t.classList.add('anim-hit');b.classList.add('anim-badge-shake');
 }
 
-function rollDice(){
-  const strip=document.getElementById('dice-strip');
-  const wrap=document.getElementById('dice-wrap');
-  const faces=[1,2,3,4,5,6];
-  const result=Math.floor(Math.random()*6)+1;
-  strip.innerHTML=faces.map(n=>`<span>${n}</span>`).join('')+`<span>${result}</span>`;
-  strip.className='dice-strip rolling';
-  wrap.className='dice';
+function d6(){ return Math.floor(Math.random()*6)+1; }
+
+function rollStage(containerId, summaryId, count, threshold, isEnemy, delay, onDone){
+  const row = document.getElementById(containerId);
+  const sum = document.getElementById(summaryId);
+  row.innerHTML = ''; sum.innerHTML = '';
+  const results = [];
+  for(let i=0;i<count;i++){
+    const val = d6();
+    const success = val >= threshold;
+    results.push({val, success});
+    const die = document.createElement('div');
+    die.className = 'die rolling';
+    die.style.animationDelay = (i*80)+(delay)+ 'ms';
+    die.textContent = '?';
+    row.appendChild(die);
+    setTimeout(()=>{
+      die.textContent = val;
+      die.className = 'die rolling ' + (isEnemy ? (success?'enemy-success':'enemy-fail') : (success?'success':'fail')) + ' flashing';
+      die.style.animationDelay = '0ms';
+    }, delay + i*80 + 280);
+  }
+  const successes = results.filter(r=>r.success).length;
   setTimeout(()=>{
-    strip.innerHTML=`<span>${result}</span>`;
-    strip.className='dice-strip settling';
-    wrap.className='dice '+(result>=3?'dice-result-success':'dice-result-fail');
-  },400);
+    const col = isEnemy ? 'lo' : 'hi';
+    const label = isEnemy ? 'saves' : 'successes';
+    sum.innerHTML = `<span class="${col}">${successes}</span>/${count} ${label}`;
+    if(onDone) onDone(successes);
+  }, delay + count*80 + 450);
+}
+
+function rollAttackSequence(){
+  ['dice-hit','dice-wound','dice-save'].forEach(id=>{ document.getElementById(id).innerHTML=''; });
+  ['dice-hit-summary','dice-wound-summary','dice-save-summary'].forEach(id=>{ document.getElementById(id).innerHTML=''; });
+  rollStage('dice-hit', 'dice-hit-summary', 5, 3, false, 0, hits=>{
+    if(hits>0) rollStage('dice-wound', 'dice-wound-summary', hits, 3, false, 100, wounds=>{
+      if(wounds>0) rollStage('dice-save', 'dice-save-summary', wounds, 5, true, 100, null);
+    });
+  });
 }
 
 let phase=1;
@@ -524,9 +567,14 @@ let scoreVal=10;
 function tickScore(){
   const el=document.getElementById('score-val');
   scoreVal++;
-  el.classList.remove('ticking');void el.offsetWidth;
-  el.classList.add('ticking');
-  setTimeout(()=>{ el.textContent=scoreVal; el.classList.remove('ticking'); },250);
+  el.classList.remove('ticking-in','ticking-out');
+  void el.offsetWidth;
+  el.classList.add('ticking-out');
+  setTimeout(()=>{
+    el.textContent=scoreVal;
+    el.classList.remove('ticking-out');
+    el.classList.add('ticking-in');
+  },200);
 }
 
 function replayClash(){
