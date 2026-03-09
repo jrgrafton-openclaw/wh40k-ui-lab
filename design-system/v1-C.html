@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V1-C · Null Signal · Colors + Typography</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #050507; color: #707080; font-family: 'Courier New', monospace; font-size: 11px; padding: 2rem; }
+
+  .header { margin-bottom: 3rem; border-left: 2px solid #c8d8ff; padding-left: 1rem; }
+  .header h1 { font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: #c8d8ff; }
+  .header p { color: #383848; margin-top: 0.25rem; }
+
+  h2 { font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: #282838; margin-bottom: 1.25rem; border-bottom: 1px solid #0e0e18; padding-bottom: 0.5rem; }
+
+  section { margin-bottom: 3rem; }
+
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1px; }
+  .swatch { height: 80px; display: flex; flex-direction: column; justify-content: flex-end; padding: 0.5rem; }
+  .swatch .hex { font-size: 10px; color: rgba(255,255,255,0.3); }
+  .swatch .name { font-size: 10px; color: rgba(255,255,255,0.5); margin-bottom: 2px; }
+
+  .swatch-group-label { font-size: 10px; color: #202030; letter-spacing: 0.2em; text-transform: uppercase; margin: 1.5rem 0 0.75rem; }
+  .swatch-group-label:first-child { margin-top: 0; }
+
+  .type-specimens { background: #0e0e14; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
+  .specimen { }
+  .specimen-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #202030; margin-bottom: 0.5rem; }
+
+  .t-display { font-family: 'Share Tech Mono', monospace; font-size: 36px; font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase; color: #b0b8cc; line-height: 1; }
+  .t-heading { font-family: 'Share Tech Mono', monospace; font-size: 15px; font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase; color: #8090a8; }
+  .t-label { font-family: 'Share Tech Mono', monospace; font-size: 11px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: #505068; }
+  .t-body { font-family: 'Share Tech Mono', monospace; font-size: 12px; font-weight: 400; letter-spacing: 0.03em; color: #606078; line-height: 1.6; }
+  .t-stat { font-family: 'Share Tech Mono', monospace; font-size: 26px; font-weight: 400; letter-spacing: 0.04em; color: #c8d8ff; }
+  .t-stat-label { font-family: 'Share Tech Mono', monospace; font-size: 9px; font-weight: 400; letter-spacing: 0.25em; text-transform: uppercase; color: #303048; display: block; margin-bottom: 2px; }
+  .t-data { font-family: 'Share Tech Mono', monospace; font-size: 12px; font-weight: 400; letter-spacing: 0.06em; color: #a0b0d0; }
+
+  .stat-row { display: flex; gap: 2rem; }
+  .stat-cell { text-align: center; }
+
+  .faction-sample { display: flex; gap: 1rem; align-items: center; margin-top: 0.5rem; }
+  .faction-label { font-family: 'Share Tech Mono', monospace; font-size: 13px; font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase; }
+  .imp { color: #c8d8ff; }
+  .ork { color: #ff1a3a; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>V1-C · Null Signal</h1>
+  <p>Maximum data density, coldest. Near-monochrome hologram blue for Imperium, pure signal red for Orks. Military HUD.</p>
+</div>
+
+<section>
+  <h2>Colors</h2>
+
+  <div class="swatch-group-label">Backgrounds</div>
+  <div class="swatches">
+    <div class="swatch" style="background:#060608"><span class="name">BG Primary</span><span class="hex">#060608</span></div>
+    <div class="swatch" style="background:#0e0e14"><span class="name">BG Surface</span><span class="hex">#0e0e14</span></div>
+    <div class="swatch" style="background:#141420"><span class="name">BG Raised</span><span class="hex">#141420</span></div>
+    <div class="swatch" style="background:#1a1a2a"><span class="name">BG Selected</span><span class="hex">#1a1a2a</span></div>
+  </div>
+
+  <div class="swatch-group-label">Faction · Imperium</div>
+  <div class="swatches">
+    <div class="swatch" style="background:#c8d8ff"><span class="name" style="color:#222">Accent</span><span class="hex" style="color:#22222299">#c8d8ff</span></div>
+    <div class="swatch" style="background:#6878a8"><span class="name">Accent Dim</span><span class="hex">#6878a8</span></div>
+    <div class="swatch" style="background:#c8d8ff14; border:1px solid #c8d8ff28"><span class="name">Accent Tint</span><span class="hex">#c8d8ff14</span></div>
+  </div>
+
+  <div class="swatch-group-label">Faction · Orks</div>
+  <div class="swatches">
+    <div class="swatch" style="background:#ff1a3a"><span class="name">Accent</span><span class="hex">#ff1a3a</span></div>
+    <div class="swatch" style="background:#881020"><span class="name">Accent Dim</span><span class="hex">#881020</span></div>
+    <div class="swatch" style="background:#ff1a3a14; border:1px solid #ff1a3a28"><span class="name">Accent Tint</span><span class="hex">#ff1a3a14</span></div>
+  </div>
+
+  <div class="swatch-group-label">Text</div>
+  <div class="swatches">
+    <div class="swatch" style="background:#b0b8cc"><span class="name" style="color:#222">Text Primary</span><span class="hex" style="color:#22222299">#b0b8cc</span></div>
+    <div class="swatch" style="background:#707080"><span class="name">Text Secondary</span><span class="hex">#707080</span></div>
+    <div class="swatch" style="background:#383848"><span class="name">Text Muted</span><span class="hex">#383848</span></div>
+    <div class="swatch" style="background:#202030"><span class="name">Text Disabled</span><span class="hex">#202030</span></div>
+  </div>
+
+  <div class="swatch-group-label">State</div>
+  <div class="swatches">
+    <div class="swatch" style="background:#cc1020"><span class="name">Battleshocked</span><span class="hex">#cc1020</span></div>
+    <div class="swatch" style="background:#208840"><span class="name">Positive</span><span class="hex">#208840</span></div>
+    <div class="swatch" style="background:#c89000"><span class="name">Warning</span><span class="hex">#c89000</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>Typography · Share Tech Mono</h2>
+  <div class="type-specimens">
+
+    <div class="specimen">
+      <div class="specimen-label">Display — Unit name, phase heading</div>
+      <div class="t-display">Hellblasters</div>
+    </div>
+
+    <div class="specimen">
+      <div class="specimen-label">Heading — Panel title, section label</div>
+      <div class="t-heading">Space Marines · Infantry</div>
+    </div>
+
+    <div class="specimen">
+      <div class="specimen-label">Label — Column headers, tags</div>
+      <div class="t-label">Ranged Weapons</div>
+    </div>
+
+    <div class="specimen">
+      <div class="specimen-label">Body — Notes, descriptions</div>
+      <div class="t-body">Stay far back. 30" range means you can fire from deployment.<br>Avoid exposing to charge range without cover.</div>
+    </div>
+
+    <div class="specimen">
+      <div class="specimen-label">Stat — Numeric values in stat block</div>
+      <div class="stat-row">
+        <div class="stat-cell"><span class="t-stat-label">M</span><span class="t-stat">6"</span></div>
+        <div class="stat-cell"><span class="t-stat-label">T</span><span class="t-stat">4</span></div>
+        <div class="stat-cell"><span class="t-stat-label">SV</span><span class="t-stat">3+</span></div>
+        <div class="stat-cell"><span class="t-stat-label">W</span><span class="t-stat">2</span></div>
+        <div class="stat-cell"><span class="t-stat-label">LD</span><span class="t-stat">7</span></div>
+        <div class="stat-cell"><span class="t-stat-label">OC</span><span class="t-stat">2</span></div>
+      </div>
+    </div>
+
+    <div class="specimen">
+      <div class="specimen-label">Data — Weapon stats, in-line values</div>
+      <div class="t-data">Plasma (std)  30"  A:2  BS:3+  S:7  AP:-2  D:2</div>
+    </div>
+
+    <div class="specimen">
+      <div class="specimen-label">Faction identity in context</div>
+      <div class="faction-sample">
+        <span class="faction-label imp">Imperium</span>
+        <span style="color:#202030; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:0.1em">vs</span>
+        <span class="faction-label ork">Orks</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</body>
+</html>

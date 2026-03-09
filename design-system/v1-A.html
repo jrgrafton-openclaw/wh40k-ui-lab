@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V1-A · Void Protocol · Colors + Typography</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #050507; color: #8090a0; font-family: 'Courier New', monospace; font-size: 11px; padding: 2rem; }
+
+  .header { margin-bottom: 3rem; border-left: 2px solid #00d4ff; padding-left: 1rem; }
+  .header h1 { font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: #00d4ff; }
+  .header p { color: #4a6080; margin-top: 0.25rem; }
+
+  h2 { font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: #3a5070; margin-bottom: 1.25rem; border-bottom: 1px solid #0f1a28; padding-bottom: 0.5rem; }
+
+  section { margin-bottom: 3rem; }
+
+  /* COLORS */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1px; }
+  .swatch { height: 80px; display: flex; flex-direction: column; justify-content: flex-end; padding: 0.5rem; position: relative; }
+  .swatch .hex { font-size: 10px; color: rgba(255,255,255,0.35); }
+  .swatch .name { font-size: 10px; color: rgba(255,255,255,0.6); margin-bottom: 2px; }
+
+  .swatch-group-label { font-size: 10px; color: #2a3a4a; letter-spacing: 0.2em; text-transform: uppercase; margin: 1.5rem 0 0.75rem; }
+  .swatch-group-label:first-child { margin-top: 0; }
+
+  /* TYPOGRAPHY */
+  .type-specimens { background: #0f1520; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
+  .specimen { }
+  .specimen-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #2a4060; margin-bottom: 0.5rem; }
+
+  .t-display { font-family: 'Rajdhani', sans-serif; font-size: 42px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #e0e8f0; line-height: 1; }
+  .t-heading { font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #c0ccd8; }
+  .t-label { font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: #6080a0; }
+  .t-body { font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 400; letter-spacing: 0.05em; color: #8090a0; line-height: 1.5; }
+  .t-stat { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; letter-spacing: 0.05em; color: #e0e8f0; }
+  .t-stat-label { font-family: 'Rajdhani', sans-serif; font-size: 9px; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; color: #4a6080; display: block; margin-bottom: 2px; }
+  .t-data { font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 500; letter-spacing: 0.08em; color: #00d4ff; }
+
+  .stat-row { display: flex; gap: 2rem; }
+  .stat-cell { text-align: center; }
+
+  .faction-sample { display: flex; gap: 1rem; align-items: center; margin-top: 0.5rem; }
+  .faction-label { font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; }
+  .imp { color: #00d4ff; }
+  .ork { color: #ff4020; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>V1-A · Void Protocol</h1>
+  <p>Frozen Synapse-closest. Maximum contrast, neon cyan/red on cold near-black. Coldest aesthetic.</p>
+</div>
+
+<section>
+  <h2>Colors</h2>
+
+  <div class="swatch-group-label">Backgrounds</div>
+  <div class="swatches">
+    <div class="swatch" style="background:#080c10"><span class="name">BG Primary</span><span class="hex">#080c10</span></div>
+    <div class="swatch" style="background:#0f1520"><span class="name">BG Surface</span><span class="hex">#0f1520</span></div>
+    <div class="swatch" style="background:#162030"><span class="name">BG Raised</span><span class="hex">#162030</span></div>
+    <div class="swatch" style="background:#1e2d44"><span class="name">BG Selected</span><span class="hex">#1e2d44</span></div>
+  </div>
+
+  <div class="swatch-group-label">Faction · Imperium</div>
+  <div class="swatches">
+    <div class="swatch" style="background:#00d4ff"><span class="name">Accent</span><span class="hex">#00d4ff</span></div>
+    <div class="swatch" style="background:#0088aa"><span class="name">Accent Dim</span><span class="hex">#0088aa</span></div>
+    <div class="swatch" style="background:#00d4ff18; border: 1px solid #00d4ff30"><span class="name">Accent Tint</span><span class="hex">#00d4ff18</span></div>
+  </div>
+
+  <div class="swatch-group-label">Faction · Orks</div>
+  <div class="swatches">
+    <div class="swatch" style="background:#ff4020"><span class="name">Accent</span><span class="hex">#ff4020</span></div>
+    <div class="swatch" style="background:#aa2810"><span class="name">Accent Dim</span><span class="hex">#aa2810</span></div>
+    <div class="swatch" style="background:#ff402018; border: 1px solid #ff402030"><span class="name">Accent Tint</span><span class="hex">#ff402018</span></div>
+  </div>
+
+  <div class="swatch-group-label">Text</div>
+  <div class="swatches">
+    <div class="swatch" style="background:#e0e8f0"><span class="name" style="color:#222">Text Primary</span><span class="hex" style="color:#22222299">#e0e8f0</span></div>
+    <div class="swatch" style="background:#8090a0"><span class="name">Text Secondary</span><span class="hex">#8090a0</span></div>
+    <div class="swatch" style="background:#4a6080"><span class="name">Text Muted</span><span class="hex">#4a6080</span></div>
+    <div class="swatch" style="background:#2a3a4a"><span class="name">Text Disabled</span><span class="hex">#2a3a4a</span></div>
+  </div>
+
+  <div class="swatch-group-label">State</div>
+  <div class="swatches">
+    <div class="swatch" style="background:#cc2020"><span class="name">Battleshocked</span><span class="hex">#cc2020</span></div>
+    <div class="swatch" style="background:#22aa44"><span class="name">Positive</span><span class="hex">#22aa44</span></div>
+    <div class="swatch" style="background:#ddaa00"><span class="name">Warning</span><span class="hex">#ddaa00</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>Typography · Rajdhani</h2>
+  <div class="type-specimens">
+
+    <div class="specimen">
+      <div class="specimen-label">Display — Unit name, phase heading</div>
+      <div class="t-display">Hellblasters</div>
+    </div>
+
+    <div class="specimen">
+      <div class="specimen-label">Heading — Panel title, section label</div>
+      <div class="t-heading">Space Marines · Infantry</div>
+    </div>
+
+    <div class="specimen">
+      <div class="specimen-label">Label — Column headers, tags</div>
+      <div class="t-label">Ranged Weapons</div>
+    </div>
+
+    <div class="specimen">
+      <div class="specimen-label">Body — Notes, descriptions</div>
+      <div class="t-body">Stay far back. 30" range means you can fire from deployment. Avoid exposing to charge range without cover.</div>
+    </div>
+
+    <div class="specimen">
+      <div class="specimen-label">Stat — Numeric values in stat block</div>
+      <div class="stat-row">
+        <div class="stat-cell"><span class="t-stat-label">M</span><span class="t-stat">6"</span></div>
+        <div class="stat-cell"><span class="t-stat-label">T</span><span class="t-stat">4</span></div>
+        <div class="stat-cell"><span class="t-stat-label">SV</span><span class="t-stat">3+</span></div>
+        <div class="stat-cell"><span class="t-stat-label">W</span><span class="t-stat">2</span></div>
+        <div class="stat-cell"><span class="t-stat-label">LD</span><span class="t-stat">7</span></div>
+        <div class="stat-cell"><span class="t-stat-label">OC</span><span class="t-stat">2</span></div>
+      </div>
+    </div>
+
+    <div class="specimen">
+      <div class="specimen-label">Data — Weapon stats, in-line values</div>
+      <div class="t-data">Plasma (std) &nbsp; 30" &nbsp; A:2 &nbsp; BS:3+ &nbsp; S:7 &nbsp; AP:-2 &nbsp; D:2</div>
+    </div>
+
+    <div class="specimen">
+      <div class="specimen-label">Faction identity in context</div>
+      <div class="faction-sample">
+        <span class="faction-label imp">Imperium</span>
+        <span style="color:#2a3a4a; font-family:'Rajdhani',sans-serif; font-size:13px; letter-spacing:0.1em">VS</span>
+        <span class="faction-label ork">Orks</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</body>
+</html>

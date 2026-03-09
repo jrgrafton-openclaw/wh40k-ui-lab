@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V1-B · Iron Doctrine · Colors + Typography</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #050507; color: #807880; font-family: 'Courier New', monospace; font-size: 11px; padding: 2rem; }
+
+  .header { margin-bottom: 3rem; border-left: 2px solid #8a6a3a; padding-left: 1rem; }
+  .header h1 { font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: #8a6a3a; }
+  .header p { color: #504858; margin-top: 0.25rem; }
+
+  h2 { font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: #3a303a; margin-bottom: 1.25rem; border-bottom: 1px solid #1a141a; padding-bottom: 0.5rem; }
+
+  section { margin-bottom: 3rem; }
+
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1px; }
+  .swatch { height: 80px; display: flex; flex-direction: column; justify-content: flex-end; padding: 0.5rem; }
+  .swatch .hex { font-size: 10px; color: rgba(255,255,255,0.35); }
+  .swatch .name { font-size: 10px; color: rgba(255,255,255,0.6); margin-bottom: 2px; }
+
+  .swatch-group-label { font-size: 10px; color: #2a2028; letter-spacing: 0.2em; text-transform: uppercase; margin: 1.5rem 0 0.75rem; }
+  .swatch-group-label:first-child { margin-top: 0; }
+
+  .type-specimens { background: #161218; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
+  .specimen { }
+  .specimen-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #302830; margin-bottom: 0.5rem; }
+
+  .t-display { font-family: 'Barlow Condensed', sans-serif; font-size: 44px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #d0ccd8; line-height: 1; }
+  .t-heading { font-family: 'Barlow Condensed', sans-serif; font-size: 17px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #b0aab8; }
+  .t-label { font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: #8a6a3a; }
+  .t-body { font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 400; letter-spacing: 0.03em; color: #807880; line-height: 1.5; }
+  .t-stat { font-family: 'Barlow Condensed', sans-serif; font-size: 30px; font-weight: 700; letter-spacing: 0.02em; color: #d0ccd8; }
+  .t-stat-label { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; color: #504858; display: block; margin-bottom: 2px; }
+  .t-data { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 500; letter-spacing: 0.06em; color: #4da6ff; }
+
+  .stat-row { display: flex; gap: 2rem; }
+  .stat-cell { text-align: center; }
+
+  .faction-sample { display: flex; gap: 1rem; align-items: center; margin-top: 0.5rem; }
+  .faction-label { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; }
+  .imp { color: #4da6ff; }
+  .ork { color: #cc4400; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>V1-B · Iron Doctrine</h1>
+  <p>Traditional 40K. Steel blue + burnt orange, brass panel accents. Warmer, more ornate.</p>
+</div>
+
+<section>
+  <h2>Colors</h2>
+
+  <div class="swatch-group-label">Backgrounds</div>
+  <div class="swatches">
+    <div class="swatch" style="background:#0a090c"><span class="name">BG Primary</span><span class="hex">#0a090c</span></div>
+    <div class="swatch" style="background:#161218"><span class="name">BG Surface</span><span class="hex">#161218</span></div>
+    <div class="swatch" style="background:#201c24"><span class="name">BG Raised</span><span class="hex">#201c24</span></div>
+    <div class="swatch" style="background:#2a2030"><span class="name">BG Selected</span><span class="hex">#2a2030</span></div>
+  </div>
+
+  <div class="swatch-group-label">Faction · Imperium</div>
+  <div class="swatches">
+    <div class="swatch" style="background:#4da6ff"><span class="name">Accent</span><span class="hex">#4da6ff</span></div>
+    <div class="swatch" style="background:#2266aa"><span class="name">Accent Dim</span><span class="hex">#2266aa</span></div>
+    <div class="swatch" style="background:#4da6ff18; border: 1px solid #4da6ff30"><span class="name">Accent Tint</span><span class="hex">#4da6ff18</span></div>
+  </div>
+
+  <div class="swatch-group-label">Faction · Orks</div>
+  <div class="swatches">
+    <div class="swatch" style="background:#cc4400"><span class="name">Accent</span><span class="hex">#cc4400</span></div>
+    <div class="swatch" style="background:#882800"><span class="name">Accent Dim</span><span class="hex">#882800</span></div>
+    <div class="swatch" style="background:#cc440018; border: 1px solid #cc440030"><span class="name">Accent Tint</span><span class="hex">#cc440018</span></div>
+  </div>
+
+  <div class="swatch-group-label">Panel Accent · Brass</div>
+  <div class="swatches">
+    <div class="swatch" style="background:#8a6a3a"><span class="name">Brass</span><span class="hex">#8a6a3a</span></div>
+    <div class="swatch" style="background:#5a4422"><span class="name">Brass Dim</span><span class="hex">#5a4422</span></div>
+    <div class="swatch" style="background:#8a6a3a22; border:1px solid #8a6a3a44"><span class="name">Brass Tint</span><span class="hex">#8a6a3a22</span></div>
+  </div>
+
+  <div class="swatch-group-label">Text</div>
+  <div class="swatches">
+    <div class="swatch" style="background:#d0ccd8"><span class="name" style="color:#222">Text Primary</span><span class="hex" style="color:#22222299">#d0ccd8</span></div>
+    <div class="swatch" style="background:#807880"><span class="name">Text Secondary</span><span class="hex">#807880</span></div>
+    <div class="swatch" style="background:#504858"><span class="name">Text Muted</span><span class="hex">#504858</span></div>
+    <div class="swatch" style="background:#302830"><span class="name">Text Disabled</span><span class="hex">#302830</span></div>
+  </div>
+
+  <div class="swatch-group-label">State</div>
+  <div class="swatches">
+    <div class="swatch" style="background:#aa1818"><span class="name">Battleshocked</span><span class="hex">#aa1818</span></div>
+    <div class="swatch" style="background:#228833"><span class="name">Positive</span><span class="hex">#228833</span></div>
+    <div class="swatch" style="background:#cc9900"><span class="name">Warning</span><span class="hex">#cc9900</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>Typography · Barlow Condensed</h2>
+  <div class="type-specimens">
+
+    <div class="specimen">
+      <div class="specimen-label">Display — Unit name, phase heading</div>
+      <div class="t-display">Hellblasters</div>
+    </div>
+
+    <div class="specimen">
+      <div class="specimen-label">Heading — Panel title, section label</div>
+      <div class="t-heading">Space Marines · Infantry</div>
+    </div>
+
+    <div class="specimen">
+      <div class="specimen-label">Label — Column headers, brass-tinted tags</div>
+      <div class="t-label">Ranged Weapons</div>
+    </div>
+
+    <div class="specimen">
+      <div class="specimen-label">Body — Notes, descriptions</div>
+      <div class="t-body">Stay far back. 30" range means you can fire from deployment. Avoid exposing to charge range without cover.</div>
+    </div>
+
+    <div class="specimen">
+      <div class="specimen-label">Stat — Numeric values in stat block</div>
+      <div class="stat-row">
+        <div class="stat-cell"><span class="t-stat-label">M</span><span class="t-stat">6"</span></div>
+        <div class="stat-cell"><span class="t-stat-label">T</span><span class="t-stat">4</span></div>
+        <div class="stat-cell"><span class="t-stat-label">SV</span><span class="t-stat">3+</span></div>
+        <div class="stat-cell"><span class="t-stat-label">W</span><span class="t-stat">2</span></div>
+        <div class="stat-cell"><span class="t-stat-label">LD</span><span class="t-stat">7</span></div>
+        <div class="stat-cell"><span class="t-stat-label">OC</span><span class="t-stat">2</span></div>
+      </div>
+    </div>
+
+    <div class="specimen">
+      <div class="specimen-label">Data — Weapon stats, in-line values</div>
+      <div class="t-data">Plasma (std) &nbsp; 30" &nbsp; A:2 &nbsp; BS:3+ &nbsp; S:7 &nbsp; AP:-2 &nbsp; D:2</div>
+    </div>
+
+    <div class="specimen">
+      <div class="specimen-label">Faction identity in context</div>
+      <div class="faction-sample">
+        <span class="faction-label imp">Imperium</span>
+        <span style="color:#2a2028; font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:600; letter-spacing:0.1em">VS</span>
+        <span class="faction-label ork">Orks</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</body>
+</html>
