@@ -157,7 +157,7 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
   cursor:default;margin-bottom:.35rem;
   transition:background .12s, border-color .12s, transform .12s, box-shadow .12s;
 }
-.ability-pill:hover{background:var(--imp-tint2);border-color:var(--imp-dim);transform:translateY(-1px);box-shadow:0 2px 8px #00d4ff14;}
+
 .ability-desc{font-size:12px;color:var(--text-muted);line-height:1.55;}
 
 /* ══════════════════════════════════════════
@@ -204,7 +204,7 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
   transition:opacity .15s;
   white-space:normal;
 }
-.pill-wrap:hover .kw-tip{opacity:1;}
+/* tooltip show/hide handled by JS */
 .kw-tip-name{
   display:block;
   font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;
@@ -628,18 +628,23 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 <div style="width:300px;height:150px;background-color:#080c10;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px),linear-gradient(#ffffff04 1px,transparent 1px),linear-gradient(90deg,#ffffff04 1px,transparent 1px);background-size:120px 120px,120px 120px,24px 24px,24px 24px;margin-bottom:1.5rem"></div>
 
 <script>
-// Tooltip viewport collision — flip to right-anchored when near right edge
+// Tooltip: explicit show/hide via JS. CSS hover not used (causes sibling bleed).
 document.querySelectorAll('.pill-wrap').forEach(wrap => {
+  const tip = wrap.querySelector('.kw-tip');
+  if (!tip) return;
   wrap.addEventListener('mouseenter', () => {
-    const tip = wrap.querySelector('.kw-tip');
-    if (!tip) return;
-    tip.style.left = '0';
-    tip.style.right = 'auto';
+    // Hide all others first
+    document.querySelectorAll('.kw-tip').forEach(t => t.style.opacity = '0');
+    // Position check
+    tip.style.left = '0'; tip.style.right = 'auto';
+    tip.style.opacity = '1';
     const rect = tip.getBoundingClientRect();
     if (rect.right > window.innerWidth - 16) {
-      tip.style.left = 'auto';
-      tip.style.right = '0';
+      tip.style.left = 'auto'; tip.style.right = '0';
     }
+  });
+  wrap.addEventListener('mouseleave', () => {
+    tip.style.opacity = '0';
   });
 });
 </script>
