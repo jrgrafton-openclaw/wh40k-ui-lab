@@ -41,7 +41,7 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 .token{
   position:relative;
   display:flex;align-items:center;justify-content:center;
-  transition:box-shadow .18s ease, border-color .18s ease, background .18s ease, transform .15s ease;
+  transition:box-shadow .18s ease, border-color .18s ease, background .18s ease;
   flex-shrink:0;
 }
 /* Size variants */
@@ -52,21 +52,21 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 .token.circle {border-radius:50%;}
 .token.square {border-radius:4px;}
 
-/* Count badge — high contrast */
+/* Count badge — faction-tinted for legibility */
 .token-count{
-  position:absolute;top:-5px;right:-5px;
-  min-width:18px;height:18px;border-radius:9px;
-  background:var(--bg-primary);border:1.5px solid var(--bg-surface);
-  display:flex;align-items:center;justify-content:center;padding:0 3px;
-  font-size:9px;font-weight:700;font-family:'Rajdhani',sans-serif;
-  color:var(--text-primary);
+  position:absolute;top:-6px;right:-6px;
+  min-width:20px;height:20px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;padding:0 4px;
+  font-size:10px;font-weight:700;font-family:'Rajdhani',sans-serif;
   z-index:1;
 }
+.token.player .token-count{background:#0a1824;border:1.5px solid var(--imp-dim);color:var(--imp);}
+.token.enemy  .token-count{background:#180c08;border:1.5px solid var(--ork-dim);color:var(--ork);}
 
 /* Colour states */
 .token.player         {background:var(--imp-tint); border:1.5px solid var(--imp-dim);}
 .token.player .tkn-icon{color:#4a8fa8;}
-.token.player:hover   {transform:translateY(-2px);background:var(--imp-tint2);border-color:var(--imp);box-shadow:0 4px 12px #00d4ff18;}
+.token.player:hover   {background:var(--imp-tint2);border-color:var(--imp);box-shadow:0 0 0 3px #00d4ff10,0 0 14px #00d4ff18;}
 .token.player.selected{background:var(--imp-tint2);border:2px solid var(--imp);box-shadow:0 0 0 3px #00d4ff18,0 0 18px #00d4ff25;}
 .token.player.selected .tkn-icon{color:var(--imp);}
 .token.player.activated{background:transparent;border:1.5px solid #00d4ff18;opacity:.4;}
@@ -75,7 +75,7 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 
 .token.enemy          {background:var(--ork-tint);border:1.5px solid var(--ork-dim);}
 .token.enemy .tkn-icon{color:#884030;}
-.token.enemy:hover    {transform:translateY(-2px);background:#ff402020;border-color:var(--ork);box-shadow:0 4px 12px #ff402018;}
+.token.enemy:hover    {background:#ff402020;border-color:var(--ork);box-shadow:0 0 0 3px #ff402010,0 0 14px #ff402018;}
 .token.enemy.selected {background:#ff402020;border:2px solid var(--ork);box-shadow:0 0 0 3px #ff402018,0 0 18px #ff402025;}
 .token.enemy.selected .tkn-icon{color:var(--ork);}
 .token.enemy.bs       {background:#120808;border:1.5px solid #771010;}
@@ -162,6 +162,35 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 .pill-bs::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--bs);flex-shrink:0;}
 
 /* ══════════════════════════════════════════
+   6b. KEYWORD TOOLTIP CARDS
+   CSS-only. Uses V2-B panel chrome.
+   .pill-wrap = positioning context
+══════════════════════════════════════════ */
+.pill-wrap{position:relative;display:inline-block;}
+.pill-wrap .pill{cursor:help;}
+.kw-tip{
+  position:absolute;
+  bottom:calc(100% + 8px);
+  left:50%;transform:translateX(-50%);
+  width:220px;
+  background:var(--bg-raised);
+  border:1px solid #00d4ff22;
+  border-top:2px solid var(--imp);
+  padding:.6rem .75rem;
+  z-index:100;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .15s;
+  white-space:normal;
+}
+.pill-wrap:hover .kw-tip{opacity:1;}
+.kw-tip-name{
+  font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--imp);margin-bottom:.3rem;
+}
+.kw-tip-body{font-size:11px;color:var(--text-muted);line-height:1.55;}
+
+/* ══════════════════════════════════════════
    7. ARMY ROSTER ROWS — plain rows
 ══════════════════════════════════════════ */
 .roster-list{width:220px;border-top:1px solid #0e1520;}
@@ -244,7 +273,7 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 <body>
 <div class="pg-header">
   <h1>V3-A · Atomic Components · Rev 3</h1>
-  <p>Circle locked. Symbol icons, size-by-model-count, vehicle square, aligned weapon grid, mode selectors, stratagem amber, animations.</p>
+  <p>Rev 4: glow-only hover on tokens (no lift), faction-coloured count badges, keyword tooltip cards (V2-B chrome), weapon row grid.</p>
 </div>
 
 <!-- ═══ 1. UNIT TOKENS ═══ -->
@@ -383,19 +412,29 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
   </div>
   <div class="weapon-row">
     <span class="wn">Plasma (std)</span><span>30"</span><span>2</span><span>3+</span><span>7</span><span>-2</span><span>2</span>
-    <div class="weapon-pills"><span class="pill pill-kw">Rapid Fire 1</span><span class="pill pill-kw">Hazardous</span></div>
+    <div class="weapon-pills">
+      <span class="pill-wrap"><span class="pill pill-kw">Rapid Fire 1</span><div class="kw-tip"><div class="kw-tip-name">Rapid Fire 1</div><div class="kw-tip-body">Each time this weapon targets a unit within half range, the weapon has Attacks +1.</div></div></span>
+      <span class="pill-wrap"><span class="pill pill-kw">Hazardous</span><div class="kw-tip"><div class="kw-tip-name">Hazardous</div><div class="kw-tip-body">Each time a unit shoots or fights with this weapon, after resolving attacks, roll one D6 for each model that made attacks. On a 1, that model's unit suffers 3 mortal wounds.</div></div></span>
+    </div>
   </div>
   <div class="weapon-row">
     <span class="wn">Plasma (sup)</span><span>30"</span><span>2</span><span>3+</span><span>8</span><span>-3</span><span>3</span>
-    <div class="weapon-pills"><span class="pill pill-kw">Rapid Fire 1</span><span class="pill pill-kw">Hazardous</span></div>
+    <div class="weapon-pills">
+      <span class="pill-wrap"><span class="pill pill-kw">Rapid Fire 1</span><div class="kw-tip"><div class="kw-tip-name">Rapid Fire 1</div><div class="kw-tip-body">Each time this weapon targets a unit within half range, the weapon has Attacks +1.</div></div></span>
+      <span class="pill-wrap"><span class="pill pill-kw">Hazardous</span><div class="kw-tip"><div class="kw-tip-name">Hazardous</div><div class="kw-tip-body">Each time a unit shoots or fights with this weapon, after resolving attacks, roll one D6 for each model that made attacks. On a 1, that model's unit suffers 3 mortal wounds.</div></div></span>
+    </div>
   </div>
   <div class="weapon-row">
     <span class="wn">Heavy Bolt Pistol</span><span>18"</span><span>2</span><span>3+</span><span>4</span><span>0</span><span>1</span>
-    <div class="weapon-pills"><span class="pill pill-neutral">Pistol</span></div>
+    <div class="weapon-pills">
+      <span class="pill-wrap"><span class="pill pill-neutral">Pistol</span><div class="kw-tip"><div class="kw-tip-name">Pistol</div><div class="kw-tip-body">Can be used in the Shooting phase even if the bearer's unit is within Engagement Range of one or more enemy units. Cannot target units within Engagement Range of friendly units.</div></div></span>
+    </div>
   </div>
   <div class="weapon-row">
     <span class="wn">Astartes Chainsword</span><span>Melee</span><span>4</span><span>3+</span><span>4</span><span>-1</span><span>1</span>
-    <div class="weapon-pills"><span class="pill pill-neutral">Melee</span></div>
+    <div class="weapon-pills">
+      <span class="pill-wrap"><span class="pill pill-neutral">Melee</span><div class="kw-tip"><div class="kw-tip-name">Melee</div><div class="kw-tip-body">Attack with this weapon in the Fight phase. Models can only use melee weapons against enemies in Engagement Range.</div></div></span>
+    </div>
   </div>
 </div>
 
@@ -407,15 +446,16 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 </div>
 
 <!-- ═══ 6. PILLS ═══ -->
-<h2>6 · Keyword Pills — with hover</h2>
-<div>
-  <span class="pill pill-kw">Rapid Fire 1</span>
-  <span class="pill pill-kw">Hazardous</span>
-  <span class="pill pill-kw">Heavy</span>
-  <span class="pill pill-kw">Torrent</span>
-  <span class="pill pill-neutral">Pistol</span>
-  <span class="pill pill-neutral">Melee</span>
-  <span class="pill pill-bs">Battleshocked</span>
+<h2>6 · Keyword Pills — hover for tooltip card (V2-B chrome)</h2>
+<div class="note">Hover each pill to see the rule card. Tooltip uses locked V2-B panel chrome (2px top border, 1px side border).</div>
+<div style="padding-bottom:120px"> <!-- room for tooltips to render above -->
+  <span class="pill-wrap"><span class="pill pill-kw">Rapid Fire 1</span><div class="kw-tip"><div class="kw-tip-name">Rapid Fire 1</div><div class="kw-tip-body">Each time this weapon targets a unit within half range, the weapon has Attacks +1.</div></div></span>
+  <span class="pill-wrap"><span class="pill pill-kw">Hazardous</span><div class="kw-tip"><div class="kw-tip-name">Hazardous</div><div class="kw-tip-body">Each time a unit shoots or fights with this weapon, after resolving attacks, roll one D6 per model. On a 1, that model's unit suffers 3 mortal wounds.</div></div></span>
+  <span class="pill-wrap"><span class="pill pill-kw">Heavy</span><div class="kw-tip"><div class="kw-tip-name">Heavy</div><div class="kw-tip-body">Subtract 1 from Hit rolls unless the bearer Remained Stationary this turn. Add 1 to Hit rolls if the bearer Remained Stationary and this is a ranged weapon.</div></div></span>
+  <span class="pill-wrap"><span class="pill pill-kw">Torrent</span><div class="kw-tip"><div class="kw-tip-name">Torrent</div><div class="kw-tip-body">This weapon automatically hits its target. Do not make Hit rolls.</div></div></span>
+  <span class="pill-wrap"><span class="pill pill-neutral">Pistol</span><div class="kw-tip"><div class="kw-tip-name">Pistol</div><div class="kw-tip-body">Can be used in the Shooting phase even if within Engagement Range of enemies. Cannot target units within Engagement Range of friendly units.</div></div></span>
+  <span class="pill-wrap"><span class="pill pill-neutral">Melee</span><div class="kw-tip"><div class="kw-tip-name">Melee</div><div class="kw-tip-body">Attack with this weapon in the Fight phase against enemies in Engagement Range only.</div></div></span>
+  <span class="pill-bs">Battleshocked</span>
 </div>
 
 <!-- ═══ 7. ROSTER ROWS ═══ -->
