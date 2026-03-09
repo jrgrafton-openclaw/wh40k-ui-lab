@@ -64,19 +64,25 @@ These are used as a filter at every design gate: *"Does this element feel tactic
 
 ---
 
-## Phase 1: Design Tokens (not started)
+## Phase 1: Design System (in progress)
 
-Build a single CSS variables file. Nothing else. Iterate until approved.
+A single HTML style guide page that renders all design components as living examples. Built section by section — each section approved before the next starts.
 
-Contents:
-- Faction color pairs: background tint + accent (Imperium and Orks only to start)
-- 4 neutral grays
-- 3 typography scale steps
-- 8px spacing scale
-- 1 border radius value
-- Panel chrome definition (corner bracket style)
+**At each section: produce 3 variations. James picks one before moving to the next section.**
 
-Gate: James approves tokens before Phase 2.
+### Section order
+1. **Colors + typography** ← current
+2. Panel chrome
+3. Atomic components (unit token, stat row, weapon row, button, BATTLESHOCKED pill)
+4. Compositions (unit list item, stats panel, action bar, phase indicator)
+5. Animations (selection pulse, movement path draw, BATTLESHOCKED state, combat result flash)
+
+### Output format
+- One HTML file per variation: `design-system/v[section]-[A|B|C].html`
+- Each file is self-contained (no external dependencies except Google Fonts)
+- Rendered on GitHub Pages for review
+
+Gate: James approves one variation per section before next section starts.
 
 ---
 

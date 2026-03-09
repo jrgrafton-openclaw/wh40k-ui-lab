@@ -5,17 +5,83 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WH40K UI Lab</title>
   <style>
-    body { background: #0a0a0a; color: #aaa; font-family: monospace; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-    .status { text-align: center; }
-    h1 { color: #fff; font-size: 1rem; letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 0.5rem; }
-    p { font-size: 0.75rem; color: #555; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #050505; color: #aaa; font-family: 'Courier New', monospace; padding: 3rem 2rem; }
+    h1 { color: #fff; font-size: 0.85rem; letter-spacing: 0.4em; text-transform: uppercase; margin-bottom: 0.25rem; }
+    .subtitle { font-size: 0.7rem; color: #444; margin-bottom: 3rem; }
+    .phase { margin-bottom: 2.5rem; }
+    .phase-label { font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: #333; margin-bottom: 1rem; border-bottom: 1px solid #1a1a1a; padding-bottom: 0.5rem; }
+    .section { margin-bottom: 1.5rem; }
+    .section-label { font-size: 0.7rem; color: #555; margin-bottom: 0.5rem; }
+    .variations { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    a.var { display: inline-block; padding: 0.5rem 1rem; background: #0f0f0f; border: 1px solid #222; color: #888; font-family: inherit; font-size: 0.7rem; text-decoration: none; letter-spacing: 0.1em; transition: border-color 0.15s, color 0.15s; }
+    a.var:hover { border-color: #555; color: #ccc; }
+    a.var.pending { color: #2a2a2a; border-color: #111; pointer-events: none; }
+    .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 0.5rem; }
+    .dot-active { background: #00d4ff; }
+    .dot-pending { background: #222; }
+    .dot-done { background: #22c55e; }
   </style>
 </head>
 <body>
-  <div class="status">
-    <h1>WH40K UI Lab</h1>
-    <p>Phase 0 — Ground truth established</p>
-    <p>Phase 1 — Design tokens: pending</p>
+  <h1>WH40K UI Lab</h1>
+  <p class="subtitle">Design system workspace — separate from simulator engine</p>
+
+  <div class="phase">
+    <div class="phase-label"><span class="status-dot dot-active"></span>Phase 1 — Design System</div>
+
+    <div class="section">
+      <div class="section-label">Section 1 · Colors + Typography</div>
+      <div class="variations">
+        <a class="var" href="design-system/v1-A.html">A · Void Protocol</a>
+        <a class="var" href="design-system/v1-B.html">B · Iron Doctrine</a>
+        <a class="var" href="design-system/v1-C.html">C · Null Signal</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Section 2 · Panel Chrome <span style="color:#222">— pending</span></div>
+      <div class="variations">
+        <a class="var pending" href="#">A</a>
+        <a class="var pending" href="#">B</a>
+        <a class="var pending" href="#">C</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Section 3 · Atomic Components <span style="color:#222">— pending</span></div>
+      <div class="variations">
+        <a class="var pending" href="#">A</a>
+        <a class="var pending" href="#">B</a>
+        <a class="var pending" href="#">C</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Section 4 · Compositions <span style="color:#222">— pending</span></div>
+      <div class="variations">
+        <a class="var pending" href="#">A</a>
+        <a class="var pending" href="#">B</a>
+        <a class="var pending" href="#">C</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Section 5 · Animations <span style="color:#222">— pending</span></div>
+      <div class="variations">
+        <a class="var pending" href="#">A</a>
+        <a class="var pending" href="#">B</a>
+        <a class="var pending" href="#">C</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-label"><span class="status-dot dot-pending"></span>Phase 2 — Wireframes</div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-label"><span class="status-dot dot-pending"></span>Phase 3 — Composition</div>
   </div>
 </body>
 </html>
