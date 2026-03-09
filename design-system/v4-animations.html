@@ -21,314 +21,525 @@ body{background:var(--bg-primary);color:var(--text-sec);font-family:'Rajdhani',s
 .pg-header p{font-size:10px;color:var(--text-muted);margin-top:.25rem;}
 h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--text-dis);margin:2.5rem 0 1rem;border-bottom:1px solid #0f1a28;padding-bottom:.5rem;}
 .note{font-size:10px;color:var(--text-dis);margin-bottom:1rem;font-family:'Courier New',monospace;font-style:italic;}
-.demo{background:var(--bg-surface);border:1px solid #00d4ff15;border-top:2px solid var(--imp);padding:2rem;margin-bottom:.5rem;display:flex;align-items:center;justify-content:center;min-height:140px;position:relative;}
-.demo-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dis);margin-bottom:1rem;}
-.row{display:flex;gap:2rem;flex-wrap:wrap;align-items:center;}
+.demo{background:var(--bg-surface);border:1px solid #00d4ff15;border-top:2px solid var(--imp);padding:2rem;margin-bottom:.5rem;display:flex;align-items:center;justify-content:center;min-height:140px;gap:3rem;flex-wrap:wrap;}
 .col{display:flex;flex-direction:column;align-items:center;gap:.5rem;}
 
-/* ══ TOKEN BASE ══ */
-.token{
-  width:58px;height:58px;border-radius:50%;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
-  position:relative;
-}
+.token{width:58px;height:58px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;position:relative;}
 .tkn-icon{width:42%;height:42%;display:flex;align-items:center;justify-content:center;}
 .tkn-icon svg{width:100%;height:100%;}
 .tkn-models{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;letter-spacing:.06em;line-height:1;}
-.token-count{
-  position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;padding:0 4px;
-  font-size:10px;font-weight:700;font-family:'Rajdhani',sans-serif;z-index:1;
-}
-.token.player{background:#050c12;border:3px solid var(--imp-dim);}
-.token.player .tkn-icon{color:#3a7a90;}
-.token.player .tkn-models{color:var(--imp-dim);}
-.token.player .token-count{background:#0a1824;border:1.5px solid var(--imp-dim);color:var(--imp);}
+.token-count{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 4px;font-size:10px;font-weight:700;font-family:'Rajdhani',sans-serif;z-index:1;}
+.player-base{background:#050c12;border:3px solid var(--imp-dim);box-shadow:0 0 12px #00d4ff30,0 0 28px #00d4ff12;}
+.player-base .tkn-icon{color:#3a7a90;}
+.player-base .tkn-models{color:var(--imp-dim);}
+.player-base .token-count{background:#0a1824;border:1.5px solid var(--imp-dim);color:var(--imp);}
+.enemy-base{background:#120808;border:3px solid var(--ork-dim);box-shadow:0 0 12px #ff402030,0 0 28px #ff402012;}
+.enemy-base .tkn-icon{color:#7a3820;}
+.enemy-base .tkn-models{color:var(--ork-dim);}
+.enemy-base .token-count{background:#180c08;border:1.5px solid var(--ork-dim);color:var(--ork);}
 
-/* ══════════════════════════════════════════
-   1. TOKEN SELECTION PULSE
-   Triggered when unit becomes selected.
-   Plays once then settles into static glow.
-══════════════════════════════════════════ */
-@keyframes token-select-pulse {
-  0%   { box-shadow: 0 0 0 0px #00d4ff00, 0 0 8px #00d4ff30; }
-  30%  { box-shadow: 0 0 0 8px #00d4ff30, 0 0 28px #00d4ff70; }
-  60%  { box-shadow: 0 0 0 5px #00d4ff18, 0 0 22px #00d4ff55; }
-  100% { box-shadow: 0 0 0 4px #00d4ff18, 0 0 24px #00d4ff50, 0 0 50px #00d4ff18; }
-}
-.token-select-anim {
-  animation: token-select-pulse 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  border-color: var(--imp);
-}
-.token-select-anim .tkn-icon{color:var(--imp);}
-.token-select-anim .tkn-models{color:var(--imp);}
-/* Loop button restarts it */
-
-/* ══════════════════════════════════════════
-   2. SELECTED GLOW — steady state loop
-   Subtle breathing after selection settles.
-══════════════════════════════════════════ */
-@keyframes token-glow-breathe {
-  0%,100% { box-shadow: 0 0 0 4px #00d4ff18, 0 0 18px #00d4ff40, 0 0 40px #00d4ff12; }
-  50%     { box-shadow: 0 0 0 5px #00d4ff22, 0 0 28px #00d4ff60, 0 0 55px #00d4ff20; }
-}
-.token-breathe {
-  border-color: var(--imp);
-  animation: token-glow-breathe 2.4s ease-in-out infinite;
-}
-.token-breathe .tkn-icon{color:var(--imp);}
-.token-breathe .tkn-models{color:var(--imp);}
-
-/* ══════════════════════════════════════════
-   3. BATTLESHOCKED STATE
-   Plays when unit receives Battleshocked.
-   Red flicker on entry, then dim pulse.
-══════════════════════════════════════════ */
-@keyframes bs-enter {
-  0%  { filter:brightness(1);  }
-  15% { filter:brightness(2.5); background:#440000; }
-  35% { filter:brightness(0.6); }
-  55% { filter:brightness(1.8); }
-  75% { filter:brightness(0.7); }
-  100%{ filter:brightness(1); background:#120808; }
-}
-@keyframes bs-pulse {
-  0%,100%{ box-shadow: 0 0 8px #cc202030,  0 0 20px #cc202010; }
-  50%    { box-shadow: 0 0 14px #cc202055, 0 0 30px #cc202020; }
-}
-.token-bs-anim {
-  background:#120808;
-  border-color:#992020;
-  animation: bs-enter 0.9s ease forwards, bs-pulse 2.2s ease-in-out 0.9s infinite;
-}
-.token-bs-anim .tkn-icon{color:var(--bs);}
-.token-bs-anim .tkn-models{color:var(--bs);}
-.token-bs-anim .token-count{background:#180808;border-color:#881010;color:var(--bs);}
-
-/* ══════════════════════════════════════════
-   4. MOVEMENT PATH DRAW
-   Dashed line draws itself from token to
-   destination when Normal Move is selected.
-══════════════════════════════════════════ */
-@keyframes path-draw {
-  from { stroke-dashoffset: 400; }
-  to   { stroke-dashoffset: 0; }
-}
-@keyframes dest-appear {
-  from { opacity:0; transform:scale(0.5); }
-  to   { opacity:1; transform:scale(1); }
-}
-.path-line {
-  stroke: var(--imp);
-  stroke-width: 1.5;
-  stroke-dasharray: 8 5;
-  fill: none;
-  stroke-dashoffset: 400;
-  animation: path-draw 0.7s ease-out 0.1s forwards;
-}
-.dest-circle {
-  fill: var(--imp-tint);
-  stroke: var(--imp);
-  stroke-width: 1.5;
-  opacity: 0;
-  animation: dest-appear 0.25s ease-out 0.75s forwards;
-}
-
-/* ══════════════════════════════════════════
-   5. RANGE CIRCLES APPEAR
-   Fade + scale from token centre when unit
-   is selected and movement phase is active.
-══════════════════════════════════════════ */
-@keyframes range-in {
-  from { opacity:0; transform-origin:center; transform:scale(0.2); }
-  to   { opacity:1; transform:scale(1); }
-}
-.range-move  { animation: range-in 0.35s cubic-bezier(0.34,1.56,0.64,1) 0.1s both; }
-.range-adv   { animation: range-in 0.35s cubic-bezier(0.34,1.56,0.64,1) 0.2s both; }
-.range-charge{ animation: range-in 0.35s cubic-bezier(0.34,1.56,0.64,1) 0.3s both; }
-
-/* ══════════════════════════════════════════
-   6. COMBAT RESULT FLASH
-   Plays on the target token when hit/wounded.
-══════════════════════════════════════════ */
-@keyframes hit-flash {
-  0%  { filter:brightness(1);  box-shadow: 0 0 0px #ff402000; }
-  20% { filter:brightness(3.5); box-shadow: 0 0 30px #ff402099, 0 0 60px #ff402044; }
-  45% { filter:brightness(1.5); }
-  70% { filter:brightness(0.7); }
-  100%{ filter:brightness(1);  box-shadow: 0 0 8px #ff402030, 0 0 20px #ff402010; }
-}
-.token-hit-anim {
-  animation: hit-flash 0.8s ease-out forwards;
-}
-/* Wound counter badge shake */
-@keyframes badge-shake {
-  0%,100%{ transform:translateX(0); }
-  20%    { transform:translateX(-3px); }
-  40%    { transform:translateX(3px); }
-  60%    { transform:translateX(-2px); }
-  80%    { transform:translateX(2px); }
-}
-.badge-shake { animation: badge-shake 0.5s ease 0.15s; }
-
-/* ══════════════════════════════════════════
-   7. ABILITY PILL HOVER (Phase 3 transition,
-      shown here for completeness)
-══════════════════════════════════════════ */
-.ability-pill{
-  display:inline-block;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;
-  letter-spacing:.18em;text-transform:uppercase;padding:3px 10px;
-  background:var(--imp-tint);color:var(--imp);border:1px solid #00d4ff28;cursor:default;
-  transition:background .12s,border-color .12s,transform .12s,box-shadow .12s;
-}
-.ability-pill:hover{background:var(--imp-tint2);border-color:var(--imp-dim);transform:translateY(-1px);box-shadow:0 2px 8px #00d4ff14;}
-
-/* ══ Replay button ══ */
-.replay-btn{
-  font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:600;letter-spacing:.15em;
-  text-transform:uppercase;padding:.3rem .7rem;border:1px solid var(--text-dis);
-  background:transparent;color:var(--text-muted);cursor:pointer;margin-top:1rem;
-  transition:border-color .12s,color .12s;
-}
+.replay-btn{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;padding:.3rem .7rem;border:1px solid var(--text-dis);background:transparent;color:var(--text-muted);cursor:pointer;margin-top:.75rem;transition:border-color .12s,color .12s;}
 .replay-btn:hover{border-color:var(--imp);color:var(--imp);}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   1. TOKEN SELECT BURST → BREATHE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@keyframes sel-burst{
+  0%  {box-shadow:0 0 0 0 #00d4ff00,0 0 8px #00d4ff30;}
+  30% {box-shadow:0 0 0 8px #00d4ff30,0 0 28px #00d4ff70;}
+  60% {box-shadow:0 0 0 5px #00d4ff18,0 0 22px #00d4ff55;}
+  100%{box-shadow:0 0 0 4px #00d4ff18,0 0 24px #00d4ff50,0 0 50px #00d4ff18;}
+}
+@keyframes sel-breathe{
+  0%,100%{box-shadow:0 0 0 4px #00d4ff18,0 0 18px #00d4ff40,0 0 40px #00d4ff12;}
+  50%    {box-shadow:0 0 0 5px #00d4ff22,0 0 28px #00d4ff60,0 0 55px #00d4ff20;}
+}
+.anim-select-burst{border-color:var(--imp)!important;animation:sel-burst .6s cubic-bezier(.22,1,.36,1) forwards;}
+.anim-select-burst .tkn-icon{color:var(--imp)!important;}
+.anim-breathe{border-color:var(--imp)!important;animation:sel-breathe 2.4s ease-in-out infinite;}
+.anim-breathe .tkn-icon{color:var(--imp)!important;}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   2. DRAG LIFT + SETTLE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@keyframes drag-lift{
+  to{transform:scale(1.18) translateY(-6px);box-shadow:0 0 0 6px #00d4ff20,0 0 30px #00d4ff50,0 8px 24px #00000060;}
+}
+@keyframes drag-settle{
+  0%  {transform:scale(1.18) translateY(-6px);}
+  50% {transform:scale(0.95) translateY(2px);}
+  75% {transform:scale(1.04) translateY(-1px);}
+  100%{transform:scale(1) translateY(0);}
+}
+.anim-drag{border-color:var(--imp)!important;animation:drag-lift .15s ease-out forwards;}
+.anim-settle{border-color:var(--imp)!important;animation:drag-settle .4s cubic-bezier(.34,1.56,.64,1) forwards;}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   3. BATTLESHOCKED ENTRY + PULSE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@keyframes bs-enter{
+  0%  {filter:brightness(1);}
+  15% {filter:brightness(2.5);background:#440000;}
+  35% {filter:brightness(0.6);}
+  55% {filter:brightness(1.8);}
+  75% {filter:brightness(0.7);}
+  100%{filter:brightness(1);background:#120808;}
+}
+@keyframes bs-pulse{
+  0%,100%{box-shadow:0 0 8px #cc202030,0 0 20px #cc202010;}
+  50%    {box-shadow:0 0 14px #cc202055,0 0 30px #cc202020;}
+}
+.anim-bs{background:#120808!important;border-color:#992020!important;animation:bs-enter .9s ease forwards,bs-pulse 2.2s ease-in-out .9s infinite;}
+.anim-bs .tkn-icon{color:var(--bs)!important;}
+.anim-bs .token-count{background:#180808!important;border-color:#881010!important;color:var(--bs)!important;}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   4. TOKEN DESTROYED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@keyframes token-die{
+  0%  {opacity:1;transform:scale(1);filter:brightness(1);}
+  25% {opacity:1;transform:scale(1.1);filter:brightness(2) saturate(0);}
+  60% {opacity:.4;transform:scale(.7);}
+  100%{opacity:0;transform:scale(.3);}
+}
+.anim-die{animation:token-die .7s ease-out forwards;}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   5. PROJECTILE TRAVEL (recolorable via --proj-color)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@keyframes proj-travel{
+  0%  {offset-distance:0%;opacity:1;transform:scale(1);}
+  85% {opacity:1;}
+  100%{offset-distance:100%;opacity:0;transform:scale(.5);}
+}
+@keyframes proj-glow-pulse{
+  0%,100%{filter:blur(1px) brightness(1.5);}
+  50%    {filter:blur(2px) brightness(2.5);}
+}
+.projectile{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--proj-color,var(--imp));
+  box-shadow:0 0 6px var(--proj-color,var(--imp)),0 0 16px var(--proj-color,var(--imp));
+  position:absolute;
+  offset-path:path('M 40 90 Q 150 40 270 90');
+  animation:proj-travel .5s ease-in forwards,proj-glow-pulse .12s linear infinite;
+  pointer-events:none;
+}
+/* Tail using pseudo or sibling — simulated via multiple shifted copies */
+.projectile-tail{
+  width:16px;height:4px;border-radius:4px;
+  background:linear-gradient(90deg,transparent,var(--proj-color,var(--imp)));
+  position:absolute;
+  offset-path:path('M 40 90 Q 150 40 270 90');
+  animation:proj-travel .5s ease-in forwards;
+  transform-origin:right center;
+  pointer-events:none;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   6. HIT FLASH + BADGE SHAKE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@keyframes hit-flash{
+  0%  {filter:brightness(1);box-shadow:0 0 0 #ff402000;}
+  20% {filter:brightness(3.5);box-shadow:0 0 30px #ff402099,0 0 60px #ff402044;}
+  45% {filter:brightness(1.5);}
+  70% {filter:brightness(.7);}
+  100%{filter:brightness(1);box-shadow:0 0 8px #ff402030,0 0 20px #ff402010;}
+}
+@keyframes badge-shake{
+  0%,100%{transform:translateX(0);}
+  20%    {transform:translateX(-3px);}
+  40%    {transform:translateX(3px);}
+  60%    {transform:translateX(-2px);}
+  80%    {transform:translateX(2px);}
+}
+.anim-hit{animation:hit-flash .8s ease-out forwards;}
+.anim-badge-shake{animation:badge-shake .5s ease .15s;}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   7. MISS FLASH — flicker, no wound
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@keyframes miss-flash{
+  0%  {filter:brightness(1);}
+  30% {filter:brightness(1.8) saturate(0);}
+  60% {filter:brightness(.8);}
+  100%{filter:brightness(1);}
+}
+.anim-miss{animation:miss-flash .45s ease-out forwards;}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   8. DICE ROLL — numbers cycle then land
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.dice{
+  width:48px;height:48px;background:var(--bg-raised);border:1px solid var(--text-dis);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Anton',sans-serif;font-size:28px;color:var(--text-primary);
+  position:relative;overflow:hidden;
+}
+@keyframes dice-spin{
+  0%  {transform:translateY(0);}
+  100%{transform:translateY(-700%);}
+}
+@keyframes dice-settle{
+  0%  {transform:translateY(-700%) scaleY(1.3);}
+  60% {transform:translateY(8%) scaleY(.9);}
+  80% {transform:translateY(-3%);}
+  100%{transform:translateY(0) scaleY(1);}
+}
+.dice-strip{display:flex;flex-direction:column;align-items:center;gap:4px;line-height:1;font-family:'Anton',sans-serif;font-size:28px;color:var(--text-primary);}
+.dice-strip.rolling{animation:dice-spin .4s linear forwards;}
+.dice-strip.settling{animation:dice-settle .4s cubic-bezier(.34,1.56,.64,1) forwards;}
+.dice-result-success .dice{border-color:var(--imp);box-shadow:0 0 12px #00d4ff40;}
+.dice-result-fail .dice{border-color:var(--bs);box-shadow:0 0 12px #cc202040;}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   9. PHASE TRANSITION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@keyframes phase-dot-pulse{
+  0%  {box-shadow:0 0 0 0 #00d4ff60;}
+  70% {box-shadow:0 0 0 8px #00d4ff00;}
+  100%{box-shadow:0 0 0 0 #00d4ff00;}
+}
+@keyframes phase-text-in{
+  from{opacity:0;transform:translateX(-6px);}
+  to  {opacity:1;transform:translateX(0);}
+}
+.ph-row{display:flex;align-items:center;gap:0;}
+.ph-item{display:flex;align-items:center;gap:.35rem;padding:.3rem .55rem;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--text-dis);cursor:default;}
+.ph-item.done{color:var(--text-muted);}
+.ph-dot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.35;}
+.ph-item.active{color:var(--imp);}
+.ph-item.active .ph-dot{opacity:1;}
+.ph-item.transitioning .ph-dot{opacity:1;color:var(--imp);animation:phase-dot-pulse 1s ease-out 1;}
+.ph-item.transitioning{color:var(--imp);animation:phase-text-in .3s ease-out forwards;}
+.ph-sep{color:var(--text-dis);font-size:9px;opacity:.25;}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   10. SCORE COUNTER TICK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@keyframes score-tick{
+  0%  {transform:translateY(0);opacity:1;}
+  40% {transform:translateY(-140%);opacity:0;}
+  41% {transform:translateY(140%);opacity:0;}
+  100%{transform:translateY(0);opacity:1;}
+}
+@keyframes score-flash{
+  0%,100%{color:var(--imp);}
+  50%    {color:#fff;text-shadow:0 0 12px var(--imp);}
+}
+.score-wrap{overflow:hidden;height:1.2em;display:inline-block;vertical-align:middle;}
+.score-val{font-family:'Anton',sans-serif;font-size:28px;display:block;}
+.score-val.ticking{animation:score-tick .5s cubic-bezier(.4,0,.2,1) forwards,score-flash .5s ease forwards;}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   11. MELEE CLASH
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@keyframes clash-lunge{
+  0%  {transform:translateX(0);}
+  30% {transform:translateX(22px);}
+  60% {transform:translateX(-4px);}
+  100%{transform:translateX(0);}
+}
+@keyframes clash-lunge-enemy{
+  0%  {transform:translateX(0);}
+  30% {transform:translateX(-22px);}
+  60% {transform:translateX(4px);}
+  100%{transform:translateX(0);}
+}
+.anim-clash-player{animation:clash-lunge .5s cubic-bezier(.34,1.56,.64,1) forwards;}
+.anim-clash-enemy{animation:clash-lunge-enemy .5s cubic-bezier(.34,1.56,.64,1) forwards;}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   12. STRATAGEM ACTIVATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@keyframes strat-flash{
+  0%  {background:var(--strat-tint,#cc880015);border-color:var(--strat-dim,#886000);}
+  30% {background:#cc880040;border-color:#cc8800;box-shadow:0 0 20px #cc880044;}
+  100%{background:var(--strat-tint,#cc880015);border-color:var(--strat-dim,#886000);}
+}
+.anim-strat{animation:strat-flash .6s ease-out forwards;}
+.strat-btn{
+  font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:.15em;
+  text-transform:uppercase;padding:.45rem 1.1rem;
+  background:#cc880015;color:#cc8800;border:1px solid #886000;cursor:pointer;
+}
+
+/* Range circles for demo */
+@keyframes range-in{
+  from{opacity:0;transform-origin:center;transform:scale(.2);}
+  to  {opacity:1;transform:scale(1);}
+}
+.range-move{animation:range-in .35s cubic-bezier(.34,1.56,.64,1) .1s both;}
+.range-adv{animation:range-in .35s cubic-bezier(.34,1.56,.64,1) .2s both;}
+.range-charge{animation:range-in .35s cubic-bezier(.34,1.56,.64,1) .3s both;}
 </style>
 </head>
 <body>
 <div class="pg-header">
-  <h1>V4 · Animations</h1>
-  <p>@keyframes animations only. CSS transitions (hover states) defined in V3 atoms. Click Replay to restart each.</p>
+  <h1>V4 · Animations — 10th Edition Full Set</h1>
+  <p>@keyframes only. CSS transitions (hover) defined in V3. Click Replay on each.</p>
 </div>
 
-<!-- 1. TOKEN SELECTION PULSE -->
-<h2>1 · Token Selection Pulse — plays once on select</h2>
-<div class="note">Entry burst then settles into steady breathing. cubic-bezier(0.22,1,0.36,1) = snappy overshoot feel.</div>
+<!-- 1. SELECT BURST -->
+<h2>1 · Token Select Burst → Breathe Loop</h2>
+<div class="note">Entry: snappy overshoot 0.6s. Steady state: 2.4s breathe loop.</div>
 <div class="demo">
   <div class="col">
-    <div class="demo-label">On select</div>
-    <div id="sel-token" class="token player token-select-anim">
+    <span style="font-size:9px;color:var(--text-dis);letter-spacing:.15em">ON SELECT</span>
+    <div id="t-select" class="token player-base anim-select-burst">
       <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2.5"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2.5"/></svg></div>
-      <span class="tkn-models">×5</span>
-      <span class="token-count">5</span>
+      <span class="tkn-models">×5</span><span class="token-count">5</span>
     </div>
-    <button class="replay-btn" onclick="replay('sel-token','token-select-anim')">↺ Replay</button>
+    <button class="replay-btn" onclick="replay('t-select','anim-select-burst')">↺</button>
+  </div>
+  <div class="col">
+    <span style="font-size:9px;color:var(--text-dis);letter-spacing:.15em">STEADY STATE</span>
+    <div class="token player-base anim-breathe">
+      <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2.5"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2.5"/></svg></div>
+      <span class="tkn-models">×5</span><span class="token-count">5</span>
+    </div>
   </div>
 </div>
 
-<!-- 2. SELECTED GLOW BREATHE -->
-<h2>2 · Selected Glow — steady loop while selected</h2>
-<div class="note">Slow 2.4s breathing loop. Subtle — reinforces "this is the active unit" without demanding attention.</div>
+<!-- 2. DRAG LIFT + SETTLE -->
+<h2>2 · Drag Lift + Settle — on drag start / drag release</h2>
+<div class="note">Lift: scales 1.18x, lifts 6px. Settle: spring bounce back. No path animation — movement is drag-and-drop.</div>
 <div class="demo">
-  <div class="token player token-breathe">
-    <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2.5"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2.5"/></svg></div>
-    <span class="tkn-models">×5</span>
-    <span class="token-count">5</span>
+  <div class="col">
+    <span style="font-size:9px;color:var(--text-dis);letter-spacing:.15em">DRAGGING</span>
+    <div id="t-drag" class="token player-base anim-drag">
+      <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2.5"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2.5"/></svg></div>
+      <span class="tkn-models">×5</span><span class="token-count">5</span>
+    </div>
+    <button class="replay-btn" onclick="replay('t-drag','anim-drag')">↺</button>
+  </div>
+  <div class="col">
+    <span style="font-size:9px;color:var(--text-dis);letter-spacing:.15em">ON DROP</span>
+    <div id="t-settle" class="token player-base anim-settle">
+      <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2.5"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2.5"/></svg></div>
+      <span class="tkn-models">×5</span><span class="token-count">5</span>
+    </div>
+    <button class="replay-btn" onclick="replay('t-settle','anim-settle')">↺</button>
   </div>
 </div>
 
 <!-- 3. BATTLESHOCKED -->
 <h2>3 · Battleshocked — entry flicker + dim pulse</h2>
-<div class="note">Red flicker burst on entry (0.9s), then slow dim red pulse (2.2s loop). Communicates failure without being distracting.</div>
 <div class="demo">
   <div class="col">
-    <div id="bs-token" class="token player token-bs-anim">
+    <div id="t-bs" class="token player-base anim-bs">
       <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2.5"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2.5"/></svg></div>
-      <span class="tkn-models">×5</span>
-      <span class="token-count">5</span>
+      <span class="tkn-models">×5</span><span class="token-count">5</span>
     </div>
-    <button class="replay-btn" onclick="replay('bs-token','token-bs-anim')">↺ Replay</button>
+    <button class="replay-btn" onclick="replay('t-bs','anim-bs')">↺</button>
   </div>
 </div>
 
-<!-- 4. MOVEMENT PATH DRAW -->
-<h2>4 · Movement Path Draw — dashes draw to destination</h2>
-<div class="note">stroke-dashoffset animation 0.7s ease-out. Destination circle appears after path completes.</div>
+<!-- 4. TOKEN DESTROYED -->
+<h2>4 · Token Destroyed — fade + shrink on last model removal</h2>
 <div class="demo">
   <div class="col">
-    <svg id="path-svg" width="280" height="100" viewBox="0 0 280 100" style="overflow:visible">
-      <!-- Source token -->
-      <circle cx="30" cy="50" r="22" fill="#050c12" stroke="#00d4ff" stroke-width="3" style="box-shadow:0 0 20px #00d4ff50"/>
-      <!-- Path -->
-      <path id="move-path" class="path-line" d="M 55 50 Q 120 20 225 50"/>
-      <!-- Destination marker -->
-      <circle id="dest-marker" class="dest-circle" cx="225" cy="50" r="14"/>
-      <line id="dest-cross-h" x1="218" y1="50" x2="232" y2="50" stroke="#00d4ff" stroke-width="1.5" opacity="0" style="animation:dest-appear 0.25s ease-out 0.75s forwards"/>
-      <line id="dest-cross-v" x1="225" y1="43" x2="225" y2="57" stroke="#00d4ff" stroke-width="1.5" opacity="0" style="animation:dest-appear 0.25s ease-out 0.75s forwards"/>
-    </svg>
-    <button class="replay-btn" onclick="replaySVG()">↺ Replay</button>
+    <div id="t-die" class="token player-base anim-die">
+      <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2.5"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2.5"/></svg></div>
+      <span class="tkn-models">×1</span><span class="token-count">1</span>
+    </div>
+    <button class="replay-btn" onclick="replay('t-die','anim-die')">↺</button>
   </div>
 </div>
 
-<!-- 5. RANGE CIRCLES APPEAR -->
-<h2>5 · Range Circles Appear — spring in on unit select</h2>
-<div class="note">Three circles staggered 100ms apart. Spring easing (overshoot) makes them feel physical. Centered on token.</div>
+<!-- 5. PROJECTILE -->
+<h2>5 · Projectile — glow orb, recolorable via CSS var</h2>
+<div class="note">--proj-color drives all glow. Set to --imp for player fire, --ork for enemy, --bs for hazardous. offset-path traces an arc.</div>
+<div class="demo" style="flex-direction:column;gap:1rem">
+  <div style="position:relative;width:320px;height:100px">
+    <!-- Shooter -->
+    <div class="token player-base" style="position:absolute;left:0;top:21px;width:48px;height:48px">
+      <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2.5"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2.5"/></svg></div>
+    </div>
+    <!-- Target -->
+    <div id="proj-target" class="token enemy-base" style="position:absolute;right:0;top:21px;width:48px;height:48px">
+      <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M5 20Q5 14 12 14Q19 14 19 20" stroke="currentColor" stroke-width="1.5"/></svg></div>
+    </div>
+    <!-- Projectile container -->
+    <div id="proj-container" style="position:absolute;inset:0;pointer-events:none"></div>
+  </div>
+  <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+    <button class="replay-btn" onclick="fireProjectile('var(--imp)')">↺ Player (cyan)</button>
+    <button class="replay-btn" onclick="fireProjectile('var(--ork)')">↺ Enemy (orange)</button>
+    <button class="replay-btn" onclick="fireProjectile('var(--bs)')">↺ Hazardous (red)</button>
+  </div>
+</div>
+
+<!-- 6. HIT FLASH -->
+<h2>6 · Hit/Wound Flash — target token when wound lands</h2>
 <div class="demo">
-  <svg id="range-svg" width="320" height="320" viewBox="-10 -10 340 340" style="background:#080c10">
-    <defs><pattern id="rg" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M 24 0 L 0 0 0 24" fill="none" stroke="#ffffff06" stroke-width="0.5"/></pattern></defs>
-    <rect x="-10" y="-10" width="340" height="340" fill="url(#rg)"/>
-    <circle class="range-charge" cx="160" cy="160" r="148" fill="none" stroke="#cc8800" stroke-width="1.5" stroke-dasharray="6 5" opacity="0.7"/>
-    <text class="range-charge" x="160" y="8" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="10" font-weight="600" letter-spacing=".15em" fill="#cc8800" opacity="0.9">CHARGE</text>
-    <circle class="range-adv" cx="160" cy="160" r="108" fill="none" stroke="#00d4ff" stroke-width="1.5" stroke-dasharray="8 6" opacity="0.65"/>
-    <text class="range-adv" x="160" y="48" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="10" font-weight="600" letter-spacing=".15em" fill="#00d4ff" opacity="0.8">ADV</text>
-    <circle class="range-move" cx="160" cy="160" r="72" fill="#00d4ff04" stroke="#00d4ff" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.9"/>
-    <text class="range-move" x="160" y="84" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="10" font-weight="600" letter-spacing=".15em" fill="#00d4ff">MOVE</text>
-    <!-- Token at centre -->
-    <circle cx="160" cy="160" r="26" fill="#050c12" stroke="#00d4ff" stroke-width="3" style="filter:drop-shadow(0 0 8px #00d4ff60)"/>
+  <div class="col">
+    <div id="t-hit" class="token enemy-base">
+      <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M5 20Q5 14 12 14Q19 14 19 20" stroke="currentColor" stroke-width="1.5"/></svg></div>
+      <span class="tkn-models">×20</span><span id="hit-badge" class="token-count">20</span>
+    </div>
+    <button class="replay-btn" onclick="replayHit()">↺ Replay hit</button>
+  </div>
+  <div class="col">
+    <div id="t-miss" class="token enemy-base">
+      <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M5 20Q5 14 12 14Q19 14 19 20" stroke="currentColor" stroke-width="1.5"/></svg></div>
+      <span class="tkn-models">×20</span>
+      <span class="token-count" style="background:#180c08;border:1.5px solid var(--ork-dim);color:var(--ork)">20</span>
+    </div>
+    <span style="font-size:9px;color:var(--text-dis);letter-spacing:.15em;margin-top:.3rem">MISS</span>
+    <button class="replay-btn" onclick="replay('t-miss','anim-miss')">↺ Replay miss</button>
+  </div>
+</div>
+
+<!-- 7. DICE ROLL -->
+<h2>7 · Dice Roll — numbers cycle, spring settle, colour on result</h2>
+<div class="demo">
+  <div class="col">
+    <div id="dice-wrap" class="dice">
+      <div id="dice-strip" class="dice-strip"><span>5</span></div>
+    </div>
+    <button class="replay-btn" onclick="rollDice()">↺ Roll</button>
+  </div>
+</div>
+
+<!-- 8. PHASE TRANSITION -->
+<h2>8 · Phase Transition — dot pulses, label slides in</h2>
+<div class="demo" style="flex-direction:column;gap:1rem">
+  <div id="phase-row" class="ph-row">
+    <div class="ph-item done"><span class="ph-dot"></span>Command</div>
+    <span class="ph-sep">·</span>
+    <div id="ph-movement" class="ph-item active"><span class="ph-dot"></span>Movement</div>
+    <span class="ph-sep">·</span>
+    <div id="ph-shooting" class="ph-item"><span class="ph-dot"></span>Shooting</div>
+    <span class="ph-sep">·</span>
+    <div class="ph-item"><span class="ph-dot"></span>Charge</div>
+    <span class="ph-sep">·</span>
+    <div class="ph-item"><span class="ph-dot"></span>Fight</div>
+  </div>
+  <button class="replay-btn" onclick="transitionPhase()">↺ → Shooting</button>
+</div>
+
+<!-- 9. SCORE COUNTER TICK -->
+<h2>9 · Score Counter Tick — on VP score</h2>
+<div class="demo">
+  <div style="display:flex;align-items:center;gap:.5rem">
+    <span style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:.15em;color:var(--text-muted);text-transform:uppercase">Imperium</span>
+    <div class="score-wrap"><span id="score-val" class="score-val" style="color:var(--imp)">10</span></div>
+  </div>
+  <button class="replay-btn" onclick="tickScore()">↺ +1 VP</button>
+</div>
+
+<!-- 10. MELEE CLASH -->
+<h2>10 · Melee Clash — tokens lunge toward each other</h2>
+<div class="demo" style="gap:1.5rem">
+  <div id="clash-p" class="token player-base anim-breathe">
+    <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2.5"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2.5"/></svg></div>
+    <span class="tkn-models">×5</span>
+  </div>
+  <div style="font-family:'Anton',sans-serif;font-size:18px;color:var(--text-dis)">VS</div>
+  <div id="clash-e" class="token enemy-base">
+    <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M5 20Q5 14 12 14Q19 14 19 20" stroke="currentColor" stroke-width="1.5"/></svg></div>
+    <span class="tkn-models">×20</span>
+  </div>
+  <button class="replay-btn" onclick="replayClash()">↺ Clash</button>
+</div>
+
+<!-- 11. RANGE CIRCLES -->
+<h2>11 · Range Circles Appear — spring in on select</h2>
+<div class="demo">
+  <svg id="range-svg" width="280" height="280" viewBox="-10 -10 300 300" style="background:#080c10">
+    <defs><pattern id="rg" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M 24 0 L 0 0 0 24" fill="none" stroke="#ffffff06" stroke-width=".5"/></pattern></defs>
+    <rect x="-10" y="-10" width="300" height="300" fill="url(#rg)"/>
+    <circle class="range-charge" cx="140" cy="140" r="128" fill="none" stroke="#cc8800" stroke-width="1.5" stroke-dasharray="6 5" opacity=".7"/>
+    <text class="range-charge" x="140" y="8" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="10" font-weight="600" letter-spacing=".15em" fill="#cc8800" opacity=".9">CHARGE</text>
+    <circle class="range-adv" cx="140" cy="140" r="92" fill="none" stroke="#00d4ff" stroke-width="1.5" stroke-dasharray="8 6" opacity=".65"/>
+    <text class="range-adv" x="140" y="44" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="10" font-weight="600" letter-spacing=".15em" fill="#00d4ff" opacity=".8">ADV</text>
+    <circle class="range-move" cx="140" cy="140" r="60" fill="#00d4ff04" stroke="#00d4ff" stroke-width="1.5" stroke-dasharray="4 4" opacity=".9"/>
+    <text class="range-move" x="140" y="76" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="10" font-weight="600" letter-spacing=".15em" fill="#00d4ff">MOVE</text>
+    <circle cx="140" cy="140" r="24" fill="#050c12" stroke="#00d4ff" stroke-width="3" style="filter:drop-shadow(0 0 8px #00d4ff60)"/>
   </svg>
   <button class="replay-btn" onclick="replayRange()">↺ Replay</button>
 </div>
 
-<!-- 6. COMBAT RESULT FLASH -->
-<h2>6 · Combat Result Flash — plays on target token when hit</h2>
-<div class="note">White-hot flash at 20% (brightness 3.5x), fades with brief dim. Badge shakes simultaneously.</div>
+<!-- 12. STRATAGEM ACTIVATION -->
+<h2>12 · Stratagem Activation — amber flash, CP cost signal</h2>
 <div class="demo">
-  <div class="col">
-    <div id="hit-token" class="token player" style="background:#140808;border:3px solid var(--ork-dim);box-shadow:0 0 8px #ff402018">
-      <div class="tkn-icon" style="color:#7a3820"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2.5"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2.5"/></svg></div>
-      <span class="tkn-models" style="color:#884030">×20</span>
-      <span id="hit-badge" class="token-count" style="background:#180c08;border:1.5px solid var(--ork-dim);color:var(--ork)">20</span>
-    </div>
-    <button class="replay-btn" onclick="replayHit()">↺ Replay flash</button>
-  </div>
-</div>
-
-<!-- 7. ABILITY PILL HOVER -->
-<h2>7 · Ability Pill Hover (transition, not keyframe)</h2>
-<div class="note">150ms ease. Part of Phase 3 spec, shown here for completeness. Hover the pill:</div>
-<div class="demo">
-  <span class="ability-pill">Shock Assault</span>
+  <div id="strat-btn" class="strat-btn">Use Stratagem</div>
+  <button class="replay-btn" onclick="replay('strat-btn','anim-strat')">↺ Activate</button>
 </div>
 
 <script>
-function replay(id, cls) {
-  const el = document.getElementById(id);
-  el.classList.remove(cls);
-  void el.offsetWidth; // force reflow
-  el.classList.add(cls);
+function replay(id,cls){
+  const el=document.getElementById(id);
+  el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls);
 }
 
-function replaySVG() {
-  const svg = document.getElementById('path-svg');
-  svg.innerHTML = svg.innerHTML; // re-parse to restart animations
+function fireProjectile(color){
+  const c=document.getElementById('proj-container');
+  c.innerHTML='';
+  const p=document.createElement('div');
+  p.className='projectile';
+  p.style.cssText=`--proj-color:${color};offset-path:path('M 24 38 Q 160 0 296 38');`;
+  c.appendChild(p);
+  setTimeout(()=>{
+    document.getElementById('proj-target').classList.remove('anim-hit');
+    void document.getElementById('proj-target').offsetWidth;
+    document.getElementById('proj-target').classList.add('anim-hit');
+  },450);
 }
 
-function replayRange() {
-  const svg = document.getElementById('range-svg');
-  const els = svg.querySelectorAll('.range-move,.range-adv,.range-charge');
-  els.forEach(el => {
-    el.style.animation = 'none';
-    void el.offsetWidth;
-    el.style.animation = '';
+function replayHit(){
+  const t=document.getElementById('t-hit');
+  const b=document.getElementById('hit-badge');
+  t.classList.remove('anim-hit');b.classList.remove('anim-badge-shake');
+  void t.offsetWidth;
+  t.classList.add('anim-hit');b.classList.add('anim-badge-shake');
+}
+
+function rollDice(){
+  const strip=document.getElementById('dice-strip');
+  const wrap=document.getElementById('dice-wrap');
+  const faces=[1,2,3,4,5,6];
+  const result=Math.floor(Math.random()*6)+1;
+  strip.innerHTML=faces.map(n=>`<span>${n}</span>`).join('')+`<span>${result}</span>`;
+  strip.className='dice-strip rolling';
+  wrap.className='dice';
+  setTimeout(()=>{
+    strip.innerHTML=`<span>${result}</span>`;
+    strip.className='dice-strip settling';
+    wrap.className='dice '+(result>=3?'dice-result-success':'dice-result-fail');
+  },400);
+}
+
+let phase=1;
+function transitionPhase(){
+  const mvt=document.getElementById('ph-movement');
+  const sht=document.getElementById('ph-shooting');
+  mvt.classList.remove('active');mvt.classList.add('done');
+  sht.classList.remove('');sht.classList.add('transitioning');
+  setTimeout(()=>sht.classList.replace('transitioning','active'),600);
+}
+
+let scoreVal=10;
+function tickScore(){
+  const el=document.getElementById('score-val');
+  scoreVal++;
+  el.classList.remove('ticking');void el.offsetWidth;
+  el.classList.add('ticking');
+  setTimeout(()=>{ el.textContent=scoreVal; el.classList.remove('ticking'); },250);
+}
+
+function replayClash(){
+  ['clash-p','clash-e'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    const cls=i===0?'anim-clash-player':'anim-clash-enemy';
+    el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls);
   });
 }
 
-function replayHit() {
-  const tok = document.getElementById('hit-token');
-  const badge = document.getElementById('hit-badge');
-  tok.classList.remove('token-hit-anim');
-  badge.classList.remove('badge-shake');
-  void tok.offsetWidth;
-  tok.classList.add('token-hit-anim');
-  badge.classList.add('badge-shake');
+function replayRange(){
+  const els=document.querySelectorAll('#range-svg .range-move,#range-svg .range-adv,#range-svg .range-charge');
+  els.forEach(el=>{el.style.animation='none';void el.offsetWidth;el.style.animation='';});
 }
 </script>
 </body>
