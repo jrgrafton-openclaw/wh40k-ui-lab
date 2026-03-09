@@ -62,6 +62,7 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 }
 .token.player .token-count{background:#0a1824;border:1.5px solid var(--imp-dim);color:var(--imp);}
 .token.enemy  .token-count{background:#180c08;border:1.5px solid var(--ork-dim);color:var(--ork);}
+.token.bs     .token-count{background:#180808;border:1.5px solid #881010;color:var(--bs);}
 
 /* Colour states */
 .token.player         {background:#050c12;border:3px solid var(--imp-dim);box-shadow:0 0 12px #00d4ff30,0 0 28px #00d4ff12;}
@@ -187,6 +188,7 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 .pill-wrap{position:relative;display:inline-block;}
 .pill-wrap .pill{cursor:help;}
 .kw-tip{
+  display:block; /* span needs explicit block */
   position:absolute;
   bottom:calc(100% + 8px);
   left:0; /* JS will override to right:0 when near right edge */
@@ -204,11 +206,12 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 }
 .pill-wrap:hover .kw-tip{opacity:1;}
 .kw-tip-name{
+  display:block;
   font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;
   letter-spacing:.18em;text-transform:uppercase;color:var(--imp);margin-bottom:.3rem;
   text-align:left;
 }
-.kw-tip-body{font-size:11px;color:var(--text-muted);line-height:1.55;text-align:left;}
+.kw-tip-body{display:block;font-size:11px;color:var(--text-muted);line-height:1.55;text-align:left;}
 
 /* ══════════════════════════════════════════
    7. ARMY ROSTER ROWS — plain rows
@@ -433,27 +436,27 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
   <div class="weapon-row">
     <span class="wn">Plasma (std)</span><span>30"</span><span>2</span><span>3+</span><span>7</span><span>-2</span><span>2</span>
     <div class="weapon-pills">
-      <span class="pill-wrap"><span class="pill pill-kw">Rapid Fire 1</span><div class="kw-tip"><div class="kw-tip-name">Rapid Fire 1</div><div class="kw-tip-body">Each time this weapon targets a unit within half range, the weapon has Attacks +1.</div></div></span>
-      <span class="pill-wrap"><span class="pill pill-kw">Hazardous</span><div class="kw-tip"><div class="kw-tip-name">Hazardous</div><div class="kw-tip-body">Each time a unit shoots or fights with this weapon, after resolving attacks, roll one D6 for each model that made attacks. On a 1, that model's unit suffers 3 mortal wounds.</div></div></span>
+      <span class="pill-wrap"><span class="pill pill-kw">Rapid Fire 1</span><span class="kw-tip"><span class="kw-tip-name">Rapid Fire 1</span><span class="kw-tip-body">Each time this weapon targets a unit within half range, the weapon has Attacks +1.</div></span></span>
+      <span class="pill-wrap"><span class="pill pill-kw">Hazardous</span><span class="kw-tip"><span class="kw-tip-name">Hazardous</span><span class="kw-tip-body">Each time a unit shoots or fights with this weapon, after resolving attacks, roll one D6 for each model that made attacks. On a 1, that model's unit suffers 3 mortal wounds.</div></span></span>
     </div>
   </div>
   <div class="weapon-row">
     <span class="wn">Plasma (sup)</span><span>30"</span><span>2</span><span>3+</span><span>8</span><span>-3</span><span>3</span>
     <div class="weapon-pills">
-      <span class="pill-wrap"><span class="pill pill-kw">Rapid Fire 1</span><div class="kw-tip"><div class="kw-tip-name">Rapid Fire 1</div><div class="kw-tip-body">Each time this weapon targets a unit within half range, the weapon has Attacks +1.</div></div></span>
-      <span class="pill-wrap"><span class="pill pill-kw">Hazardous</span><div class="kw-tip"><div class="kw-tip-name">Hazardous</div><div class="kw-tip-body">Each time a unit shoots or fights with this weapon, after resolving attacks, roll one D6 for each model that made attacks. On a 1, that model's unit suffers 3 mortal wounds.</div></div></span>
+      <span class="pill-wrap"><span class="pill pill-kw">Rapid Fire 1</span><span class="kw-tip"><span class="kw-tip-name">Rapid Fire 1</span><span class="kw-tip-body">Each time this weapon targets a unit within half range, the weapon has Attacks +1.</div></span></span>
+      <span class="pill-wrap"><span class="pill pill-kw">Hazardous</span><span class="kw-tip"><span class="kw-tip-name">Hazardous</span><span class="kw-tip-body">Each time a unit shoots or fights with this weapon, after resolving attacks, roll one D6 for each model that made attacks. On a 1, that model's unit suffers 3 mortal wounds.</div></span></span>
     </div>
   </div>
   <div class="weapon-row">
     <span class="wn">Heavy Bolt Pistol</span><span>18"</span><span>2</span><span>3+</span><span>4</span><span>0</span><span>1</span>
     <div class="weapon-pills">
-      <span class="pill-wrap"><span class="pill pill-neutral">Pistol</span><div class="kw-tip"><div class="kw-tip-name">Pistol</div><div class="kw-tip-body">Can be used in the Shooting phase even if the bearer's unit is within Engagement Range of one or more enemy units. Cannot target units within Engagement Range of friendly units.</div></div></span>
+      <span class="pill-wrap"><span class="pill pill-neutral">Pistol</span><span class="kw-tip"><span class="kw-tip-name">Pistol</span><span class="kw-tip-body">Can be used in the Shooting phase even if the bearer's unit is within Engagement Range of one or more enemy units. Cannot target units within Engagement Range of friendly units.</div></span></span>
     </div>
   </div>
   <div class="weapon-row">
     <span class="wn">Astartes Chainsword</span><span>Melee</span><span>4</span><span>3+</span><span>4</span><span>-1</span><span>1</span>
     <div class="weapon-pills">
-      <span class="pill-wrap"><span class="pill pill-neutral">Melee</span><div class="kw-tip"><div class="kw-tip-name">Melee</div><div class="kw-tip-body">Attack with this weapon in the Fight phase. Models can only use melee weapons against enemies in Engagement Range.</div></div></span>
+      <span class="pill-wrap"><span class="pill pill-neutral">Melee</span><span class="kw-tip"><span class="kw-tip-name">Melee</span><span class="kw-tip-body">Attack with this weapon in the Fight phase. Models can only use melee weapons against enemies in Engagement Range.</div></span></span>
     </div>
   </div>
 </div>
@@ -469,12 +472,12 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 <h2>6 · Keyword Pills — hover for tooltip card (V2-B chrome)</h2>
 <div class="note">Hover each pill to see the rule card. Tooltip uses locked V2-B panel chrome (2px top border, 1px side border).</div>
 <div>
-  <span class="pill-wrap"><span class="pill pill-kw">Rapid Fire 1</span><div class="kw-tip"><div class="kw-tip-name">Rapid Fire 1</div><div class="kw-tip-body">Each time this weapon targets a unit within half range, the weapon has Attacks +1.</div></div></span>
-  <span class="pill-wrap"><span class="pill pill-kw">Hazardous</span><div class="kw-tip"><div class="kw-tip-name">Hazardous</div><div class="kw-tip-body">Each time a unit shoots or fights with this weapon, after resolving attacks, roll one D6 per model. On a 1, that model's unit suffers 3 mortal wounds.</div></div></span>
-  <span class="pill-wrap"><span class="pill pill-kw">Heavy</span><div class="kw-tip"><div class="kw-tip-name">Heavy</div><div class="kw-tip-body">Subtract 1 from Hit rolls unless the bearer Remained Stationary this turn. Add 1 to Hit rolls if the bearer Remained Stationary and this is a ranged weapon.</div></div></span>
-  <span class="pill-wrap"><span class="pill pill-kw">Torrent</span><div class="kw-tip"><div class="kw-tip-name">Torrent</div><div class="kw-tip-body">This weapon automatically hits its target. Do not make Hit rolls.</div></div></span>
-  <span class="pill-wrap"><span class="pill pill-neutral">Pistol</span><div class="kw-tip"><div class="kw-tip-name">Pistol</div><div class="kw-tip-body">Can be used in the Shooting phase even if within Engagement Range of enemies. Cannot target units within Engagement Range of friendly units.</div></div></span>
-  <span class="pill-wrap"><span class="pill pill-neutral">Melee</span><div class="kw-tip"><div class="kw-tip-name">Melee</div><div class="kw-tip-body">Attack with this weapon in the Fight phase against enemies in Engagement Range only.</div></div></span>
+  <span class="pill-wrap"><span class="pill pill-kw">Rapid Fire 1</span><span class="kw-tip"><span class="kw-tip-name">Rapid Fire 1</span><span class="kw-tip-body">Each time this weapon targets a unit within half range, the weapon has Attacks +1.</div></span></span>
+  <span class="pill-wrap"><span class="pill pill-kw">Hazardous</span><span class="kw-tip"><span class="kw-tip-name">Hazardous</span><span class="kw-tip-body">Each time a unit shoots or fights with this weapon, after resolving attacks, roll one D6 per model. On a 1, that model's unit suffers 3 mortal wounds.</div></span></span>
+  <span class="pill-wrap"><span class="pill pill-kw">Heavy</span><span class="kw-tip"><span class="kw-tip-name">Heavy</span><span class="kw-tip-body">Subtract 1 from Hit rolls unless the bearer Remained Stationary this turn. Add 1 to Hit rolls if the bearer Remained Stationary and this is a ranged weapon.</div></span></span>
+  <span class="pill-wrap"><span class="pill pill-kw">Torrent</span><span class="kw-tip"><span class="kw-tip-name">Torrent</span><span class="kw-tip-body">This weapon automatically hits its target. Do not make Hit rolls.</div></span></span>
+  <span class="pill-wrap"><span class="pill pill-neutral">Pistol</span><span class="kw-tip"><span class="kw-tip-name">Pistol</span><span class="kw-tip-body">Can be used in the Shooting phase even if within Engagement Range of enemies. Cannot target units within Engagement Range of friendly units.</div></span></span>
+  <span class="pill-wrap"><span class="pill pill-neutral">Melee</span><span class="kw-tip"><span class="kw-tip-name">Melee</span><span class="kw-tip-body">Attack with this weapon in the Fight phase against enemies in Engagement Range only.</div></span></span>
   <span class="pill-bs">Battleshocked</span>
 </div>
 
