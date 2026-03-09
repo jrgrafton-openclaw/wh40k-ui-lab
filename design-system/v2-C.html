@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V2-C · Inset Double Rule · Panel Chrome</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary:   #080c10;
+    --bg-surface:   #0f1520;
+    --bg-raised:    #162030;
+    --bg-selected:  #1e2d44;
+    --imp:          #00d4ff;
+    --imp-dim:      #0088aa;
+    --imp-tint:     #00d4ff14;
+    --ork:          #ff4020;
+    --text-primary: #e0e8f0;
+    --text-sec:     #8090a0;
+    --text-muted:   #4a6080;
+    --text-dis:     #2a3a4a;
+    --battleshocked:#cc2020;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg-primary); color: var(--text-sec); font-family: 'Rajdhani', sans-serif; padding: 2rem; }
+
+  .page-header { margin-bottom: 2.5rem; border-left: 2px solid var(--imp); padding-left: 1rem; font-family: 'Courier New', monospace; }
+  .page-header h1 { font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--imp); }
+  .page-header p  { font-size: 10px; color: var(--text-muted); margin-top: 0.25rem; }
+  h2 { font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-dis); margin: 2rem 0 1rem; border-bottom: 1px solid #0f1a28; padding-bottom: 0.5rem; }
+
+  /* ════════════════════════════════════════
+     PANEL CHROME — C: INSET DOUBLE RULE
+     No outer border at all. Panel identity
+     comes from background fill + two thin
+     horizontal rules sandwiching the header.
+     Cleanest / most data-document feel.
+  ════════════════════════════════════════ */
+  .panel {
+    background: var(--bg-surface);
+    padding: 0;
+  }
+  .panel-header {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--imp);
+    border-bottom: 1px solid var(--text-dis);
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+  .panel-body { padding: 1rem; }
+
+  .panel-title { font-family: 'Anton', sans-serif; font-size: 22px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-primary); line-height: 1; }
+  .panel-sub   { font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); }
+
+  /* Selected: top rule brighter, bg lifts */
+  .panel.selected { background: var(--bg-selected); }
+  .panel.selected .panel-header { border-top-color: var(--imp); border-top-width: 2px; }
+  .panel.selected .panel-title  { color: var(--imp); }
+
+  /* Battleshocked: top rule red */
+  .panel.battleshocked { background: #100808; }
+  .panel.battleshocked .panel-header { border-top-color: var(--battleshocked); border-bottom-color: #2a1010; }
+  .panel.battleshocked .panel-title  { color: var(--battleshocked); }
+
+  .stat-row { display: flex; gap: 1.5rem; margin-bottom: 1rem; }
+  .stat-cell { text-align: center; }
+  .stat-val  { font-size: 24px; font-weight: 700; color: var(--text-primary); line-height: 1; }
+  .stat-lbl  { font-size: 9px; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-dis); display: block; margin-bottom: 2px; }
+
+  .section-label { font-size: 10px; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-muted); margin: 0.75rem 0 0.4rem; }
+  .weapon-row    { display: flex; justify-content: space-between; font-size: 13px; font-weight: 500; color: var(--text-sec); padding: 0.3rem 0; border-bottom: 1px solid #0f1520; }
+  .weapon-name   { color: var(--text-primary); }
+  .weapon-stats  { color: var(--text-muted); }
+  .weapon-stats span { color: var(--imp); }
+
+  .pill { display: inline-block; font-size: 9px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; padding: 2px 6px; margin: 0.3rem 0.2rem 0 0; }
+  .pill-keyword { background: var(--imp-tint); color: var(--imp); border: 1px solid #00d4ff30; }
+  .pill-shock   { background: #cc202018; color: var(--battleshocked); border: 1px solid #cc202030; }
+
+  .note { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-top: 0.75rem; border-top: 1px solid #0f1520; padding-top: 0.75rem; }
+
+  /* Unit list — no outer border, just background + top rule on hover/active */
+  .unit-item { background: var(--bg-surface); border-top: 1px solid transparent; border-bottom: 1px solid #080c10; }
+  .unit-item.active { background: var(--bg-selected); border-top-color: var(--imp); }
+  .unit-item.shock  { background: #100808; border-top-color: var(--battleshocked); }
+  .unit-item-inner  { padding: 0.5rem 0.75rem; display: flex; justify-content: space-between; align-items: center; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>V2-C · Inset Double Rule</h1>
+  <p>No outer border. Panel identity = background fill + thin horizontal rules above/below header. Cleanest / most data-document feel.</p>
+</div>
+
+<h2>Stats Panel</h2>
+<div style="max-width:320px">
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title">Hellblasters</div>
+      <div class="panel-sub">Space Marines · Infantry</div>
+    </div>
+    <div class="panel-body">
+      <div class="stat-row">
+        <div class="stat-cell"><span class="stat-lbl">M</span><span class="stat-val">6"</span></div>
+        <div class="stat-cell"><span class="stat-lbl">T</span><span class="stat-val">4</span></div>
+        <div class="stat-cell"><span class="stat-lbl">SV</span><span class="stat-val">3+</span></div>
+        <div class="stat-cell"><span class="stat-lbl">W</span><span class="stat-val">2</span></div>
+        <div class="stat-cell"><span class="stat-lbl">LD</span><span class="stat-val">7</span></div>
+        <div class="stat-cell"><span class="stat-lbl">OC</span><span class="stat-val">2</span></div>
+      </div>
+      <div class="section-label">Ranged Weapons</div>
+      <div class="weapon-row"><span class="weapon-name">Plasma (std)</span><span class="weapon-stats">30" A:2 <span>S:7</span> AP:-2 D:2</span></div>
+      <div class="weapon-row"><span class="weapon-name">Plasma (sup)</span><span class="weapon-stats">30" A:2 <span>S:8</span> AP:-3 D:3</span></div>
+      <div><span class="pill pill-keyword">Rapid Fire 1</span><span class="pill pill-keyword">Hazardous</span></div>
+      <div class="note">Stay far back. 30" range means you can fire from deployment.</div>
+    </div>
+  </div>
+</div>
+
+<h2>Selected State</h2>
+<div style="max-width:320px">
+  <div class="panel selected">
+    <div class="panel-header">
+      <div class="panel-title">Hellblasters</div>
+      <div class="panel-sub">Space Marines · Infantry · <span style="color:var(--imp)">Selected</span></div>
+    </div>
+    <div class="panel-body">
+      <div class="stat-row">
+        <div class="stat-cell"><span class="stat-lbl">M</span><span class="stat-val">6"</span></div>
+        <div class="stat-cell"><span class="stat-lbl">T</span><span class="stat-val">4</span></div>
+        <div class="stat-cell"><span class="stat-lbl">SV</span><span class="stat-val">3+</span></div>
+        <div class="stat-cell"><span class="stat-lbl">W</span><span class="stat-val">2</span></div>
+        <div class="stat-cell"><span class="stat-lbl">LD</span><span class="stat-val">7</span></div>
+        <div class="stat-cell"><span class="stat-lbl">OC</span><span class="stat-val">2</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Battleshocked State</h2>
+<div style="max-width:320px">
+  <div class="panel battleshocked">
+    <div class="panel-header">
+      <div class="panel-title">Hellblasters</div>
+      <div class="panel-sub">Space Marines · Infantry</div>
+    </div>
+    <div class="panel-body">
+      <div class="stat-row">
+        <div class="stat-cell"><span class="stat-lbl">M</span><span class="stat-val" style="color:var(--text-muted)">6"</span></div>
+        <div class="stat-cell"><span class="stat-lbl">T</span><span class="stat-val" style="color:var(--text-muted)">4</span></div>
+        <div class="stat-cell"><span class="stat-lbl">SV</span><span class="stat-val" style="color:var(--text-muted)">3+</span></div>
+        <div class="stat-cell"><span class="stat-lbl">W</span><span class="stat-val" style="color:var(--text-muted)">2</span></div>
+        <div class="stat-cell"><span class="stat-lbl">LD</span><span class="stat-val" style="color:var(--text-muted)">7</span></div>
+        <div class="stat-cell"><span class="stat-lbl">OC</span><span class="stat-val" style="color:var(--text-muted)">2</span></div>
+      </div>
+      <div><span class="pill pill-shock">Battleshocked</span></div>
+    </div>
+  </div>
+</div>
+
+<h2>Unit List Items</h2>
+<div style="max-width:260px">
+  <div class="unit-item"><div class="unit-item-inner">
+    <span style="font-family:'Anton',sans-serif;font-size:14px;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-primary)">Assault Int.</span>
+    <span style="font-size:11px;font-weight:500;color:var(--text-muted)">5 models</span>
+  </div></div>
+  <div class="unit-item active"><div class="unit-item-inner">
+    <span style="font-family:'Anton',sans-serif;font-size:14px;letter-spacing:0.04em;text-transform:uppercase;color:var(--imp)">Hellblasters</span>
+    <span style="font-size:11px;font-weight:500;color:var(--imp)">5 models</span>
+  </div></div>
+  <div class="unit-item shock"><div class="unit-item-inner">
+    <span style="font-family:'Anton',sans-serif;font-size:14px;letter-spacing:0.04em;text-transform:uppercase;color:var(--battleshocked)">Intercessors A</span>
+    <span class="pill pill-shock" style="margin:0">Battleshocked</span>
+  </div></div>
+  <div class="unit-item"><div class="unit-item-inner">
+    <span style="font-family:'Anton',sans-serif;font-size:14px;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-primary)">Dreadnought</span>
+    <span style="font-size:11px;font-weight:500;color:var(--text-muted)">1 model</span>
+  </div></div>
+</div>
+
+</body>
+</html>

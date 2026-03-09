@@ -70,8 +70,18 @@ A single HTML style guide page that renders all design components as living exam
 
 **At each section: produce 3 variations. James picks one before moving to the next section.**
 
+### Locked palette: V1-D
+- Backgrounds: #080c10 / #0f1520 / #162030 / #1e2d44
+- Imperium accent: #00d4ff (cyan) — NOT gold; gold is unreadable at stat label sizes
+- Orks accent: #ff4020
+- Text: #e0e8f0 / #8090a0 / #4a6080 / #2a3a4a
+- Battleshocked: #cc2020
+- Display/phase headings: Anton
+- All UI labels, stats, body: Rajdhani
+- Gold (#fbca1b) is NOT used — confirmed unreadable at small sizes
+
 ### Section order
-1. **Colors + typography** ← current
+1. **Colors + typography** ✅ locked — V1-D
 2. Panel chrome
 3. Atomic components (unit token, stat row, weapon row, button, BATTLESHOCKED pill)
 4. Compositions (unit list item, stats panel, action bar, phase indicator)

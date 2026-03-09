@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V2-A · Corner Brackets · Panel Chrome</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary:   #080c10;
+    --bg-surface:   #0f1520;
+    --bg-raised:    #162030;
+    --bg-selected:  #1e2d44;
+    --imp:          #00d4ff;
+    --imp-dim:      #0088aa;
+    --imp-tint:     #00d4ff14;
+    --ork:          #ff4020;
+    --text-primary: #e0e8f0;
+    --text-sec:     #8090a0;
+    --text-muted:   #4a6080;
+    --text-dis:     #2a3a4a;
+    --battleshocked:#cc2020;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg-primary); color: var(--text-sec); font-family: 'Rajdhani', sans-serif; padding: 2rem; }
+
+  /* ── PAGE HEADER ── */
+  .page-header { margin-bottom: 2.5rem; border-left: 2px solid var(--imp); padding-left: 1rem; font-family: 'Courier New', monospace; }
+  .page-header h1 { font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--imp); }
+  .page-header p  { font-size: 10px; color: var(--text-muted); margin-top: 0.25rem; }
+
+  h2 { font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-dis); margin: 2rem 0 1rem; border-bottom: 1px solid #0f1a28; padding-bottom: 0.5rem; }
+
+  /* ════════════════════════════════════════
+     PANEL CHROME — A: CORNER BRACKETS
+     No border. 8px L-shape brackets at each
+     corner. Subtle — suggests containment
+     without enclosing.
+  ════════════════════════════════════════ */
+  .panel {
+    background: var(--bg-surface);
+    position: relative;
+    padding: 1.25rem;
+  }
+  /* Corner bracket implementation — pure CSS, no images */
+  .panel::before, .panel::after,
+  .panel-inner::before, .panel-inner::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+  }
+  .panel::before  { top: 0; left: 0;  border-top: 1px solid var(--imp); border-left: 1px solid var(--imp); }
+  .panel::after   { top: 0; right: 0; border-top: 1px solid var(--imp); border-right: 1px solid var(--imp); }
+  .panel-inner { position: relative; width: 100%; height: 100%; }
+  .panel-inner::before { bottom: 0; left: 0;  border-bottom: 1px solid var(--imp); border-left: 1px solid var(--imp); }
+  .panel-inner::after  { bottom: 0; right: 0; border-bottom: 1px solid var(--imp); border-right: 1px solid var(--imp); }
+
+  .panel-header { margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid #162030; }
+  .panel-title  { font-family: 'Anton', sans-serif; font-size: 22px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-primary); line-height: 1; }
+  .panel-sub    { font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-top: 0.2rem; }
+
+  .stat-row { display: flex; gap: 1.5rem; margin-bottom: 1rem; }
+  .stat-cell { text-align: center; }
+  .stat-val  { font-size: 24px; font-weight: 700; color: var(--text-primary); line-height: 1; }
+  .stat-lbl  { font-size: 9px; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-dis); display: block; margin-bottom: 2px; }
+
+  .section-label { font-size: 10px; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-muted); margin: 0.75rem 0 0.4rem; }
+  .weapon-row    { display: flex; justify-content: space-between; font-size: 13px; font-weight: 500; color: var(--text-sec); padding: 0.3rem 0; border-bottom: 1px solid #0f1520; }
+  .weapon-name   { color: var(--text-primary); }
+  .weapon-stats  { color: var(--text-muted); letter-spacing: 0.05em; }
+  .weapon-stats span { color: var(--imp); }
+
+  .pill { display: inline-block; font-size: 9px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; padding: 2px 6px; margin: 0.3rem 0.2rem 0 0; }
+  .pill-keyword { background: var(--imp-tint); color: var(--imp); border: 1px solid #00d4ff30; }
+  .pill-shock   { background: #cc202018; color: var(--battleshocked); border: 1px solid #cc202030; }
+
+  .note { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-top: 0.75rem; border-top: 1px solid #0f1520; padding-top: 0.75rem; }
+
+  /* Layout grid for demos */
+  .demo-grid { display: grid; grid-template-columns: 220px 1fr; gap: 1rem; margin-bottom: 2rem; }
+  .demo-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+
+  /* Battleshocked state */
+  .panel.battleshocked .panel::before,
+  .panel.battleshocked .panel::after,
+  .panel.battleshocked .panel-inner::before,
+  .panel.battleshocked .panel-inner::after { border-color: var(--battleshocked); }
+  .panel.battleshocked { background: #160808; }
+  .panel.battleshocked .panel-title { color: var(--battleshocked); }
+
+  /* Selected state */
+  .panel.selected::before, .panel.selected::after,
+  .panel.selected .panel-inner::before, .panel.selected .panel-inner::after { width: 14px; height: 14px; border-width: 2px; }
+  .panel.selected { background: var(--bg-selected); }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>V2-A · Corner Brackets</h1>
+  <p>No border. 10px L-bracket at each corner. Faction accent colour. Minimal — suggests containment without enclosing.</p>
+</div>
+
+<h2>Stats Panel</h2>
+<div style="max-width:320px">
+  <div class="panel">
+    <div class="panel-inner">
+      <div class="panel-header">
+        <div class="panel-title">Hellblasters</div>
+        <div class="panel-sub">Space Marines · Infantry</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-cell"><span class="stat-lbl">M</span><span class="stat-val">6"</span></div>
+        <div class="stat-cell"><span class="stat-lbl">T</span><span class="stat-val">4</span></div>
+        <div class="stat-cell"><span class="stat-lbl">SV</span><span class="stat-val">3+</span></div>
+        <div class="stat-cell"><span class="stat-lbl">W</span><span class="stat-val">2</span></div>
+        <div class="stat-cell"><span class="stat-lbl">LD</span><span class="stat-val">7</span></div>
+        <div class="stat-cell"><span class="stat-lbl">OC</span><span class="stat-val">2</span></div>
+      </div>
+      <div class="section-label">Ranged Weapons</div>
+      <div class="weapon-row">
+        <span class="weapon-name">Plasma (std)</span>
+        <span class="weapon-stats">30" &nbsp; A:2 &nbsp; <span>S:7</span> &nbsp; AP:-2 &nbsp; D:2</span>
+      </div>
+      <div class="weapon-row">
+        <span class="weapon-name">Plasma (sup)</span>
+        <span class="weapon-stats">30" &nbsp; A:2 &nbsp; <span>S:8</span> &nbsp; AP:-3 &nbsp; D:3</span>
+      </div>
+      <div>
+        <span class="pill pill-keyword">Rapid Fire 1</span>
+        <span class="pill pill-keyword">Hazardous</span>
+      </div>
+      <div class="note">Stay far back. 30" range means you can fire from deployment.</div>
+    </div>
+  </div>
+</div>
+
+<h2>Selected State (brackets widen + bg lifts)</h2>
+<div style="max-width:320px">
+  <div class="panel selected">
+    <div class="panel-inner">
+      <div class="panel-header">
+        <div class="panel-title">Hellblasters</div>
+        <div class="panel-sub">Space Marines · Infantry · <span style="color:var(--imp)">Selected</span></div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-cell"><span class="stat-lbl">M</span><span class="stat-val">6"</span></div>
+        <div class="stat-cell"><span class="stat-lbl">T</span><span class="stat-val">4</span></div>
+        <div class="stat-cell"><span class="stat-lbl">SV</span><span class="stat-val">3+</span></div>
+        <div class="stat-cell"><span class="stat-lbl">W</span><span class="stat-val">2</span></div>
+        <div class="stat-cell"><span class="stat-lbl">LD</span><span class="stat-val">7</span></div>
+        <div class="stat-cell"><span class="stat-lbl">OC</span><span class="stat-val">2</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Battleshocked State</h2>
+<div style="max-width:320px">
+  <div class="panel" style="background:#100808">
+    <div class="panel-inner" style="--imp:var(--battleshocked)">
+      <div class="panel-header" style="border-color:#260e0e">
+        <div class="panel-title" style="color:var(--battleshocked)">Hellblasters</div>
+        <div class="panel-sub">Space Marines · Infantry</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-cell"><span class="stat-lbl">M</span><span class="stat-val" style="color:var(--text-muted)">6"</span></div>
+        <div class="stat-cell"><span class="stat-lbl">T</span><span class="stat-val" style="color:var(--text-muted)">4</span></div>
+        <div class="stat-cell"><span class="stat-lbl">SV</span><span class="stat-val" style="color:var(--text-muted)">3+</span></div>
+        <div class="stat-cell"><span class="stat-lbl">W</span><span class="stat-val" style="color:var(--text-muted)">2</span></div>
+        <div class="stat-cell"><span class="stat-lbl">LD</span><span class="stat-val" style="color:var(--text-muted)">7</span></div>
+        <div class="stat-cell"><span class="stat-lbl">OC</span><span class="stat-val" style="color:var(--text-muted)">2</span></div>
+      </div>
+      <div><span class="pill pill-shock">Battleshocked</span></div>
+    </div>
+  </div>
+</div>
+
+<h2>Unit List Items (multiple)</h2>
+<div style="max-width:260px; display:flex; flex-direction:column; gap:4px">
+  <div class="panel" style="padding:0.6rem 1rem">
+    <div class="panel-inner">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-family:'Anton',sans-serif;font-size:14px;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-primary)">Assault Int.</span>
+        <span style="font-size:11px;font-weight:500;color:var(--text-muted)">5 models</span>
+      </div>
+    </div>
+  </div>
+  <div class="panel selected" style="padding:0.6rem 1rem">
+    <div class="panel-inner">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-family:'Anton',sans-serif;font-size:14px;letter-spacing:0.04em;text-transform:uppercase;color:var(--imp)">Hellblasters</span>
+        <span style="font-size:11px;font-weight:500;color:var(--imp)">5 models</span>
+      </div>
+    </div>
+  </div>
+  <div class="panel" style="padding:0.6rem 1rem;background:#100808">
+    <div class="panel-inner">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-family:'Anton',sans-serif;font-size:14px;letter-spacing:0.04em;text-transform:uppercase;color:var(--battleshocked)">Intercessors A</span>
+        <span class="pill pill-shock" style="margin:0">Battleshocked</span>
+      </div>
+    </div>
+  </div>
+  <div class="panel" style="padding:0.6rem 1rem">
+    <div class="panel-inner">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-family:'Anton',sans-serif;font-size:14px;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-primary)">Dreadnought</span>
+        <span style="font-size:11px;font-weight:500;color:var(--text-muted)">1 model</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
