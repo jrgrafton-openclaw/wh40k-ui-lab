@@ -45,9 +45,9 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
   flex-shrink:0;
 }
 /* Size variants */
-.token.sm{width:44px;height:44px;}   /* 1–5 models */
-.token.md{width:56px;height:56px;}   /* 6–10 models */
-.token.lg{width:66px;height:66px;}   /* 10+ models */
+.token.sm{width:58px;height:58px;}   /* 1–5 models */
+.token.md{width:72px;height:72px;}   /* 6–10 models */
+.token.lg{width:84px;height:84px;}   /* 10+ models */
 /* Shape variants */
 .token.circle {border-radius:50%;}
 .token.square {border-radius:4px;}
@@ -64,26 +64,36 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 .token.enemy  .token-count{background:#180c08;border:1.5px solid var(--ork-dim);color:var(--ork);}
 
 /* Colour states */
-.token.player         {background:var(--imp-tint); border:1.5px solid var(--imp-dim);}
+.token.player         {background:#060e14;border:2px solid var(--imp-dim);box-shadow:0 0 8px #00d4ff18,0 0 20px #00d4ff08;}
 .token.player .tkn-icon{color:#4a8fa8;}
-.token.player:hover   {background:var(--imp-tint2);border-color:var(--imp);box-shadow:0 0 0 3px #00d4ff10,0 0 14px #00d4ff18;}
-.token.player.selected{background:var(--imp-tint2);border:2px solid var(--imp);box-shadow:0 0 0 3px #00d4ff18,0 0 18px #00d4ff25;}
+.token.player:hover   {background:var(--imp-tint);border-color:var(--imp);box-shadow:0 0 0 3px #00d4ff14,0 0 16px #00d4ff22;}
+.token.player.selected{background:var(--imp-tint);border:2.5px solid var(--imp);box-shadow:0 0 0 4px #00d4ff18,0 0 24px #00d4ff30;}
 .token.player.selected .tkn-icon{color:var(--imp);}
-.token.player.activated{background:transparent;border:1.5px solid #00d4ff18;opacity:.4;}
-.token.player.bs      {background:#120808;border:1.5px solid #771010;}
+.token.player.activated{background:transparent;border:2px solid #00d4ff18;opacity:.38;box-shadow:none;}
+.token.player.bs      {background:#120808;border:2px solid #771010;box-shadow:0 0 8px #cc202018;}
 .token.player.bs .tkn-icon{color:var(--bs);}
 
-.token.enemy          {background:var(--ork-tint);border:1.5px solid var(--ork-dim);}
+.token.enemy          {background:#140808;border:2px solid var(--ork-dim);box-shadow:0 0 8px #ff402018,0 0 20px #ff402008;}
 .token.enemy .tkn-icon{color:#884030;}
-.token.enemy:hover    {background:#ff402020;border-color:var(--ork);box-shadow:0 0 0 3px #ff402010,0 0 14px #ff402018;}
-.token.enemy.selected {background:#ff402020;border:2px solid var(--ork);box-shadow:0 0 0 3px #ff402018,0 0 18px #ff402025;}
+.token.enemy:hover    {background:var(--ork-tint);border-color:var(--ork);box-shadow:0 0 0 3px #ff402014,0 0 16px #ff402022;}
+.token.enemy.selected {background:var(--ork-tint);border:2.5px solid var(--ork);box-shadow:0 0 0 4px #ff402018,0 0 24px #ff402030;}
 .token.enemy.selected .tkn-icon{color:var(--ork);}
-.token.enemy.bs       {background:#120808;border:1.5px solid #771010;}
+.token.enemy.bs       {background:#120808;border:2px solid #771010;box-shadow:0 0 8px #cc202018;}
 .token.enemy.bs .tkn-icon{color:var(--bs);}
 
-/* Symbol icons — inline SVG wrapper */
-.tkn-icon{width:55%;height:55%;display:flex;align-items:center;justify-content:center;}
+/* Token interior — icon + model count stacked */
+.token{flex-direction:column;gap:1px;}
+.tkn-icon{width:42%;height:42%;display:flex;align-items:center;justify-content:center;}
 .tkn-icon svg{width:100%;height:100%;}
+.tkn-models{
+  font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;
+  letter-spacing:.06em;color:inherit;opacity:.7;line-height:1;
+}
+.token.player .tkn-models{color:var(--imp-dim);}
+.token.player.selected .tkn-models{color:var(--imp);}
+.token.enemy  .tkn-models{color:var(--ork-dim);}
+.token.enemy.selected .tkn-models{color:var(--ork);}
+.token.player.bs .tkn-models,.token.enemy.bs .tkn-models{color:var(--bs);}
 
 /* ══════════════════════════════════════════
    2. OBJECTIVE MARKER — hexagon, separate
@@ -158,7 +168,15 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 .pill-kw:hover{background:var(--imp-tint2);border-color:var(--imp-dim);}
 .pill-neutral{background:#0f1a28;color:var(--text-muted);border:1px solid #1a2a3a;}
 .pill-neutral:hover{background:#162030;border-color:var(--text-dis);}
-.pill-bs{display:inline-flex;align-items:center;gap:4px;background:var(--bs-tint);color:var(--bs);border:1px solid #881010;}
+.pill-bs{
+  display:inline-flex;align-items:center;gap:4px;
+  font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;
+  letter-spacing:.15em;text-transform:uppercase;padding:2px 7px;
+  background:var(--bs-tint);color:var(--bs);border:1px solid #881010;
+  transition:background .12s,border-color .12s,transform .12s;
+  cursor:default;
+}
+.pill-bs:hover{transform:translateY(-1px);}
 .pill-bs::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--bs);flex-shrink:0;}
 
 /* ══════════════════════════════════════════
@@ -171,7 +189,7 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 .kw-tip{
   position:absolute;
   bottom:calc(100% + 8px);
-  left:50%;transform:translateX(-50%);
+  left:0;
   width:220px;
   background:var(--bg-raised);
   border:1px solid #00d4ff22;
@@ -287,7 +305,7 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
     <div class="token-wrap">
       <div class="token player circle sm">
         <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2"/></svg></div>
-        <span class="token-count">5</span>
+        <span class="tkn-models">×5</span><span class="token-count">5</span>
       </div>
       <div class="token-label">Hellblasters</div>
     </div>
@@ -297,7 +315,7 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
     <div class="token-wrap selected">
       <div class="token player circle sm selected">
         <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2"/></svg></div>
-        <span class="token-count">5</span>
+        <span class="tkn-models">×5</span><span class="token-count">5</span>
       </div>
       <div class="token-label">Hellblasters</div>
     </div>
@@ -307,7 +325,7 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
     <div class="token-wrap">
       <div class="token player circle sm activated">
         <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2"/></svg></div>
-        <span class="token-count">5</span>
+        <span class="tkn-models">×5</span><span class="token-count">5</span>
       </div>
       <div class="token-label">Hellblasters</div>
     </div>
@@ -317,7 +335,7 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
     <div class="token-wrap">
       <div class="token player circle sm bs">
         <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2"/></svg></div>
-        <span class="token-count">5</span>
+        <span class="tkn-models">×5</span><span class="token-count">5</span>
       </div>
       <div class="token-label">Hellblasters</div>
     </div>
@@ -330,28 +348,28 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
     <div class="lbl">Infantry</div>
     <div class="token player circle sm">
       <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2.5"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2.5"/></svg></div>
-      <span class="token-count">5</span>
+      <span class="tkn-models">×5</span><span class="token-count">5</span>
     </div>
   </div>
   <div class="col">
     <div class="lbl">HQ / Character</div>
     <div class="token player circle sm">
       <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><polygon points="12,3 14.5,9 21,9.5 16,14 17.5,21 12,17.5 6.5,21 8,14 3,9.5 9.5,9" stroke="currentColor" stroke-width="1.5"/></svg></div>
-      <span class="token-count">1</span>
+      <span class="tkn-models">×1</span><span class="token-count">1</span>
     </div>
   </div>
   <div class="col">
     <div class="lbl">Elite</div>
     <div class="token player circle sm">
       <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><polygon points="12,4 20,12 12,20 4,12" stroke="currentColor" stroke-width="2"/></svg></div>
-      <span class="token-count">3</span>
+      <span class="tkn-models">×3</span><span class="token-count">3</span>
     </div>
   </div>
   <div class="col">
     <div class="lbl">Large unit (md)</div>
     <div class="token player circle md">
       <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2"/></svg></div>
-      <span class="token-count">20</span>
+      <span class="tkn-models">×20</span><span class="token-count">20</span>
     </div>
   </div>
 </div>
@@ -360,21 +378,21 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
     <div class="lbl">Vehicle / Monster (square)</div>
     <div class="token player square md">
       <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="5" width="14" height="14" rx="1" stroke="currentColor" stroke-width="2"/><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="1"/></svg></div>
-      <span class="token-count">1</span>
+      <span class="tkn-models">×1</span><span class="token-count">1</span>
     </div>
   </div>
   <div class="col">
     <div class="lbl">Monster (lg)</div>
     <div class="token enemy square lg">
       <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 4 L20 10 L17 20 L7 20 L4 10 Z" stroke="currentColor" stroke-width="1.5"/></svg></div>
-      <span class="token-count">1</span>
+      <span class="tkn-models">×1</span><span class="token-count">1</span>
     </div>
   </div>
   <div class="col">
     <div class="lbl">Enemy infantry</div>
     <div class="token enemy circle sm">
       <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M5 20 Q5 14 12 14 Q19 14 19 20" stroke="currentColor" stroke-width="1.5"/></svg></div>
-      <span class="token-count">20</span>
+      <span class="tkn-models">×20</span><span class="token-count">20</span>
     </div>
   </div>
 </div>
