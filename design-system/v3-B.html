@@ -9,173 +9,269 @@
 <style>
   :root {
     --bg-primary:#080c10; --bg-surface:#0f1520; --bg-raised:#162030; --bg-selected:#1e2d44;
-    --imp:#00d4ff; --imp-dim:#0088aa; --imp-tint:#00d4ff14;
+    --imp:#00d4ff; --imp-dim:#0088aa; --imp-tint:#00d4ff14; --imp-tint2:#00d4ff22;
     --ork:#ff4020; --ork-dim:#aa2810; --ork-tint:#ff402014;
     --text-primary:#e0e8f0; --text-sec:#8090a0; --text-muted:#4a6080; --text-dis:#2a3a4a;
-    --bs:#cc2020;
+    --bs:#cc2020; --bs-tint:#cc202018;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--bg-primary);color:var(--text-sec);font-family:'Rajdhani',sans-serif;padding:2rem;}
+  body{background:var(--bg-primary);color:var(--text-sec);font-family:'Rajdhani',sans-serif;padding:2rem;max-width:860px;}
   .page-header{margin-bottom:2.5rem;border-left:2px solid var(--imp);padding-left:1rem;font-family:'Courier New',monospace;}
   .page-header h1{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--imp);}
   .page-header p{font-size:10px;color:var(--text-muted);margin-top:.25rem;}
-  h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--text-dis);margin:2rem 0 1rem;border-bottom:1px solid #0f1a28;padding-bottom:.5rem;}
-  .row{display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end;margin-bottom:.5rem;}
-  .label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dis);margin-bottom:.4rem;}
+  h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--text-dis);margin:2.5rem 0 1rem;border-bottom:1px solid #0f1a28;padding-bottom:.5rem;}
+  .note{font-size:10px;color:var(--text-dis);margin-bottom:1rem;font-family:'Courier New',monospace;}
+  .row{display:flex;gap:1.5rem;flex-wrap:wrap;align-items:flex-end;}
+  .col{display:flex;flex-direction:column;gap:.4rem;}
+  .lbl{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dis);}
 
-  /* ══ UNIT TOKEN — A: CIRCLE ══ */
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     1. UNIT TOKEN — CIRCLE
+     Shape is the only diff between A/B/C
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   .token{
-    width:52px;height:52px;border-radius:4px;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    position:relative;flex-shrink:0;
+    width:52px;height:52px;
+    border-radius:4px; /* ← shape diff */
+    display:flex;align-items:center;justify-content:center;
+    position:relative;cursor:pointer;
+    transition:box-shadow .15s, border-color .15s, background .15s;
   }
-  .token-num{font-family:'Anton',sans-serif;font-size:20px;letter-spacing:.02em;line-height:1;color:var(--text-primary);}
-  .token-sub{font-family:'Rajdhani',sans-serif;font-size:8px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--text-muted);line-height:1;margin-top:1px;}
-  .token-count{position:absolute;top:-3px;right:-3px;width:16px;height:16px;border-radius:4px;background:var(--bg-raised);border:1px solid var(--bg-primary);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;font-family:'Rajdhani',sans-serif;}
-
-  /* Imperium default */
-  .token.imp{background:var(--imp-tint);border:1px solid var(--imp-dim);}
-  .token.imp .token-num{color:var(--imp);}
-  .token.imp .token-count{color:var(--text-sec);}
-  /* Imperium selected */
-  .token.imp.sel{background:#00d4ff28;border:2px solid var(--imp);box-shadow:0 0 12px #00d4ff30;}
-  .token.imp.sel .token-num{color:#fff;}
-  /* Imperium activated (has moved/acted) */
-  .token.imp.act{background:var(--imp-tint);border:1px solid #0088aa55;opacity:.55;}
-  /* Battleshocked */
-  .token.imp.bsh{background:#1a0808;border:1px solid #aa1818;}
-  .token.imp.bsh .token-num{color:var(--bs);}
-
-  /* Orks default */
-  .token.ork{background:var(--ork-tint);border:1px solid var(--ork-dim);}
-  .token.ork .token-num{color:var(--ork);}
-  .token.ork .token-count{color:var(--text-sec);}
-  /* Orks selected */
-  .token.ork.sel{background:#ff402028;border:2px solid var(--ork);box-shadow:0 0 12px #ff402030;}
-  .token.ork.sel .token-num{color:#fff;}
-
-  /* ══ BUTTONS ══ */
-  .btn{
-    font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;
-    letter-spacing:.18em;text-transform:uppercase;
-    padding:.45rem 1rem;border:1px solid;cursor:pointer;
-    transition:background .12s,color .12s,border-color .12s;
-  }
-  .btn-primary{background:var(--imp);color:#080c10;border-color:var(--imp);}
-  .btn-secondary{background:transparent;color:var(--imp);border-color:var(--imp-dim);}
-  .btn-secondary:hover{background:var(--imp-tint);border-color:var(--imp);}
-  .btn-ghost{background:transparent;color:var(--text-muted);border-color:var(--text-dis);}
-  .btn-disabled{background:transparent;color:var(--text-dis);border-color:#1a2030;cursor:not-allowed;}
-  .btn-danger{background:transparent;color:var(--bs);border-color:#662020;}
-
-  /* ══ ACTION BAR BUTTON (phase-specific) ══ */
-  .actbtn{
-    font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:.15em;
-    text-transform:uppercase;padding:.4rem .9rem;border:1px solid var(--text-dis);
-    background:transparent;color:var(--text-muted);cursor:pointer;
-  }
-  .actbtn.active{border-color:var(--imp);color:var(--imp);background:var(--imp-tint);}
-  .actbtn.disabled{color:var(--text-dis);border-color:#141e28;cursor:not-allowed;}
-
-  /* ══ BATTLESHOCKED PILL ══ */
-  .pill-bs{
-    display:inline-flex;align-items:center;gap:.3rem;
-    font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;
-    letter-spacing:.2em;text-transform:uppercase;
-    padding:3px 8px;background:#cc202018;color:var(--bs);border:1px solid #cc202040;
-  }
-  .pill-bs::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--bs);flex-shrink:0;}
-
-  .pill-kw{
-    display:inline-block;font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;
-    letter-spacing:.15em;text-transform:uppercase;padding:2px 6px;
-    background:var(--imp-tint);color:var(--imp);border:1px solid #00d4ff30;
+  /* Faction icon placeholder — SVG cross for player, ork glyph for enemy */
+  .token-icon{font-size:18px;line-height:1;user-select:none;}
+  .token-count{
+    position:absolute;top:-4px;right:-4px;
+    width:17px;height:17px;border-radius:50%;
+    background:var(--bg-raised);border:1px solid var(--bg-primary);
+    display:flex;align-items:center;justify-content:center;
+    font-size:8px;font-weight:700;font-family:'Rajdhani',sans-serif;
+    color:var(--text-sec);
   }
 
-  /* ══ STAT ROW ══ */
+  /* Player states */
+  .token.player         {background:var(--imp-tint); border:1px solid var(--imp-dim);}
+  .token.player .token-icon{color:var(--imp-dim);}
+  .token.player:hover   {background:var(--imp-tint2);border-color:var(--imp);}
+  .token.player.selected{background:var(--imp-tint2);border:2px solid var(--imp);box-shadow:0 0 0 3px #00d4ff18, 0 0 14px #00d4ff22;}
+  .token.player.selected .token-icon{color:var(--imp);}
+  .token.player.activated{background:transparent;border:1px solid #00d4ff22;opacity:.45;}
+  .token.player.bs      {background:#140808;border:1px solid #881010;}
+  .token.player.bs .token-icon{color:var(--bs);}
+
+  /* Enemy states */
+  .token.enemy          {background:var(--ork-tint);border:1px solid var(--ork-dim);}
+  .token.enemy .token-icon{color:var(--ork-dim);}
+  .token.enemy:hover    {background:#ff402022;border-color:var(--ork);}
+  .token.enemy.selected {background:#ff402022;border:2px solid var(--ork);box-shadow:0 0 0 3px #ff402018, 0 0 14px #ff402022;}
+  .token.enemy.bs       {background:#140808;border:1px solid #881010;}
+  .token.enemy.bs .token-icon{color:var(--bs);}
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     2. OBJECTIVE MARKER — HEXAGON
+     Separate from unit tokens.
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .obj-marker{
+    width:64px;height:64px;
+    clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);
+    background:transparent;border:none;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+    /* Use outline via drop-shadow since clip-path clips borders */
+    filter:drop-shadow(0 0 0 1px var(--text-muted));
+  }
+  .obj-inner{
+    width:60px;height:60px;
+    clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);
+    background:#0a0e14;border:none;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  }
+  /* Cleaner hex using SVG background */
+  .hex{
+    width:64px;height:72px;position:relative;display:flex;align-items:center;justify-content:center;
+  }
+  .hex svg{position:absolute;top:0;left:0;width:100%;height:100%;}
+  .hex-content{position:relative;text-align:center;}
+  .hex-num{font-family:'Anton',sans-serif;font-size:20px;letter-spacing:.04em;color:var(--text-muted);}
+  .hex-sub{font-family:'Rajdhani',sans-serif;font-size:8px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dis);}
+  .hex.contested .hex-num{color:var(--imp);}
+  .hex.enemy-held .hex-num{color:var(--ork);}
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     3. STAT ROW — no highlighted stats
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   .stat-row{display:flex;gap:1.5rem;}
   .stat-cell{text-align:center;}
   .stat-val{font-size:22px;font-weight:700;color:var(--text-primary);line-height:1;display:block;}
   .stat-lbl{font-size:9px;font-weight:500;letter-spacing:.25em;text-transform:uppercase;color:var(--text-dis);display:block;margin-bottom:2px;}
 
-  /* ══ WEAPON ROW ══ */
-  .weapon-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:500;padding:.35rem 0;border-bottom:1px solid #0e1822;}
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     4. WEAPON ROW — uniform stat display
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .weapon-block{max-width:420px;}
+  .weapon-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:500;padding:.35rem 0;border-bottom:1px solid #0e1822;transition:background .12s;}
+  .weapon-row:hover{background:#ffffff05;}
   .weapon-name{color:var(--text-primary);}
-  .weapon-stats{display:flex;gap:.75rem;color:var(--text-muted);font-size:12px;}
-  .weapon-stats .hi{color:var(--imp);}
+  .weapon-stats{display:flex;gap:.6rem;color:var(--text-muted);font-size:12px;font-weight:500;}
 
-  .divider{border:none;border-top:1px solid #0f1a28;margin:1.5rem 0;}
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     5. ABILITY ROW — pill + inline desc
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .ability{margin-bottom:.75rem;}
+  .ability-pill{
+    display:inline-block;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;
+    letter-spacing:.18em;text-transform:uppercase;padding:3px 10px;
+    background:var(--imp-tint);color:var(--imp);border:1px solid #00d4ff30;
+    cursor:default;margin-bottom:.35rem;
+    transition:background .12s,border-color .12s;
+  }
+  .ability-pill:hover{background:var(--imp-tint2);border-color:var(--imp-dim);}
+  .ability-desc{font-size:12px;color:var(--text-muted);line-height:1.5;}
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     6. KEYWORD PILL
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .pill{display:inline-block;font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;padding:2px 7px;margin:.2rem .2rem 0 0;}
+  .pill-kw{background:var(--imp-tint);color:var(--imp);border:1px solid #00d4ff28;}
+  .pill-bs-kw{background:var(--bs-tint);color:var(--bs);border:1px solid #cc202030;display:inline-flex;align-items:center;gap:4px;}
+  .pill-bs-kw::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--bs);flex-shrink:0;}
+  .pill-neutral{background:#0f1a28;color:var(--text-muted);border:1px solid #1a2a3a;}
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     7. ARMY ROSTER ROW — plain row, no panel chrome
+     State via bg + left accent bar only
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .roster-list{max-width:220px;border-top:1px solid #0e1520;}
+  .roster-row{
+    display:flex;align-items:center;gap:.6rem;padding:.5rem .75rem;
+    border-bottom:1px solid #0a0f18;border-left:2px solid transparent;
+    cursor:pointer;transition:background .12s,border-left-color .12s;
+    position:relative;
+  }
+  .roster-row:hover{background:#ffffff06;border-left-color:var(--text-dis);}
+  .roster-row.selected{background:var(--imp-tint);border-left-color:var(--imp);}
+  .roster-row.enemy-row{border-left-color:transparent;}
+  .roster-row.enemy-row:hover{border-left-color:var(--ork-dim);}
+  .roster-row.bs-row{background:#100808;border-left-color:var(--bs);}
+
+  .roster-icon{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+  .roster-icon.player{background:var(--imp-tint);border:1px solid var(--imp-dim);color:var(--imp);}
+  .roster-icon.enemy{background:var(--ork-tint);border:1px solid var(--ork-dim);color:var(--ork);}
+  .roster-name{font-size:13px;font-weight:500;color:var(--text-primary);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .roster-row.selected .roster-name{color:var(--imp);}
+  .roster-row.bs-row .roster-name{color:var(--bs);}
+  .roster-count{font-size:10px;font-weight:600;color:var(--text-dis);flex-shrink:0;}
+
+  .roster-section{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;padding:.4rem .75rem;border-bottom:1px solid #0a0f18;display:flex;align-items:center;gap:.4rem;}
+  .roster-section.player-sec{color:var(--imp);}
+  .roster-section.enemy-sec{color:var(--ork);}
+  .roster-section-dot{width:6px;height:6px;border-radius:50%;}
+  .roster-section.player-sec .roster-section-dot{background:var(--imp);}
+  .roster-section.enemy-sec .roster-section-dot{background:var(--ork);}
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     8. ACTION BUTTONS
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .btn{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;padding:.45rem 1.1rem;border:1px solid;cursor:pointer;transition:background .12s,border-color .12s,color .12s;}
+  .btn-action{background:var(--bg-raised);color:var(--text-primary);border-color:#2a3a4a;}
+  .btn-action:hover{background:#1e2d44;border-color:var(--imp-dim);}
+  .btn-action:active{background:var(--bg-selected);border-color:var(--imp);}
+  .btn-action:disabled,.btn-action.disabled{background:transparent;color:var(--text-dis);border-color:#141e28;cursor:not-allowed;}
+  .btn-primary-cta{background:var(--imp);color:#080c10;border-color:var(--imp);font-weight:700;}
+  .btn-primary-cta:hover{background:#00eeff;border-color:#00eeff;}
+  .btn-primary-cta:active{background:var(--imp-dim);border-color:var(--imp-dim);}
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     9. PHASE INDICATOR ROW — status only
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .phase-row{display:flex;align-items:center;gap:.1rem;}
+  .phase-item{display:flex;align-items:center;gap:.4rem;padding:.3rem .6rem;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dis);cursor:default;}
+  .phase-item.active{color:var(--imp);}
+  .phase-item.done{color:var(--text-muted);}
+  .phase-dot{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.4;}
+  .phase-item.active .phase-dot{opacity:1;}
+  .phase-divider{color:var(--text-dis);font-size:9px;opacity:.3;}
 </style>
 </head>
 <body>
 <div class="page-header">
-  <h1>V3-B · Square Token</h1>
-  <p>Rounded-square token. More data-dense feel — reads as a military marker or map pin. All other atoms identical.</p>
+  <h1>V3-B · Square Token · Atomic Components (revised)</h1>
+  <p>Corrected spec: no S highlight, no phase tab buttons, player/enemy (not faction names), roster rows are plain rows not panels.</p>
 </div>
 
-<!-- UNIT TOKENS -->
-<h2>Unit Token · Imperium</h2>
+<!-- 1. UNIT TOKENS -->
+<h2>1 · Unit Token — Circle</h2>
+<div class="note">Player vs Enemy only. No faction names on tokens. Hover states included (CSS transition).</div>
+<div class="row" style="margin-bottom:1.5rem">
+  <div class="col"><div class="lbl">Player — default</div>
+    <div class="token player">
+      <span class="token-icon">✛</span>
+      <span class="token-count">5</span>
+    </div>
+  </div>
+  <div class="col"><div class="lbl">Player — selected</div>
+    <div class="token player selected">
+      <span class="token-icon">✛</span>
+      <span class="token-count">5</span>
+    </div>
+  </div>
+  <div class="col"><div class="lbl">Player — activated</div>
+    <div class="token player activated">
+      <span class="token-icon">✛</span>
+      <span class="token-count">5</span>
+    </div>
+  </div>
+  <div class="col"><div class="lbl">Player — battleshocked</div>
+    <div class="token player bs">
+      <span class="token-icon">✛</span>
+      <span class="token-count">5</span>
+    </div>
+  </div>
+</div>
 <div class="row">
-  <div>
-    <div class="label">Default</div>
-    <div class="token imp"><span class="token-num">01</span><span class="token-sub">HQ</span><span class="token-count">5</span></div>
+  <div class="col"><div class="lbl">Enemy — default</div>
+    <div class="token enemy">
+      <span class="token-icon">☠</span>
+      <span class="token-count">20</span>
+    </div>
   </div>
-  <div>
-    <div class="label">Selected</div>
-    <div class="token imp sel"><span class="token-num">01</span><span class="token-sub">HQ</span><span class="token-count">5</span></div>
+  <div class="col"><div class="lbl">Enemy — selected</div>
+    <div class="token enemy selected">
+      <span class="token-icon">☠</span>
+      <span class="token-count">20</span>
+    </div>
   </div>
-  <div>
-    <div class="label">Activated</div>
-    <div class="token imp act"><span class="token-num">01</span><span class="token-sub">HQ</span><span class="token-count">5</span></div>
-  </div>
-  <div>
-    <div class="label">Battleshocked</div>
-    <div class="token imp bsh"><span class="token-num">01</span><span class="token-sub">HQ</span><span class="token-count">5</span></div>
+  <div class="col"><div class="lbl">Enemy — battleshocked</div>
+    <div class="token enemy bs">
+      <span class="token-icon">☠</span>
+      <span class="token-count">20</span>
+    </div>
   </div>
 </div>
 
-<h2>Unit Token · Orks</h2>
+<!-- 2. OBJECTIVE MARKER -->
+<h2>2 · Objective Marker — Hexagon (separate from unit token)</h2>
 <div class="row">
-  <div>
-    <div class="label">Default</div>
-    <div class="token ork"><span class="token-num">01</span><span class="token-sub">MOB</span><span class="token-count">20</span></div>
+  <div class="col"><div class="lbl">Neutral</div>
+    <div class="hex">
+      <svg viewBox="0 0 64 72" fill="none"><polygon points="32,2 62,18 62,54 32,70 2,54 2,18" stroke="#4a6080" stroke-width="1" fill="#0a0e14"/></svg>
+      <div class="hex-content"><div class="hex-num">01</div><div class="hex-sub">OBJ</div></div>
+    </div>
   </div>
-  <div>
-    <div class="label">Selected</div>
-    <div class="token ork sel"><span class="token-num">01</span><span class="token-sub">MOB</span><span class="token-count">20</span></div>
+  <div class="col"><div class="lbl">Contested</div>
+    <div class="hex contested">
+      <svg viewBox="0 0 64 72" fill="none"><polygon points="32,2 62,18 62,54 32,70 2,54 2,18" stroke="#00d4ff" stroke-width="1.5" fill="#00d4ff08"/></svg>
+      <div class="hex-content"><div class="hex-num">02</div><div class="hex-sub">OBJ</div></div>
+    </div>
+  </div>
+  <div class="col"><div class="lbl">Enemy held</div>
+    <div class="hex enemy-held">
+      <svg viewBox="0 0 64 72" fill="none"><polygon points="32,2 62,18 62,54 32,70 2,54 2,18" stroke="#ff4020" stroke-width="1.5" fill="#ff402008"/></svg>
+      <div class="hex-content"><div class="hex-num">03</div><div class="hex-sub">OBJ</div></div>
+    </div>
   </div>
 </div>
 
-<!-- BUTTONS -->
-<h2>Buttons</h2>
-<div class="row">
-  <div><div class="label">Primary action</div><button class="btn btn-primary">End Phase</button></div>
-  <div><div class="label">Secondary</div><button class="btn btn-secondary">Use Stratagem</button></div>
-  <div><div class="label">Ghost</div><button class="btn btn-ghost">Reset</button></div>
-  <div><div class="label">Disabled</div><button class="btn btn-disabled" disabled>Charge</button></div>
-  <div><div class="label">Danger</div><button class="btn btn-danger">Concede</button></div>
-</div>
-
-<h2>Action Bar Buttons</h2>
-<div class="row">
-  <button class="actbtn disabled">Command</button>
-  <button class="actbtn active">Movement</button>
-  <button class="actbtn">Shooting</button>
-  <button class="actbtn">Charge</button>
-  <button class="actbtn">Fight</button>
-</div>
-
-<!-- PILLS -->
-<h2>Pills</h2>
-<div class="row" style="align-items:center">
-  <div><div class="label">Battleshocked</div><span class="pill-bs">Battleshocked</span></div>
-  <div><div class="label">Keyword</div><span class="pill-kw">Rapid Fire 1</span></div>
-  <div><div class="label">Keyword</div><span class="pill-kw">Hazardous</span></div>
-  <div><div class="label">Keyword</div><span class="pill-kw">Heavy</span></div>
-</div>
-
-<!-- STAT ROW -->
-<h2>Stat Row</h2>
+<!-- 3. STAT ROW -->
+<h2>3 · Stat Row — uniform, no highlights</h2>
 <div class="stat-row">
   <div class="stat-cell"><span class="stat-lbl">M</span><span class="stat-val">6"</span></div>
   <div class="stat-cell"><span class="stat-lbl">T</span><span class="stat-val">4</span></div>
@@ -185,45 +281,125 @@
   <div class="stat-cell"><span class="stat-lbl">OC</span><span class="stat-val">2</span></div>
 </div>
 
-<!-- WEAPON ROWS -->
-<h2>Weapon Rows</h2>
-<div style="max-width:400px">
+<!-- 4. WEAPON ROW -->
+<h2>4 · Weapon Row — all stats uniform colour</h2>
+<div class="weapon-block">
   <div class="weapon-row">
     <span class="weapon-name">Plasma (std)</span>
-    <span class="weapon-stats"><span>30"</span><span>A:2</span><span class="hi">S:7</span><span>AP:-2</span><span>D:2</span></span>
+    <span class="weapon-stats"><span>30"</span><span>A:2</span><span>S:7</span><span>AP:-2</span><span>D:2</span></span>
   </div>
   <div class="weapon-row">
     <span class="weapon-name">Plasma (sup)</span>
-    <span class="weapon-stats"><span>30"</span><span>A:2</span><span class="hi">S:8</span><span>AP:-3</span><span>D:3</span></span>
+    <span class="weapon-stats"><span>30"</span><span>A:2</span><span>S:8</span><span>AP:-3</span><span>D:3</span></span>
   </div>
   <div class="weapon-row">
-    <span class="weapon-name">Astartes Chainsword</span>
-    <span class="weapon-stats"><span>Melee</span><span>A:4</span><span class="hi">S:4</span><span>AP:-1</span><span>D:1</span></span>
+    <span class="weapon-name">Heavy Bolt Pistol</span>
+    <span class="weapon-stats"><span>18"</span><span>A:2</span><span>S:4</span><span>AP:0</span><span>D:1</span></span>
+  </div>
+  <div style="margin-top:.4rem">
+    <span class="pill pill-kw">Rapid Fire 1</span>
+    <span class="pill pill-kw">Hazardous</span>
+    <span class="pill pill-neutral">Pistol</span>
+    <span class="pill pill-neutral">Melee</span>
   </div>
 </div>
 
-<!-- FULL COMPOSITION PREVIEW -->
-<hr class="divider">
-<h2>In Context — Unit list + phase bar</h2>
-<div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:flex-start">
-  <!-- battlefield tokens -->
-  <div style="display:flex;gap:8px;flex-wrap:wrap;padding:1rem;background:var(--bg-surface);border-top:2px solid var(--imp);border:1px solid #00d4ff22;border-top-width:2px">
-    <div class="token imp sel"><span class="token-num">01</span><span class="token-sub">LT</span><span class="token-count">1</span></div>
-    <div class="token imp"><span class="token-num">02</span><span class="token-sub">INT</span><span class="token-count">5</span></div>
-    <div class="token imp act"><span class="token-num">03</span><span class="token-sub">HBL</span><span class="token-count">5</span></div>
-    <div class="token imp bsh"><span class="token-num">04</span><span class="token-sub">INT</span><span class="token-count">3</span></div>
-    <div class="token ork"><span class="token-num">05</span><span class="token-sub">MOB</span><span class="token-count">20</span></div>
-    <div class="token ork"><span class="token-num">06</span><span class="token-sub">BNB</span><span class="token-count">10</span></div>
+<!-- 5. ABILITY ROW -->
+<h2>5 · Ability Row — pill + always-visible description</h2>
+<div style="max-width:360px">
+  <div class="ability">
+    <div class="ability-pill">Shock Assault</div>
+    <div class="ability-desc">On a turn this unit makes a charge move, until end of turn its models get +1 Attack.</div>
   </div>
-  <!-- action bar -->
-  <div style="display:flex;gap:3px;padding:.5rem;background:var(--bg-surface);border-top:2px solid var(--imp);border:1px solid #00d4ff22;align-self:flex-end">
-    <button class="actbtn disabled">Command</button>
-    <button class="actbtn active">Movement</button>
-    <button class="actbtn">Shooting</button>
-    <button class="actbtn">Charge</button>
-    <button class="actbtn">Fight</button>
-    <button class="btn btn-primary" style="margin-left:.5rem">End Movement →</button>
+  <div class="ability">
+    <div class="ability-pill">And They Shall Know No Fear</div>
+    <div class="ability-desc">Each time a model in this unit takes a wound, roll D6. On 6, ignored.</div>
   </div>
 </div>
+
+<!-- 6. KEYWORD PILLS -->
+<h2>6 · Keyword Pills</h2>
+<div>
+  <span class="pill pill-kw">Rapid Fire 1</span>
+  <span class="pill pill-kw">Hazardous</span>
+  <span class="pill pill-kw">Heavy</span>
+  <span class="pill pill-kw">Torrent</span>
+  <span class="pill pill-neutral">Pistol</span>
+  <span class="pill pill-neutral">Melee</span>
+  <span class="pill pill-bs-kw">Battleshocked</span>
+</div>
+
+<!-- 7. ARMY ROSTER ROW -->
+<h2>7 · Army Roster Row — plain row, no panel chrome</h2>
+<div class="note">Rows sit inside the army roster panel. No V2-B chrome per-row. State via bg tint + left accent bar.</div>
+<div class="roster-list">
+  <div class="roster-section player-sec"><span class="roster-section-dot"></span>Player</div>
+  <div class="roster-row selected">
+    <div class="roster-icon player">✛</div>
+    <span class="roster-name">Assault Intercessors</span>
+    <span class="roster-count">5</span>
+  </div>
+  <div class="roster-row">
+    <div class="roster-icon player">★</div>
+    <span class="roster-name">Primaris Lieutenant</span>
+    <span class="roster-count">1</span>
+  </div>
+  <div class="roster-row">
+    <div class="roster-icon player">✛</div>
+    <span class="roster-name">Hellblasters</span>
+    <span class="roster-count">5</span>
+  </div>
+  <div class="roster-row bs-row">
+    <div class="roster-icon player">✛</div>
+    <span class="roster-name">Intercessors A</span>
+    <span class="pill pill-bs-kw" style="margin:0;font-size:8px;padding:1px 5px">Battleshocked</span>
+  </div>
+  <div class="roster-section enemy-sec"><span class="roster-section-dot"></span>Enemy</div>
+  <div class="roster-row enemy-row">
+    <div class="roster-icon enemy">☠</div>
+    <span class="roster-name">Boss Nob</span>
+    <span class="roster-count">1</span>
+  </div>
+  <div class="roster-row enemy-row">
+    <div class="roster-icon enemy">☠</div>
+    <span class="roster-name">Boyz Mob</span>
+    <span class="roster-count">20</span>
+  </div>
+</div>
+
+<!-- 8. ACTION BUTTONS -->
+<h2>8 · Action Buttons</h2>
+<div class="row" style="margin-bottom:1rem">
+  <div class="col"><div class="lbl">Secondary action</div>
+    <div style="display:flex;gap:4px">
+      <button class="btn btn-action">Normal Move</button>
+      <button class="btn btn-action">Advance</button>
+      <button class="btn btn-action">Use Stratagem</button>
+    </div>
+  </div>
+</div>
+<div class="row" style="margin-bottom:1rem">
+  <div class="col"><div class="lbl">Disabled</div>
+    <button class="btn btn-action disabled">Charge</button>
+  </div>
+  <div class="col"><div class="lbl">Primary CTA</div>
+    <button class="btn btn-primary-cta">End Movement →</button>
+  </div>
+</div>
+
+<!-- 9. PHASE INDICATOR ROW -->
+<h2>9 · Phase Indicator — status display only, not interactive</h2>
+<div class="phase-row">
+  <div class="phase-item done"><span class="phase-dot"></span>Command</div>
+  <span class="phase-divider">·</span>
+  <div class="phase-item active"><span class="phase-dot"></span>Movement</div>
+  <span class="phase-divider">·</span>
+  <div class="phase-item"><span class="phase-dot"></span>Shooting</div>
+  <span class="phase-divider">·</span>
+  <div class="phase-item"><span class="phase-dot"></span>Charge</div>
+  <span class="phase-divider">·</span>
+  <div class="phase-item"><span class="phase-dot"></span>Fight</div>
+</div>
+
 </body>
 </html>
