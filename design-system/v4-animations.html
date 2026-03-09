@@ -540,22 +540,23 @@ function replayHit(){
 
 function d6(){ return Math.floor(Math.random()*6)+1; }
 
-function rollStage(containerId, summaryId, count, threshold, isEnemy, delay, onDone){
+function rollStage(containerId, summaryId, count, threshold, isEnemy, isDamage, delay, onDone){
   const row = document.getElementById(containerId);
   const sum = document.getElementById(summaryId);
   row.innerHTML = ''; sum.innerHTML = '';
   const results = [];
   for(let i=0;i<count;i++){
     const val = d6();
-    const success = val >= threshold;
-    results.push({val, success});
+    const success = isDamage ? true : (val >= threshold); 
+    const dmgVal = isDamage ? Math.ceil(val/2) : val;
+    results.push({val: dmgVal, success});
+    
     const die = document.createElement('div');
     die.className = 'die rolling';
     die.style.animationDelay = (i*60)+(delay)+ 'ms';
     const faces = ['⚀','⚁','⚂','⚃','⚄','⚅'];
     die.textContent = faces[Math.floor(Math.random()*6)];
     
-    // Quick cycling animation for the number before it lands
     let cycles = 0;
     const cycleInt = setInterval(()=>{
        die.textContent = faces[Math.floor(Math.random()*6)];
@@ -566,20 +567,36 @@ function rollStage(containerId, summaryId, count, threshold, isEnemy, delay, onD
     row.appendChild(die);
     setTimeout(()=>{
       clearInterval(cycleInt);
-      die.textContent = val;
-      die.className = 'die ' + (isEnemy ? (success?'enemy-success':'enemy-fail') : (success?'success':'fail')) + ' flashing';
+      die.textContent = isDamage ? dmgVal : val; 
+      
+      let dieClass = '';
+      if(isDamage) {
+        dieClass = 'success flashing'; // Damage rolls are always "successful" hits from UI tint perspective
+      } else if (isEnemy) {
+        dieClass = success ? 'enemy-success' : 'enemy-fail flashing';
+      } else {
+        dieClass = success ? 'success flashing' : 'fail';
+      }
+      die.className = 'die ' + dieClass;
+      
     }, delay + i*60 + 250);
   }
+  
   const successes = results.filter(r=>r.success).length;
   const fails = count - successes;
+  const totalDmg = isDamage ? results.reduce((acc, curr) => acc + curr.val, 0) : 0;
+  
   setTimeout(()=>{
-    if(isEnemy) {
+    if(isDamage) {
+      sum.innerHTML = `<span class="lo">${totalDmg} total damage inflicted!</span>`;
+      if(onDone) onDone(totalDmg);
+    } else if(isEnemy) {
       if(fails > 0) {
         sum.innerHTML = `<span class="lo">${fails} failed saves!</span> <span style="margin-left:4px;color:var(--text-muted)">(${successes} blocked)</span>`;
       } else {
         sum.innerHTML = `<span style="color:var(--text-muted)">All damage blocked</span>`;
       }
-      if(onDone) onDone(successes);
+      if(onDone) onDone(fails);
     } else {
       sum.innerHTML = `<span class="hi">${successes}</span>/${count} successes`;
       if(onDone) onDone(successes);
@@ -588,11 +605,14 @@ function rollStage(containerId, summaryId, count, threshold, isEnemy, delay, onD
 }
 
 function rollAttackSequence(){
-  ['dice-hit','dice-wound','dice-save'].forEach(id=>{ document.getElementById(id).innerHTML=''; });
-  ['dice-hit-summary','dice-wound-summary','dice-save-summary'].forEach(id=>{ document.getElementById(id).innerHTML=''; });
-  rollStage('dice-hit', 'dice-hit-summary', 5, 3, false, 0, hits=>{
-    if(hits>0) rollStage('dice-wound', 'dice-wound-summary', hits, 3, false, 100, wounds=>{
-      if(wounds>0) rollStage('dice-save', 'dice-save-summary', wounds, 5, true, 100, null);
+  ['dice-hit','dice-wound','dice-save','dice-damage'].forEach(id=>{ document.getElementById(id).innerHTML=''; });
+  ['dice-hit-summary','dice-wound-summary','dice-save-summary','dice-damage-summary'].forEach(id=>{ document.getElementById(id).innerHTML=''; });
+  
+  rollStage('dice-hit', 'dice-hit-summary', 5, 3, false, false, 0, hits=>{
+    if(hits>0) rollStage('dice-wound', 'dice-wound-summary', hits, 3, false, false, 100, wounds=>{
+      if(wounds>0) rollStage('dice-save', 'dice-save-summary', wounds, 5, true, false, 100, failedSaves=>{
+        if(failedSaves>0) rollStage('dice-damage', 'dice-damage-summary', failedSaves, 0, false, true, 100, null);
+      });
     });
   });
 }
