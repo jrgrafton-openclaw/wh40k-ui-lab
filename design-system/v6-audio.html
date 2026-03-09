@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V6 · Audio Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-primary:#080c10;--bg-surface:#0f1520;--bg-raised:#162030;
+  --imp:#00d4ff;--text-primary:#e0e8f0;--text-sec:#8090a0;--text-muted:#4a6080;--text-dis:#2a3a4a;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg-primary);color:var(--text-sec);font-family:'Rajdhani',sans-serif;padding:2rem;max-width:900px;}
+.pg-header{margin-bottom:2rem;border-left:2px solid var(--imp);padding-left:1rem;}
+.pg-header h1{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--imp);font-family:'Courier New',monospace;}
+.pg-header p{font-size:11px;color:var(--text-muted);margin-top:.5rem; line-height:1.5;}
+h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--text-dis);margin:2rem 0 1rem;border-bottom:1px solid #0f1a28;padding-bottom:.5rem;}
+
+.setup-box { background:#121808; border:1px solid #886000; padding:1.5rem; border-radius:4px; margin-bottom:2rem; }
+.setup-box h3 { color:#cc8800; font-family:'Anton',sans-serif; font-size:18px; letter-spacing:.05em; text-transform:uppercase; margin-bottom:.5rem;}
+.setup-box p { color:#a09070; font-size:13px; line-height:1.5; margin-bottom:.5rem; }
+.setup-box code { background:#0a0e05; border:1px solid #554000; padding:2px 6px; color:#ffcc40; font-size:11px; }
+
+.sfx-grid { display:grid; grid-template-columns:1fr; gap:1rem; }
+.sfx-item { display:flex; align-items:center; justify-content:space-between; background:var(--bg-surface); border:1px solid #162030; padding:1rem; border-left:2px solid var(--text-dis); }
+.sfx-info { display:flex; flex-direction:column; gap:.2rem; flex:1; padding-right:2rem;}
+.sfx-name { font-size:14px; font-weight:700; color:var(--text-primary); letter-spacing:.1em; text-transform:uppercase; }
+.sfx-prompt { font-size:11px; color:var(--text-muted); font-family:'Courier New',monospace; }
+
+.play-btn {
+  font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:.15em;
+  text-transform:uppercase;padding:.4rem 1.2rem;border:1px solid var(--imp);
+  background:var(--bg-primary);color:var(--imp);cursor:pointer; transition:all .15s;
+  min-width:100px; text-align:center;
+}
+.play-btn:hover { background:var(--imp); color:#080c10; }
+.play-btn.disabled { border-color:var(--text-dis); color:var(--text-dis); cursor:not-allowed; background:transparent;}
+</style>
+</head>
+<body>
+
+<div class="pg-header">
+  <h1>V6 · Audio Lab (SFX Prototypes)</h1>
+  <p>Workspace for generating and reviewing Warhammer 40k UI and combat audio assets.<br>Asset status: Pending API integration.</p>
+</div>
+
+<div class="setup-box">
+  <h3>Action Required: Enable SFX Generation</h3>
+  <p>To let me actively generate and iterate on these audio files, I need access to the <strong>ElevenLabs Sound Effects API</strong> (the absolute SOTA for synthetic SFX right now).</p>
+  <p>1. Go to your terminal running OpenClaw.</p>
+  <p>2. Give me the API key securely. You can add it via <code>nano ~/.openclaw/secrets/elevenlabs/api-key.txt</code>.</p>
+  <p>3. Let me know when it's there. I will write a custom python tool that calls <code>POST /v1/sound-generation</code> to bake these descriptions into actual <code>.mp3</code> files directly in this repository, wiring them up to the buttons below.</p>
+</div>
+
+<h2>1 · UI & Tactical Sounds</h2>
+<div class="sfx-grid">
+  <div class="sfx-item">
+    <div class="sfx-info">
+      <span class="sfx-name">Hover (Token/Pill)</span>
+      <span class="sfx-promptPrompt">Prompt: "Subtle analog telemetry click, like a geiger counter registering a single tick or a camera lens focusing, extremely short, sci-fi military"</span>
+    </div>
+    <button class="play-btn disabled" disabled>NO FILE</button>
+  </div>
+  <div class="sfx-item">
+    <div class="sfx-info">
+      <span class="sfx-name">Select Unit (Click)</span>
+      <span class="sfx-promptPrompt">Prompt: "Heavy analog mechanical toggle switch clack, solid thick metal engaging, tactical military equipment"</span>
+    </div>
+    <button class="play-btn disabled" disabled>NO FILE</button>
+  </div>
+  <div class="sfx-item">
+    <div class="sfx-info">
+      <span class="sfx-name">Select Unit (Glow/Loop)</span>
+      <span class="sfx-promptPrompt">Prompt: "Faint low-frequency sub-audible mechanical hum, seamless loop, sci-fi engine idle"</span>
+    </div>
+    <button class="play-btn disabled" disabled>NO FILE</button>
+  </div>
+  <div class="sfx-item">
+    <div class="sfx-info">
+      <span class="sfx-name">End Phase / Transition</span>
+      <span class="sfx-promptPrompt">Prompt: "Deep resonant metallic thud echoing in a huge hangar, heavy blast door closing, cinematic impact, grimdark"</span>
+    </div>
+    <button class="play-btn disabled" disabled>NO FILE</button>
+  </div>
+  <div class="sfx-item">
+    <div class="sfx-info">
+      <span class="sfx-name">Score Tick (+VP)</span>
+      <span class="sfx-promptPrompt">Prompt: "Sharp metal punch card stamp, loud clack, heavy mechanical typewriter processing"</span>
+    </div>
+    <button class="play-btn disabled" disabled>NO FILE</button>
+  </div>
+</div>
+
+<h2>2 · Weapon & Combat SFX</h2>
+<div class="sfx-grid">
+  <div class="sfx-item">
+    <div class="sfx-info">
+      <span class="sfx-name">Bolter Fire (Standard)</span>
+      <span class="sfx-promptPrompt">Prompt: "Deep heavy bass physical thump immediately followed by a sharp high-explosive crack, rocket propelled heavy calibre gun, devastating, cinematic"</span>
+    </div>
+    <button class="play-btn disabled" disabled>NO FILE</button>
+  </div>
+  <div class="sfx-item">
+    <div class="sfx-info">
+      <span class="sfx-name">Plasma Gun Fire</span>
+      <span class="sfx-promptPrompt">Prompt: "High-pitch magnetic whine charging up into a sudden resonant explosive thunderclap, trailing off into a heavy pressurized cooling hiss, sci-fi energy weapon"</span>
+    </div>
+    <button class="play-btn disabled" disabled>NO FILE</button>
+  </div>
+  <div class="sfx-item">
+    <div class="sfx-info">
+      <span class="sfx-name">Lasgun Fire</span>
+      <span class="sfx-promptPrompt">Prompt: "Deafening sharp electrical whip-crack tearing the air, extremely loud lightning snap, no pew-pew sound, military laser"</span>
+    </div>
+    <button class="play-btn disabled" disabled>NO FILE</button>
+  </div>
+  <div class="sfx-item">
+    <div class="sfx-info">
+      <span class="sfx-name">Chainsword Rev & Strike</span>
+      <span class="sfx-promptPrompt">Prompt: "Sputtering two-stroke heavy engine idling spiking into a violent high-rpm roaring chainsaw tearing metal and meat"</span>
+    </div>
+    <button class="play-btn disabled" disabled>NO FILE</button>
+  </div>
+</div>
+
+<h2>3 · Dice Resolution</h2>
+<div class="sfx-grid">
+  <div class="sfx-item">
+    <div class="sfx-info">
+      <span class="sfx-name">Dice Roll Clatter</span>
+      <span class="sfx-promptPrompt">Prompt: "Handful of heavy solid resin casino dice thrown and clattering across a hard wooden table, highly realistic"</span>
+    </div>
+    <button class="play-btn disabled" disabled>NO FILE</button>
+  </div>
+  <div class="sfx-item">
+    <div class="sfx-info">
+      <span class="sfx-name">Save Failed (Wound Inflicted)</span>
+      <span class="sfx-promptPrompt">Prompt: "Visceral heavy armor shattering and thick metal crunching wet impact, devastating damage inflicted"</span>
+    </div>
+    <button class="play-btn disabled" disabled>NO FILE</button>
+  </div>
+  <div class="sfx-item">
+    <div class="sfx-info">
+      <span class="sfx-name">Save Passed (Blocked)</span>
+      <span class="sfx-promptPrompt">Prompt: "Dull heavy tank armor bullet ricochet ping, thick metal deflection, no damage"</span>
+    </div>
+    <button class="play-btn disabled" disabled>NO FILE</button>
+  </div>
+</div>
+
+</body>
+</html>
