@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <title>V4 · Animations</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -408,15 +409,28 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
   </div>
 </div>
 
-<!-- 7. DICE ROLL -->
-<h2>7 · Dice Roll — numbers cycle, spring settle, colour on result</h2>
-<div class="demo">
-  <div class="col">
-    <div id="dice-wrap" class="dice">
-      <div id="dice-strip" class="dice-strip"><span>5</span></div>
+<!-- 7 · Dice Series -->
+<h2>7 · Dice Series — full attack resolution (hit → wound → save)</h2>
+<div class="note">Each stage rolls with spring animation, colour on result. Staggered 80ms per die.</div>
+<div class="demo" style="flex-direction:column;align-items:flex-start;padding:1.5rem 2rem">
+  <div class="dice-group" id="dice-group">
+    <div class="dice-stage">
+      <div class="dice-stage-label">Hit Roll (5 attacks, BS 3+)</div>
+      <div class="dice-row" id="dice-hit"></div>
+      <div class="dice-summary" id="dice-hit-summary"></div>
     </div>
-    <button class="replay-btn" onclick="rollDice()">↺ Roll</button>
+    <div class="dice-stage">
+      <div class="dice-stage-label">Wound Roll (hits, S7 vs T4 → 3+)</div>
+      <div class="dice-row" id="dice-wound"></div>
+      <div class="dice-summary" id="dice-wound-summary"></div>
+    </div>
+    <div class="dice-stage">
+      <div class="dice-stage-label">Save Roll (wounds, SV 3+ with AP-2 → 5+)</div>
+      <div class="dice-row" id="dice-save"></div>
+      <div class="dice-summary" id="dice-save-summary"></div>
+    </div>
   </div>
+  <button class="replay-btn" style="margin-top:1rem" onclick="rollAttackSequence()">↺ Roll attack sequence</button>
 </div>
 
 <!-- 8. PHASE TRANSITION -->
@@ -559,7 +573,7 @@ function transitionPhase(){
   const mvt=document.getElementById('ph-movement');
   const sht=document.getElementById('ph-shooting');
   mvt.classList.remove('active');mvt.classList.add('done');
-  sht.classList.remove('');sht.classList.add('transitioning');
+  sht.classList.add('transitioning');
   setTimeout(()=>sht.classList.replace('transitioning','active'),600);
 }
 
