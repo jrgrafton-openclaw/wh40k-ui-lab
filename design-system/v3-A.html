@@ -119,11 +119,16 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 /* ══════════════════════════════════════════
    4. WEAPON ROWS — CSS grid for alignment
 ══════════════════════════════════════════ */
-.weapon-block{max-width:480px;}
-.weapon-header{
+.weapon-block{max-width:460px;}
+
+/* Header and stat rows share same 7-col grid */
+.weapon-header,.weapon-row{
   display:grid;
-  grid-template-columns:1fr 40px 30px 30px 36px 36px 30px;
-  gap:0 .4rem;
+  grid-template-columns:160px 36px 26px 34px 26px 36px 26px;
+  gap:0 .5rem;
+  align-items:center;
+}
+.weapon-header{
   padding:.2rem 0 .3rem;
   border-bottom:1px solid #162030;
   margin-bottom:2px;
@@ -131,20 +136,21 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 .weapon-header span{font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dis);text-align:right;}
 .weapon-header span:first-child{text-align:left;}
 
+.weapon-entry{border-bottom:1px solid #0a1018;}
+.weapon-entry:last-child{border-bottom:none;}
 .weapon-row{
-  display:grid;
-  grid-template-columns:1fr 40px 30px 30px 36px 36px 30px;
-  gap:0 .4rem;
-  padding:.35rem 0;
-  border-bottom:1px solid #0a1018;
+  padding:.35rem 0 .2rem;
   font-size:13px;font-weight:500;
-  align-items:center;
   transition:background .12s;
 }
-.weapon-row:hover{background:#ffffff05;}
 .weapon-row span{text-align:right;color:var(--text-muted);}
 .weapon-row span.wn{text-align:left;color:var(--text-primary);}
-.weapon-pills{grid-column:1/-1;display:flex;gap:.3rem;padding:.3rem 0 .15rem;flex-wrap:wrap;}
+
+/* Pills: outside the grid, pure flex, always left-aligned */
+.weapon-pills{
+  display:flex;gap:.3rem;flex-wrap:wrap;
+  padding:.2rem 0 .4rem;
+}
 
 /* ══════════════════════════════════════════
    5. ABILITY ROW — pill + inline desc
@@ -433,30 +439,38 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
   <div class="weapon-header">
     <span>Weapon</span><span>RNG</span><span>A</span><span>BS</span><span>S</span><span>AP</span><span>D</span>
   </div>
-  <div class="weapon-row">
-    <span class="wn">Plasma (std)</span><span>30"</span><span>2</span><span>3+</span><span>7</span><span>-2</span><span>2</span>
+  <div class="weapon-entry">
+    <div class="weapon-row">
+      <span class="wn">Plasma (std)</span><span>30"</span><span>2</span><span>3+</span><span>7</span><span>-2</span><span>2</span>
+    </div>
     <div class="weapon-pills">
-      <span class="pill-wrap"><span class="pill pill-kw">Rapid Fire 1</span><span class="kw-tip"><span class="kw-tip-name">Rapid Fire 1</span><span class="kw-tip-body">Each time this weapon targets a unit within half range, the weapon has Attacks +1.</div></span></span>
-      <span class="pill-wrap"><span class="pill pill-kw">Hazardous</span><span class="kw-tip"><span class="kw-tip-name">Hazardous</span><span class="kw-tip-body">Each time a unit shoots or fights with this weapon, after resolving attacks, roll one D6 for each model that made attacks. On a 1, that model's unit suffers 3 mortal wounds.</div></span></span>
+      <span class="pill-wrap"><span class="pill pill-kw">Rapid Fire 1</span><span class="kw-tip"><span class="kw-tip-name">Rapid Fire 1</span><span class="kw-tip-body">Each time this weapon targets a unit within half range, the weapon has Attacks +1.</span></span></span>
+      <span class="pill-wrap"><span class="pill pill-kw">Hazardous</span><span class="kw-tip"><span class="kw-tip-name">Hazardous</span><span class="kw-tip-body">Each time a unit shoots or fights with this weapon, after resolving attacks, roll one D6 per model that made attacks. On a 1, that model's unit suffers 3 mortal wounds.</span></span></span>
     </div>
   </div>
-  <div class="weapon-row">
-    <span class="wn">Plasma (sup)</span><span>30"</span><span>2</span><span>3+</span><span>8</span><span>-3</span><span>3</span>
+  <div class="weapon-entry">
+    <div class="weapon-row">
+      <span class="wn">Plasma (sup)</span><span>30"</span><span>2</span><span>3+</span><span>8</span><span>-3</span><span>3</span>
+    </div>
     <div class="weapon-pills">
-      <span class="pill-wrap"><span class="pill pill-kw">Rapid Fire 1</span><span class="kw-tip"><span class="kw-tip-name">Rapid Fire 1</span><span class="kw-tip-body">Each time this weapon targets a unit within half range, the weapon has Attacks +1.</div></span></span>
-      <span class="pill-wrap"><span class="pill pill-kw">Hazardous</span><span class="kw-tip"><span class="kw-tip-name">Hazardous</span><span class="kw-tip-body">Each time a unit shoots or fights with this weapon, after resolving attacks, roll one D6 for each model that made attacks. On a 1, that model's unit suffers 3 mortal wounds.</div></span></span>
+      <span class="pill-wrap"><span class="pill pill-kw">Rapid Fire 1</span><span class="kw-tip"><span class="kw-tip-name">Rapid Fire 1</span><span class="kw-tip-body">Each time this weapon targets a unit within half range, the weapon has Attacks +1.</span></span></span>
+      <span class="pill-wrap"><span class="pill pill-kw">Hazardous</span><span class="kw-tip"><span class="kw-tip-name">Hazardous</span><span class="kw-tip-body">Each time a unit shoots or fights with this weapon, after resolving attacks, roll one D6 per model that made attacks. On a 1, that model's unit suffers 3 mortal wounds.</span></span></span>
     </div>
   </div>
-  <div class="weapon-row">
-    <span class="wn">Heavy Bolt Pistol</span><span>18"</span><span>2</span><span>3+</span><span>4</span><span>0</span><span>1</span>
+  <div class="weapon-entry">
+    <div class="weapon-row">
+      <span class="wn">Heavy Bolt Pistol</span><span>18"</span><span>2</span><span>3+</span><span>4</span><span>0</span><span>1</span>
+    </div>
     <div class="weapon-pills">
-      <span class="pill-wrap"><span class="pill pill-neutral">Pistol</span><span class="kw-tip"><span class="kw-tip-name">Pistol</span><span class="kw-tip-body">Can be used in the Shooting phase even if the bearer's unit is within Engagement Range of one or more enemy units. Cannot target units within Engagement Range of friendly units.</div></span></span>
+      <span class="pill-wrap"><span class="pill pill-neutral">Pistol</span><span class="kw-tip"><span class="kw-tip-name">Pistol</span><span class="kw-tip-body">Can be used in the Shooting phase even if the bearer's unit is within Engagement Range of one or more enemy units. Cannot target units within Engagement Range of friendly units.</span></span></span>
     </div>
   </div>
-  <div class="weapon-row">
-    <span class="wn">Astartes Chainsword</span><span>Melee</span><span>4</span><span>3+</span><span>4</span><span>-1</span><span>1</span>
+  <div class="weapon-entry">
+    <div class="weapon-row">
+      <span class="wn">Astartes Chainsword</span><span>Melee</span><span>4</span><span>3+</span><span>4</span><span>-1</span><span>1</span>
+    </div>
     <div class="weapon-pills">
-      <span class="pill-wrap"><span class="pill pill-neutral">Melee</span><span class="kw-tip"><span class="kw-tip-name">Melee</span><span class="kw-tip-body">Attack with this weapon in the Fight phase. Models can only use melee weapons against enemies in Engagement Range.</div></span></span>
+      <span class="pill-wrap"><span class="pill pill-neutral">Melee</span><span class="kw-tip"><span class="kw-tip-name">Melee</span><span class="kw-tip-body">Attack with this weapon in the Fight phase. Models can only use melee weapons against enemies in Engagement Range.</span></span></span>
     </div>
   </div>
 </div>
