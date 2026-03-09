@@ -183,11 +183,7 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 .die.enemy-success{border-color:var(--text-dis);color:var(--ork-dim);background:var(--bg-surface);opacity:.3;box-shadow:none;}
 /* Enemy Save Fail (Takes damage - YAY for player!) */
 .die.enemy-fail{border-color:#e03030;color:#ff5050;background:linear-gradient(135deg, #240808, var(--bg-surface));box-shadow:inset 0 1px 0 #ff404020;transform:translateY(-2px);}
-.die.enemy-fail::after {
-  content: "-1W"; position: absolute; bottom: -14px; font-family: 'Rajdhani', sans-serif; font-size: 9px; font-weight: 700; color: #ff5050; letter-spacing: 0;
-  animation: dropFloat 1s ease-out forwards; pointer-events: none;
-}
-@keyframes dropFloat { 0%{opacity:0;transform:translateY(4px);} 20%{opacity:1;} 100%{opacity:0;transform:translateY(-10px);} }
+
 @keyframes floatUp { 0%{opacity:0;transform:translateY(0);} 20%{opacity:1;} 100%{opacity:0;transform:translateY(-15px);} }
 
 @keyframes die-roll-in{
@@ -438,6 +434,11 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
       <div class="dice-stage-label">Save Roll (wounds, SV 3+ with AP-2 → 5+)</div>
       <div class="dice-row" id="dice-save"></div>
       <div class="dice-summary" id="dice-save-summary"></div>
+    </div>
+    <div class="dice-stage">
+      <div class="dice-stage-label">Damage Roll (failed saves, D3 damage)</div>
+      <div class="dice-row" id="dice-damage"></div>
+      <div class="dice-summary" id="dice-damage-summary"></div>
     </div>
   </div>
   <button class="replay-btn" style="margin-top:1rem" onclick="rollAttackSequence()">↺ Roll attack sequence</button>
