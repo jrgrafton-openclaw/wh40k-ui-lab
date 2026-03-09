@@ -82,7 +82,7 @@ A single HTML style guide page that renders all design components as living exam
 
 ### Section order
 1. **Colors + typography** ✅ locked — V1-D
-2. **Panel chrome** ← current
+2. **Panel chrome** ✅ locked — V2-B
 3. Atomic components (unit token, stat row, weapon row, button, BATTLESHOCKED pill)
 4. Compositions (unit list item, stats panel, action bar, phase indicator)
 5. Animations (selection pulse, movement path draw, BATTLESHOCKED state, combat result flash)
@@ -123,3 +123,10 @@ Apply Phase 1 tokens to Phase 2 wireframes. This is purely mechanical — the de
 4. **Cite the constraint** when you add or remove something: "Removing dotted border per CLAUDE.md prohibition."
 5. **Screenshot → structured critique → targeted fix.** Critique lists problems ranked by severity. Fix addresses top 3 only. One thing at a time.
 6. **Do not hallucinate new UI elements.** If something isn't in the wireframe or token spec, it does not appear.
+
+### Locked panel chrome: V2-B
+- 1px border: #00d4ff22 (low opacity)
+- Top edge: 2px solid var(--imp) — default cyan, red when battleshocked
+- Header: background var(--bg-raised), separated by 1px border #00d4ff18
+- Selected: background var(--bg-selected), border #00d4ff55
+- Battleshocked: background #100808, top edge var(--battleshocked), title color var(--battleshocked)
