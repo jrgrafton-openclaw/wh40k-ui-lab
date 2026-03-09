@@ -176,17 +176,18 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
   transition:all .3s cubic-bezier(.34,1.56,.64,1);
 }
 /* Player Success (Hit/Wound > threshold) */
-.die.success{border-color:var(--imp);color:var(--imp);background:linear-gradient(135deg, #102030, var(--bg-surface));box-shadow:inset 0 1px 0 #ffffff14, 0 4px 12px #00d4ff25, 0 0 0 1px #00d4ff40;transform:translateY(-3px);}
-.die.fail{border-color:#2a2020;color:#664040;opacity:.4;box-shadow:none;}
+.die.success{border-color:var(--imp);color:var(--imp);background:linear-gradient(135deg, #101c24, var(--bg-surface));box-shadow:inset 0 1px 0 #00d4ff30;transform:translateY(-2px);}
+.die.fail{border-color:#1c1a20;color:#4a3a3a;opacity:.4;box-shadow:none;}
 
 /* Enemy Save Success (Blocks damage - sad for player) */
-.die.enemy-success{border-color:var(--text-dis);color:var(--ork-dim);background:var(--bg-surface);opacity:.5;box-shadow:none;}
+.die.enemy-success{border-color:var(--text-dis);color:var(--ork-dim);background:var(--bg-surface);opacity:.3;box-shadow:none;}
 /* Enemy Save Fail (Takes damage - YAY for player!) */
-.die.enemy-fail{border-color:var(--bs);color:var(--bs);background:linear-gradient(135deg, #2a0808, var(--bg-surface));box-shadow:inset 0 1px 0 #ffffff10, 0 4px 12px #cc202040, 0 0 0 1px #cc202060;transform:scale(1.1) translateY(-3px);}
+.die.enemy-fail{border-color:#e03030;color:#ff5050;background:linear-gradient(135deg, #240808, var(--bg-surface));box-shadow:inset 0 1px 0 #ff404020;transform:translateY(-2px);}
 .die.enemy-fail::after {
-  content: "-1W"; position: absolute; bottom: -16px; font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700; color: var(--bs); letter-spacing: 0; text-shadow: 0 0 4px #000;
-  animation: floatUp 1s ease-out forwards; pointer-events: none;
+  content: "-1W"; position: absolute; bottom: -14px; font-family: 'Rajdhani', sans-serif; font-size: 9px; font-weight: 700; color: #ff5050; letter-spacing: 0;
+  animation: dropFloat 1s ease-out forwards; pointer-events: none;
 }
+@keyframes dropFloat { 0%{opacity:0;transform:translateY(4px);} 20%{opacity:1;} 100%{opacity:0;transform:translateY(-10px);} }
 @keyframes floatUp { 0%{opacity:0;transform:translateY(0);} 20%{opacity:1;} 100%{opacity:0;transform:translateY(-15px);} }
 
 @keyframes die-roll-in{
@@ -196,12 +197,12 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 }
 @keyframes die-flash-success{
   0%  {filter:brightness(1);}
-  40% {filter:brightness(2);box-shadow:0 0 20px #00d4ff;}
+  40% {filter:brightness(1.5);box-shadow:0 0 8px #00d4ff40;}
   100%{filter:brightness(1);}
 }
 @keyframes die-flash-enemy-fail{
   0%  {filter:brightness(1);}
-  20% {filter:brightness(2.5);box-shadow:0 0 30px #cc2020, 0 0 10px #fff;}
+  20% {filter:brightness(1.8);box-shadow:0 0 8px #cc202050;}
   100%{filter:brightness(1);}
 }
 .die.rolling{animation:die-roll-in .4s cubic-bezier(.34,1.56,.64,1) both;}
@@ -446,9 +447,9 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 <h2>8 · Phase Transition — dot pulses, label slides in</h2>
 <div class="demo" style="flex-direction:column;gap:1rem">
   <div id="phase-row" class="ph-row">
-    <div class="ph-item done"><span class="ph-dot"></span>Command</div>
+    <div class="ph-item active"><span class="ph-dot"></span>Command</div>
     <span class="ph-sep">·</span>
-    <div class="ph-item active"><span class="ph-dot"></span>Movement</div>
+    <div class="ph-item"><span class="ph-dot"></span>Movement</div>
     <span class="ph-sep">·</span>
     <div class="ph-item"><span class="ph-dot"></span>Shooting</div>
     <span class="ph-sep">·</span>
@@ -595,33 +596,24 @@ function rollAttackSequence(){
   });
 }
 
-let phaseIdx = 1;
+let phaseIdx = 0;
 function transitionPhase(){
   const row = document.getElementById('phase-row');
-  // Skip over the separator spans, only get .ph-item
-  const items = Array.from(row.children).filter(el => el.classList.contains('ph-item'));
+  const items = Array.from(row.querySelectorAll('.ph-item'));
   
+  // Mark current as done
+  items[phaseIdx].className = 'ph-item done';
+  
+  phaseIdx++;
+  
+  // Reset loop
   if(phaseIdx >= items.length) {
-    // Reset for demo purposes
     items.forEach(i => { i.className = 'ph-item'; });
     phaseIdx = 0;
   }
   
-  const current = items[phaseIdx];
-  const next = items[phaseIdx + 1];
-  
-  if(current) {
-    current.classList.remove('active');
-    current.classList.add('done');
-  }
-  
-  if(next) {
-    next.classList.add('transitioning');
-    setTimeout(()=>next.classList.replace('transitioning', 'active'), 600);
-    phaseIdx++;
-  } else {
-    phaseIdx = items.length; // End
-  }
+  items[phaseIdx].classList.add('transitioning');
+  setTimeout(()=>items[phaseIdx].classList.replace('transitioning', 'active'), 600);
 }
 
 let scoreVal=10;
