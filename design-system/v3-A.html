@@ -554,33 +554,42 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
   <circle cx="200" cy="200" r="29" fill="none" stroke="#00d4ff" stroke-width="2.5" style="filter:drop-shadow(0 0 8px #00d4ff)"/>
 </svg>
 
-<div class="note" style="margin-bottom:.75rem">Objective control radius — neutral / player-held / enemy-held:</div>
-<svg width="480" height="130" viewBox="0 0 480 130" style="background:#080c10;display:block;margin-bottom:1.5rem">
+<div class="note" style="margin-bottom:.75rem">Objective control radius — neutral / player-held / enemy-held. Hex shape matches Section 2 objective marker exactly.</div>
+<svg width="480" height="140" viewBox="0 0 480 140" style="background:#080c10;display:block;margin-bottom:1.5rem">
   <defs><pattern id="grid2" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M 24 0 L 0 0 0 24" fill="none" stroke="#ffffff08" stroke-width="0.5"/></pattern></defs>
-  <rect width="480" height="130" fill="url(#grid2)"/>
-  <!-- Neutral objective -->
-  <circle cx="80" cy="65" r="45" fill="none" stroke="#4a6080" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.7"/>
-  <polygon points="80,35 95,55 95,75 80,90 65,75 65,55" fill="#0a0e14" stroke="#4a6080" stroke-width="1.5"/>
-  <text x="80" y="69" text-anchor="middle" font-family="Anton,sans-serif" font-size="14" fill="#4a6080">01</text>
-  <text x="80" y="78" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="7" fill="#2a3a4a" letter-spacing="0.15em">OBJ</text>
-  <text x="80" y="120" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="9" fill="#2a3a4a" letter-spacing="0.15em">NEUTRAL</text>
-  <!-- Player-held objective -->
-  <circle cx="240" cy="65" r="45" fill="#00d4ff06" stroke="#00d4ff" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.8"/>
-  <polygon points="240,35 255,55 255,75 240,90 225,75 225,55" fill="#00d4ff0a" stroke="#00d4ff" stroke-width="1.5"/>
-  <text x="240" y="69" text-anchor="middle" font-family="Anton,sans-serif" font-size="14" fill="#00d4ff">02</text>
-  <text x="240" y="78" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="7" fill="#4a6080" letter-spacing="0.15em">OBJ</text>
-  <text x="240" y="120" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="9" fill="#2a3a4a" letter-spacing="0.15em">PLAYER</text>
-  <!-- Enemy-held objective -->
-  <circle cx="400" cy="65" r="45" fill="#ff402006" stroke="#ff4020" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.8"/>
-  <polygon points="400,35 415,55 415,75 400,90 385,75 385,55" fill="#ff40200a" stroke="#ff4020" stroke-width="1.5"/>
-  <text x="400" y="69" text-anchor="middle" font-family="Anton,sans-serif" font-size="14" fill="#ff4020">03</text>
-  <text x="400" y="78" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="7" fill="#4a6080" letter-spacing="0.15em">OBJ</text>
-  <text x="400" y="120" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="9" fill="#2a3a4a" letter-spacing="0.15em">ENEMY</text>
+  <rect width="480" height="140" fill="url(#grid2)"/>
+
+  <!-- Neutral — hex centered at (80,62), scale 60x68 → ~32x36px (scale 0.53), translate (80-16, 62-18) = (64,44) -->
+  <circle cx="80" cy="62" r="45" fill="none" stroke="#4a6080" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.7"/>
+  <g transform="translate(64,44) scale(0.533)">
+    <polygon points="30,2 58,17 58,51 30,66 2,51 2,17" fill="#0a0e14" stroke="#4a6080" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+  </g>
+  <text x="80" y="66" text-anchor="middle" font-family="Anton,sans-serif" font-size="12" fill="#4a6080">01</text>
+  <text x="80" y="74" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="7" fill="#2a3a4a" letter-spacing="0.15em">OBJ</text>
+  <text x="80" y="122" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="9" fill="#2a3a4a" letter-spacing="0.12em">NEUTRAL</text>
+
+  <!-- Player-held — centered at (240,62) -->
+  <circle cx="240" cy="62" r="45" fill="#00d4ff06" stroke="#00d4ff" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.8"/>
+  <g transform="translate(224,44) scale(0.533)">
+    <polygon points="30,2 58,17 58,51 30,66 2,51 2,17" fill="#00d4ff08" stroke="#00d4ff" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+  </g>
+  <text x="240" y="66" text-anchor="middle" font-family="Anton,sans-serif" font-size="12" fill="#00d4ff">02</text>
+  <text x="240" y="74" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="7" fill="#4a6080" letter-spacing="0.15em">OBJ</text>
+  <text x="240" y="122" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="9" fill="#2a3a4a" letter-spacing="0.12em">PLAYER</text>
+
+  <!-- Enemy-held — centered at (400,62) -->
+  <circle cx="400" cy="62" r="45" fill="#ff402006" stroke="#ff4020" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.8"/>
+  <g transform="translate(384,44) scale(0.533)">
+    <polygon points="30,2 58,17 58,51 30,66 2,51 2,17" fill="#ff402008" stroke="#ff4020" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+  </g>
+  <text x="400" y="66" text-anchor="middle" font-family="Anton,sans-serif" font-size="12" fill="#ff4020">03</text>
+  <text x="400" y="74" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="7" fill="#4a6080" letter-spacing="0.15em">OBJ</text>
+  <text x="400" y="122" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="9" fill="#2a3a4a" letter-spacing="0.12em">ENEMY</text>
 </svg>
 
 <!-- ═══ 11. TERRAIN ═══ -->
 <h2>11 · Terrain — actual GW Chapter Approved 2025–26 types</h2>
-<div class="note">Two types from hammer-and-anvil-layout-1.json. Ruins = two-tone L-shaped (outer #3a4040, inner #6a7272). Water/impassable = solid blue (#065475). Rotated/scaled variants of same primitives.</div>
+<div class="note">Two types from GW Chapter Approved 2025–26. Grey = "Tall terrain ≥4"" (L-shaped ruins, two-tone). Blue = "Low terrain ≤2"" (can see/shoot over). Same primitive, rotated/scaled variants.</div>
 <svg width="580" height="160" viewBox="-10 -10 600 180" style="background:#080c10;display:block;margin-bottom:1.5rem">
   <defs><pattern id="grid3" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M 24 0 L 0 0 0 24" fill="none" stroke="#ffffff06" stroke-width="0.5"/></pattern></defs>
   <rect x="-10" y="-10" width="600" height="180" fill="url(#grid3)"/>
@@ -590,8 +599,8 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
     <rect x="0" y="0" width="120" height="60" fill="#3a4040" stroke="#222" stroke-width="1" vector-effect="non-scaling-stroke"/>
     <!-- Inner highlight = L-shape showing open corner -->
     <path d="M 1 1 L 80 1 L 80 6 L 6 6 L 6 42 L 1 42 Z" fill="#6a7272" opacity="0.9"/>
-    <text x="60" y="85" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="10" fill="#4a6080" letter-spacing="0.15em">RUINS</text>
-    <text x="60" y="96" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="9" fill="#2a3a4a">two-tone, rotatable</text>
+    <text x="60" y="85" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="10" fill="#4a6080" letter-spacing="0.12em">TALL TERRAIN ≥4"</text>
+    <text x="60" y="96" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="9" fill="#2a3a4a">blocking LoS, rotatable</text>
   </g>
 
   <!-- Ruins — rotated variant -->
@@ -604,8 +613,8 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
   <!-- Water / impassable -->
   <g transform="translate(400,20)">
     <rect x="0" y="0" width="80" height="80" fill="#065475" stroke="#033a52" stroke-width="1" vector-effect="non-scaling-stroke" opacity="0.9"/>
-    <text x="40" y="105" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="10" fill="#4a6080" letter-spacing="0.15em">IMPASSABLE</text>
-    <text x="40" y="116" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="9" fill="#2a3a4a">water / blocking</text>
+    <text x="40" y="105" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="10" fill="#4a6080" letter-spacing="0.12em">LOW TERRAIN ≤2"</text>
+    <text x="40" y="116" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="9" fill="#2a3a4a">can see / shoot over</text>
   </g>
 </svg>
 
