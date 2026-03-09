@@ -82,7 +82,7 @@ A single HTML style guide page that renders all design components as living exam
 
 ### Section order
 1. **Colors + typography** ✅ locked — V1-D
-2. Panel chrome
+2. **Panel chrome** ← current
 3. Atomic components (unit token, stat row, weapon row, button, BATTLESHOCKED pill)
 4. Compositions (unit list item, stats panel, action bar, phase indicator)
 5. Animations (selection pulse, movement path draw, BATTLESHOCKED state, combat result flash)

@@ -34,28 +34,40 @@
 
   /* ════════════════════════════════════════
      PANEL CHROME — A: CORNER BRACKETS
-     No border. 8px L-shape brackets at each
-     corner. Subtle — suggests containment
-     without enclosing.
+     No border. 10px L-bracket at each corner.
+     CSS background-gradient approach: anchors
+     to actual container corners regardless of
+     panel height. No pseudo-elements needed.
   ════════════════════════════════════════ */
   .panel {
-    background: var(--bg-surface);
+    --bc: var(--imp); /* bracket colour — override per state */
     position: relative;
     padding: 1.25rem;
+    background-color: var(--bg-surface);
+    background-image:
+      linear-gradient(to right,  var(--bc) 10px, transparent 10px),
+      linear-gradient(to bottom, var(--bc) 10px, transparent 10px),
+      linear-gradient(to left,   var(--bc) 10px, transparent 10px),
+      linear-gradient(to bottom, var(--bc) 10px, transparent 10px),
+      linear-gradient(to right,  var(--bc) 10px, transparent 10px),
+      linear-gradient(to top,    var(--bc) 10px, transparent 10px),
+      linear-gradient(to left,   var(--bc) 10px, transparent 10px),
+      linear-gradient(to top,    var(--bc) 10px, transparent 10px);
+    background-size:
+      10px 1px, 1px 10px,
+      10px 1px, 1px 10px,
+      10px 1px, 1px 10px,
+      10px 1px, 1px 10px;
+    background-position:
+      0 0,       0 0,
+      100% 0,    100% 0,
+      0 100%,    0 100%,
+      100% 100%, 100% 100%;
+    background-repeat: no-repeat;
   }
-  /* Corner bracket implementation — pure CSS, no images */
-  .panel::before, .panel::after,
-  .panel-inner::before, .panel-inner::after {
-    content: '';
-    position: absolute;
-    width: 10px;
-    height: 10px;
-  }
-  .panel::before  { top: 0; left: 0;  border-top: 1px solid var(--imp); border-left: 1px solid var(--imp); }
-  .panel::after   { top: 0; right: 0; border-top: 1px solid var(--imp); border-right: 1px solid var(--imp); }
-  .panel-inner { position: relative; width: 100%; height: 100%; }
-  .panel-inner::before { bottom: 0; left: 0;  border-bottom: 1px solid var(--imp); border-left: 1px solid var(--imp); }
-  .panel-inner::after  { bottom: 0; right: 0; border-bottom: 1px solid var(--imp); border-right: 1px solid var(--imp); }
+  .panel-inner { position: relative; }
+  .panel.selected      { --bc: var(--imp); background-color: var(--bg-selected); }
+  .panel.battleshocked { --bc: var(--battleshocked); background-color: #100808; }
 
   .panel-header { margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid #162030; }
   .panel-title  { font-family: 'Anton', sans-serif; font-size: 22px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-primary); line-height: 1; }
@@ -82,18 +94,7 @@
   .demo-grid { display: grid; grid-template-columns: 220px 1fr; gap: 1rem; margin-bottom: 2rem; }
   .demo-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
 
-  /* Battleshocked state */
-  .panel.battleshocked .panel::before,
-  .panel.battleshocked .panel::after,
-  .panel.battleshocked .panel-inner::before,
-  .panel.battleshocked .panel-inner::after { border-color: var(--battleshocked); }
-  .panel.battleshocked { background: #160808; }
   .panel.battleshocked .panel-title { color: var(--battleshocked); }
-
-  /* Selected state */
-  .panel.selected::before, .panel.selected::after,
-  .panel.selected .panel-inner::before, .panel.selected .panel-inner::after { width: 14px; height: 14px; border-width: 2px; }
-  .panel.selected { background: var(--bg-selected); }
 </style>
 </head>
 <body>
