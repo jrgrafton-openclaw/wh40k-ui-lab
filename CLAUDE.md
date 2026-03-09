@@ -85,7 +85,7 @@ A single HTML style guide page that renders all design components as living exam
 2. **Panel chrome** ✅ locked — V2-B
 3. Atomic components (unit token, stat row, weapon row, button, BATTLESHOCKED pill)
 4. **Animations** ← current
-5. Compositions (full-screen static game layout)
+
 
 ### Output format
 - One HTML file per variation: `design-system/v[section]-[A|B|C].html`
