@@ -167,18 +167,27 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 .dice-row{display:flex;gap:.4rem;flex-wrap:wrap;}
 
 .die{
-  width:38px;height:38px;
-  background:var(--bg-raised);
-  border:1.5px solid var(--text-dis);
+  width:38px;height:38px; border-radius:6px;
+  background:linear-gradient(135deg, var(--bg-raised), var(--bg-surface));
+  border:1.5px solid #2a3a4a; box-shadow:inset 0 1px 0 #ffffff0a, 0 4px 6px #00000040;
   display:flex;align-items:center;justify-content:center;
-  font-family:'Anton',sans-serif;font-size:20px;color:var(--text-muted);
-  position:relative;overflow:hidden;
-  transition:border-color .2s,box-shadow .2s,color .2s;
+  font-family:'Anton',sans-serif;font-size:22px;color:var(--text-muted);
+  position:relative;
+  transition:all .3s cubic-bezier(.34,1.56,.64,1);
 }
-.die.success{border-color:var(--imp);color:var(--imp);box-shadow:0 0 8px #00d4ff35;}
-.die.fail{border-color:var(--bs);color:#664040;opacity:.5;}
-.die.enemy-success{border-color:var(--ork);color:var(--ork);box-shadow:0 0 8px #ff402035;}
-.die.enemy-fail{border-color:var(--text-dis);color:#664040;opacity:.5;}
+/* Player Success (Hit/Wound > threshold) */
+.die.success{border-color:var(--imp);color:var(--imp);background:linear-gradient(135deg, #102030, var(--bg-surface));box-shadow:inset 0 1px 0 #ffffff14, 0 4px 12px #00d4ff25, 0 0 0 1px #00d4ff40;transform:translateY(-3px);}
+.die.fail{border-color:#2a2020;color:#664040;opacity:.4;box-shadow:none;}
+
+/* Enemy Save Success (Blocks damage - sad for player) */
+.die.enemy-success{border-color:var(--text-dis);color:var(--ork-dim);background:var(--bg-surface);opacity:.5;box-shadow:none;}
+/* Enemy Save Fail (Takes damage - YAY for player!) */
+.die.enemy-fail{border-color:var(--bs);color:var(--bs);background:linear-gradient(135deg, #2a0808, var(--bg-surface));box-shadow:inset 0 1px 0 #ffffff10, 0 4px 12px #cc202040, 0 0 0 1px #cc202060;transform:scale(1.1) translateY(-3px);}
+.die.enemy-fail::after {
+  content: "-1W"; position: absolute; bottom: -16px; font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700; color: var(--bs); letter-spacing: 0; text-shadow: 0 0 4px #000;
+  animation: floatUp 1s ease-out forwards; pointer-events: none;
+}
+@keyframes floatUp { 0%{opacity:0;transform:translateY(0);} 20%{opacity:1;} 100%{opacity:0;transform:translateY(-15px);} }
 
 @keyframes die-roll-in{
   0%  {transform:scale(.5) rotate(-20deg);opacity:0;}
@@ -186,18 +195,18 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
   100%{transform:scale(1) rotate(0);}
 }
 @keyframes die-flash-success{
-  0%  {background:var(--bg-raised);}
-  40% {background:#00d4ff18;}
-  100%{background:var(--bg-raised);}
+  0%  {filter:brightness(1);}
+  40% {filter:brightness(2);box-shadow:0 0 20px #00d4ff;}
+  100%{filter:brightness(1);}
 }
-@keyframes die-flash-fail{
-  0%  {background:var(--bg-raised);}
-  40% {background:#cc202018;}
-  100%{background:var(--bg-raised);}
+@keyframes die-flash-enemy-fail{
+  0%  {filter:brightness(1);}
+  20% {filter:brightness(2.5);box-shadow:0 0 30px #cc2020, 0 0 10px #fff;}
+  100%{filter:brightness(1);}
 }
-.die.rolling{animation:die-roll-in .35s cubic-bezier(.34,1.56,.64,1) both;}
-.die.success.flashing{animation:die-flash-success .4s ease forwards;}
-.die.fail.flashing{animation:die-flash-fail .4s ease forwards;}
+.die.rolling{animation:die-roll-in .4s cubic-bezier(.34,1.56,.64,1) both;}
+.die.success.flashing{animation:die-flash-success .5s ease forwards;}
+.die.enemy-fail.flashing{animation:die-flash-enemy-fail .6s ease forwards;}
 
 .dice-summary{
   font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;
@@ -439,9 +448,9 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
   <div id="phase-row" class="ph-row">
     <div class="ph-item done"><span class="ph-dot"></span>Command</div>
     <span class="ph-sep">·</span>
-    <div id="ph-movement" class="ph-item active"><span class="ph-dot"></span>Movement</div>
+    <div class="ph-item active"><span class="ph-dot"></span>Movement</div>
     <span class="ph-sep">·</span>
-    <div id="ph-shooting" class="ph-item"><span class="ph-dot"></span>Shooting</div>
+    <div class="ph-item"><span class="ph-dot"></span>Shooting</div>
     <span class="ph-sep">·</span>
     <div class="ph-item"><span class="ph-dot"></span>Charge</div>
     <span class="ph-sep">·</span>
@@ -540,22 +549,40 @@ function rollStage(containerId, summaryId, count, threshold, isEnemy, delay, onD
     results.push({val, success});
     const die = document.createElement('div');
     die.className = 'die rolling';
-    die.style.animationDelay = (i*80)+(delay)+ 'ms';
-    die.textContent = '?';
+    die.style.animationDelay = (i*60)+(delay)+ 'ms';
+    const faces = ['⚀','⚁','⚂','⚃','⚄','⚅'];
+    die.textContent = faces[Math.floor(Math.random()*6)];
+    
+    // Quick cycling animation for the number before it lands
+    let cycles = 0;
+    const cycleInt = setInterval(()=>{
+       die.textContent = faces[Math.floor(Math.random()*6)];
+       cycles++;
+       if(cycles > 4) clearInterval(cycleInt);
+    }, 40);
+
     row.appendChild(die);
     setTimeout(()=>{
+      clearInterval(cycleInt);
       die.textContent = val;
-      die.className = 'die rolling ' + (isEnemy ? (success?'enemy-success':'enemy-fail') : (success?'success':'fail')) + ' flashing';
-      die.style.animationDelay = '0ms';
-    }, delay + i*80 + 280);
+      die.className = 'die ' + (isEnemy ? (success?'enemy-success':'enemy-fail') : (success?'success':'fail')) + ' flashing';
+    }, delay + i*60 + 250);
   }
   const successes = results.filter(r=>r.success).length;
+  const fails = count - successes;
   setTimeout(()=>{
-    const col = isEnemy ? 'lo' : 'hi';
-    const label = isEnemy ? 'saves' : 'successes';
-    sum.innerHTML = `<span class="${col}">${successes}</span>/${count} ${label}`;
-    if(onDone) onDone(successes);
-  }, delay + count*80 + 450);
+    if(isEnemy) {
+      if(fails > 0) {
+        sum.innerHTML = `<span class="lo">${fails} failed saves!</span> <span style="margin-left:4px;color:var(--text-muted)">(${successes} blocked)</span>`;
+      } else {
+        sum.innerHTML = `<span style="color:var(--text-muted)">All damage blocked</span>`;
+      }
+      if(onDone) onDone(successes);
+    } else {
+      sum.innerHTML = `<span class="hi">${successes}</span>/${count} successes`;
+      if(onDone) onDone(successes);
+    }
+  }, delay + count*60 + 450);
 }
 
 function rollAttackSequence(){
@@ -568,13 +595,33 @@ function rollAttackSequence(){
   });
 }
 
-let phase=1;
+let phaseIdx = 1;
 function transitionPhase(){
-  const mvt=document.getElementById('ph-movement');
-  const sht=document.getElementById('ph-shooting');
-  mvt.classList.remove('active');mvt.classList.add('done');
-  sht.classList.add('transitioning');
-  setTimeout(()=>sht.classList.replace('transitioning','active'),600);
+  const row = document.getElementById('phase-row');
+  // Skip over the separator spans, only get .ph-item
+  const items = Array.from(row.children).filter(el => el.classList.contains('ph-item'));
+  
+  if(phaseIdx >= items.length) {
+    // Reset for demo purposes
+    items.forEach(i => { i.className = 'ph-item'; });
+    phaseIdx = 0;
+  }
+  
+  const current = items[phaseIdx];
+  const next = items[phaseIdx + 1];
+  
+  if(current) {
+    current.classList.remove('active');
+    current.classList.add('done');
+  }
+  
+  if(next) {
+    next.classList.add('transitioning');
+    setTimeout(()=>next.classList.replace('transitioning', 'active'), 600);
+    phaseIdx++;
+  } else {
+    phaseIdx = items.length; // End
+  }
 }
 
 let scoreVal=10;
