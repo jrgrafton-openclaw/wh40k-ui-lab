@@ -3,1057 +3,664 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>V3-A · Exact v0.23 Tokens + Components</title>
+<title>V3-A · Atomic Components · Rev 3</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* ══════════════════════════════════════════════════════════════
-   COPIED EXACTLY FROM:
-   warhammer-40k-simulator/packages/ui/public/mockups/phases/move/v0.23/style.css
-   Only page-shell/demo layout styles are added at the very bottom.
-══════════════════════════════════════════════════════════════ */
-
-/* ── DESIGN TOKENS (v1-D / v2-B / v3-A) ──────────────────────── */
 :root {
-  /* Backgrounds */
-  --bg-primary:   #080c10;
-  --bg-surface:   #0f1520;
-  --bg-raised:    #162030;
-  --bg-selected:  #1e2d44;
+  --bg-primary:#080c10; --bg-surface:#0f1520; --bg-raised:#162030; --bg-selected:#1e2d44;
+  --imp:#00d4ff; --imp-dim:#0088aa; --imp-tint:#00d4ff12; --imp-tint2:#00d4ff22;
+  --ork:#ff4020; --ork-dim:#aa2810; --ork-tint:#ff402012;
+  --text-primary:#e0e8f0; --text-sec:#8090a0; --text-muted:#4a6080; --text-dis:#2a3a4a;
+  --bs:#cc2020; --bs-tint:#cc202015;
+  --strat:#cc8800; --strat-tint:#cc880015; --strat-dim:#886000;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg-primary);color:var(--text-sec);font-family:'Rajdhani',sans-serif;padding:2rem;max-width:900px;}
+.pg-header{margin-bottom:2.5rem;border-left:2px solid var(--imp);padding-left:1rem;font-family:'Courier New',monospace;}
+.pg-header h1{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--imp);}
+.pg-header p{font-size:10px;color:var(--text-muted);margin-top:.25rem;}
+h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--text-dis);margin:2.5rem 0 1rem;border-bottom:1px solid #0f1a28;padding-bottom:.5rem;}
+.note{font-size:10px;color:var(--text-dis);margin-bottom:1rem;font-family:'Courier New',monospace;font-style:italic;}
+.row{display:flex;gap:1.5rem;flex-wrap:wrap;align-items:flex-end;margin-bottom:1rem;}
+.col{display:flex;flex-direction:column;align-items:center;gap:.5rem;}
+.lbl{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dis);align-self:flex-start;}
 
-  /* Imperium */
-  --imp:          #00d4ff;
-  --imp-dim:      #0088aa;
-  --imp-tint:     #00d4ff14;
-  --imp-tint2:    #00d4ff22;
+/* ══════════════════════════════════════════
+   1. UNIT TOKENS
+   - Symbol icon only (no number inside)
+   - Name label below
+   - Size driven by model count
+   - Vehicle/large = square shape
+══════════════════════════════════════════ */
+.token-wrap{display:flex;flex-direction:column;align-items:center;gap:.4rem;cursor:pointer;}
+.token-label{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap;}
+.token-wrap:hover .token-label{color:var(--text-sec);}
+.token-wrap.selected .token-label{color:var(--imp);}
 
-  /* Orks */
-  --ork:          #ff4020;
-  --ork-dim:      #aa2810;
-  --ork-tint:     #ff402012;
+.token{
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+  transition:box-shadow .18s ease, border-color .18s ease, background .18s ease;
+  flex-shrink:0;
+}
+/* Size variants */
+.token.sm{width:58px;height:58px;}   /* 1–5 models */
+.token.md{width:72px;height:72px;}   /* 6–10 models */
+.token.lg{width:84px;height:84px;}   /* 10+ models */
+/* Shape variants */
+.token.circle {border-radius:50%;}
+.token.square {border-radius:4px;}
 
-  /* Text hierarchy */
-  --text-primary: #e0e8f0;
-  --text-sec:     #8090a0;
-  --text-muted:   #4a6080;
-  --text-dis:     #2a3a4a;
+/* Count badge — faction-tinted for legibility */
+.token-count{
+  position:absolute;top:-6px;right:-6px;
+  min-width:20px;height:20px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;padding:0 4px;
+  font-size:10px;font-weight:700;font-family:'Rajdhani',sans-serif;
+  z-index:1;
+}
+.token.player .token-count{background:#0a1824;border:1.5px solid var(--imp-dim);color:var(--imp);}
+.token.enemy  .token-count{background:#180c08;border:1.5px solid var(--ork-dim);color:var(--ork);}
+.token.bs     .token-count{background:#180808;border:1.5px solid #881010;color:var(--bs);}
 
-  /* States */
-  --bs:           #cc2020;
-  --bs-tint:      #cc202015;
-  --strat:        #cc8800;
-  --strat-tint:   #cc880015;
-  --strat-dim:    #886000;
-  --spent:        #8a98ab;
-  --spent-dim:    #5f6d80;
-  --spent-tint:   rgba(138,152,171,.12);
-  --spent-tint-2: rgba(138,152,171,.2);
+/* Colour states */
+.token.player         {background:#050c12;border:3px solid var(--imp-dim);box-shadow:0 0 12px #00d4ff30,0 0 28px #00d4ff12;}
+.token.player .tkn-icon{color:#3a7a90;}
+.token.player:hover   {background:var(--imp-tint);border-color:var(--imp);box-shadow:0 0 0 4px #00d4ff20,0 0 20px #00d4ff40,0 0 40px #00d4ff14;}
+.token.player.selected{background:var(--imp-tint);border:3px solid var(--imp);box-shadow:0 0 0 5px #00d4ff25,0 0 28px #00d4ff60,0 0 60px #00d4ff20;}
+.token.player.selected .tkn-icon{color:var(--imp);}
+.token.player.activated{background:transparent;border:2px solid #00d4ff15;opacity:.35;box-shadow:none;}
+.token.player.bs      {background:#120808;border:2.5px solid #992020;box-shadow:0 0 12px #cc202035,0 0 28px #cc202012;}
+.token.player.bs .tkn-icon{color:var(--bs);}
 
-  /* ── Compat aliases used by shared JS ──────────────────── */
-  --bg:           #080c10;
-  --panel:        #0f1520;
-  --border:       #1a2535;      /* replaces old dark-gold border */
-  --gold:         #c9a352;      /* kept for battlefield grid only */
-  --gold-dim:     #5a4a28;
-  --text:         #e0e8f0;
-  --text-dim:     #8090a0;
-  --teal:         #00d4ff;      /* was #00c8a8 — now maps to --imp */
-  --blue:         #1e7acc;
-  --red-enemy:    #ff4020;
-  --red-alert:    #cc2020;
-  --amber-end:    #cc8800;
-  --white:        #ffffff;
-}
+.token.enemy          {background:#120808;border:3px solid var(--ork-dim);box-shadow:0 0 12px #ff402030,0 0 28px #ff402012;}
+.token.enemy .tkn-icon{color:#7a3820;}
+.token.enemy:hover    {background:var(--ork-tint);border-color:var(--ork);box-shadow:0 0 0 4px #ff402020,0 0 20px #ff402040,0 0 40px #ff402014;}
+.token.enemy.selected {background:var(--ork-tint);border:3px solid var(--ork);box-shadow:0 0 0 5px #ff402025,0 0 28px #ff402060,0 0 60px #ff402020;}
+.token.enemy.selected .tkn-icon{color:var(--ork);}
+.token.enemy.bs       {background:#120808;border:2.5px solid #992020;box-shadow:0 0 12px #cc202035,0 0 28px #cc202012;}
+.token.enemy.bs .tkn-icon{color:var(--bs);}
 
-/* ── RESET ──────────────────────────────────────────────────── */
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html, body {
-  width: 100%; height: 100%; overflow: hidden;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: 'Rajdhani', sans-serif;
-  user-select: none; -webkit-user-select: none;
+/* Token interior — icon + model count stacked */
+.token{flex-direction:column;gap:1px;}
+.tkn-icon{width:42%;height:42%;display:flex;align-items:center;justify-content:center;}
+.tkn-icon svg{width:100%;height:100%;}
+.tkn-models{
+  font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;
+  letter-spacing:.06em;color:inherit;opacity:.7;line-height:1;
 }
+.token.player .tkn-models{color:var(--imp-dim);}
+.token.player.selected .tkn-models{color:var(--imp);}
+.token.enemy  .tkn-models{color:var(--ork-dim);}
+.token.enemy.selected .tkn-models{color:var(--ork);}
+.token.player.bs .tkn-models,.token.enemy.bs .tkn-models{color:var(--bs);}
 
-/* ── APP GRID ──────────────────────────────────────────────── */
-#app { display: grid; grid-template-columns: 230px 1fr; width: 100vw; height: 100vh; transition: grid-template-columns .3s; }
-#app.collapsed { grid-template-columns: 40px 1fr; }
+/* ══════════════════════════════════════════
+   2. OBJECTIVE MARKER — hexagon, separate
+══════════════════════════════════════════ */
+.obj-wrap{display:flex;flex-direction:column;align-items:center;gap:.5rem;}
+.hex{width:60px;height:68px;position:relative;display:flex;align-items:center;justify-content:center;cursor:default;}
+.hex svg.hex-bg{position:absolute;top:0;left:0;width:100%;height:100%;}
+.hex-content{position:relative;text-align:center;}
+.hex-num{font-family:'Anton',sans-serif;font-size:18px;letter-spacing:.04em;color:var(--text-muted);line-height:1;}
+.hex-sub{font-family:'Rajdhani',sans-serif;font-size:8px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dis);}
+.hex.contested .hex-num{color:var(--imp);}
+.hex.enemy-held .hex-num{color:var(--ork);}
 
-/* ══════════════════════════════════════════════════════════════
-   ROSTER (left panel)
-   v3-A: roster-section headers, roster-row items with ri/rn/rc
-   JS compatibility: keeps .rail-unit class for selectUnit() toggling
-══════════════════════════════════════════════════════════════ */
-#roster {
-  grid-column: 1;
-  background: var(--bg-surface);
-  border-right: 1px solid var(--border);
-  display: flex; flex-direction: column; overflow: hidden;
-  z-index: 20; transition: width .3s;
-}
+/* ══════════════════════════════════════════
+   3. STAT ROW
+══════════════════════════════════════════ */
+.stat-row{display:flex;gap:1.5rem;}
+.stat-cell{text-align:center;}
+.stat-val{font-size:22px;font-weight:700;color:var(--text-primary);line-height:1;display:block;}
+.stat-lbl{font-size:9px;font-weight:500;letter-spacing:.25em;text-transform:uppercase;color:var(--text-dis);display:block;margin-bottom:2px;}
 
-.roster-header {
-  height: 36px;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 10px;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
-.roster-title {
-  font: 700 10px/1 'Rajdhani', sans-serif;
-  letter-spacing: 3px; text-transform: uppercase;
-  color: var(--text-muted);
-}
-.roster-collapse-btn {
-  background: none; border: none; cursor: pointer;
-  color: var(--text-muted); font-size: 13px;
-  transition: color .15s; padding: 2px;
-}
-.roster-collapse-btn:hover { color: var(--text-primary); }
-.roster-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; }
-.roster-scroll::-webkit-scrollbar { width: 2px; }
-.roster-scroll::-webkit-scrollbar-thumb { background: rgba(0,212,255,.07); }
+/* ══════════════════════════════════════════
+   4. WEAPON ROWS — CSS grid for alignment
+══════════════════════════════════════════ */
+.weapon-block{max-width:460px;}
 
-/* v3-A faction section header */
-.faction-section { border-top: 1px solid var(--border); }
-.faction-header {
-  display: flex; align-items: center; gap: 6px;
-  padding: 7px 10px; cursor: pointer; user-select: none;
-  transition: background .15s;
+/* Header and stat rows share same 7-col grid */
+.weapon-header,.weapon-row{
+  display:grid;
+  grid-template-columns:160px 36px 26px 34px 26px 36px 26px;
+  gap:0 .5rem;
+  align-items:center;
 }
-.faction-header:hover { background: rgba(255,255,255,.03); }
-/* Keep compat band/label/icon for old classes */
-.faction-band { width: 2px; height: 14px; border-radius: 1px; flex-shrink: 0; }
-.faction-band.imp { background: var(--imp-dim); }
-.faction-band.ork { background: var(--ork-dim); }
-.faction-icon { font-size: 11px; }
-.faction-label { flex: 1; font: 700 10px/1 'Rajdhani', sans-serif; letter-spacing: 2px; text-transform: uppercase; }
-.faction-label.imp { color: var(--imp); }
-.faction-label.ork { color: var(--ork); }
-.faction-chevron { font-size: 8px; color: var(--text-dis); transition: transform .25s; }
-.faction-body { overflow: hidden; max-height: 600px; transition: max-height .3s ease; }
-.faction-body.closed { max-height: 0; }
+.weapon-header{
+  padding:.2rem 0 .3rem;
+  border-bottom:1px solid #162030;
+  margin-bottom:2px;
+}
+.weapon-header span{font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dis);text-align:right;}
+.weapon-header span:first-child{text-align:left;}
 
-/* ── v3-A Roster Rows (styled on top of .rail-unit for JS compat) ── */
-.rail-unit {
-  display: flex; align-items: center; gap: 8px;
-  padding: 7px 10px;
-  cursor: pointer;
-  border-left: 2px solid transparent;
-  border-bottom: 1px solid var(--border);
-  transition: background .12s, border-left-color .12s;
-  position: relative;
+.weapon-entry{border-bottom:1px solid #0a1018;}
+.weapon-entry:last-child{border-bottom:none;}
+.weapon-row{
+  padding:.35rem 0 .2rem;
+  font-size:13px;font-weight:500;
+  transition:background .12s;
 }
-.rail-unit:hover { background: rgba(255,255,255,.04); border-left-color: var(--text-dis); }
-.rail-unit.active { background: var(--imp-tint); border-left-color: var(--imp); }
-.rail-unit.active.active-enemy { background: var(--ork-tint); border-left-color: var(--ork); }
-.rail-unit.moved {
-  background: linear-gradient(90deg, var(--spent-tint) 0%, rgba(8,12,16,.18) 100%);
-  border-left-color: var(--spent-dim);
-}
-.rail-unit.moved:hover { background: linear-gradient(90deg, var(--spent-tint-2) 0%, rgba(8,12,16,.26) 100%); }
-.rail-unit.moved .rn { color: #c2cedb; }
-.rail-unit.moved .rc { color: var(--spent); }
-.rail-unit.moved.active { background: linear-gradient(90deg, rgba(138,152,171,.18) 0%, rgba(8,12,16,.26) 100%); border-left-color: var(--spent); }
+.weapon-row span{text-align:right;color:var(--text-muted);}
+.weapon-row span.wn{text-align:left;color:var(--text-primary);}
 
-/* v3-A ri (roster icon) */
-.ri {
-  width: 20px; height: 20px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.ri.pl { background: var(--imp-tint); border: 1px solid var(--imp-dim); color: var(--imp); }
-.ri.en { background: var(--ork-tint); border: 1px solid var(--ork-dim); color: var(--ork); }
-.ri svg { width: 12px; height: 12px; }
-
-/* v3-A rn / rc */
-.rn {
-  flex: 1; font: 500 13px/1 'Rajdhani', sans-serif;
-  color: var(--text-primary);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.rail-unit.active .rn { color: var(--imp); }
-.rail-unit.active.active-enemy .rn { color: var(--ork); }
-.rc { font-size: 10px; font-weight: 600; color: var(--text-dis); flex-shrink: 0; }
-.rail-unit.active .rc { color: var(--imp-dim); }
-.rail-unit.active.active-enemy .rc { color: var(--ork-dim); }
-.roster-state-pill {
-  flex-shrink: 0;
-  padding: 2px 6px 1px;
-  border: 1px solid var(--spent-dim);
-  background: rgba(18,24,34,.88);
-  color: var(--spent);
-  font: 700 8px/1 'Rajdhani', sans-serif;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  border-radius: 999px;
-  display: none;
-}
-.rail-unit.moved .roster-state-pill { display: inline-flex; align-items: center; }
-
-/* Army abilities */
-.aa-section { border-top: 1px solid var(--border); }
-.aa-header {
-  display: flex; align-items: center; gap: 5px;
-  padding: 5px 10px; cursor: pointer; user-select: none;
-  background: rgba(255,255,255,.02);
-  font: 600 9px/1 'Rajdhani', sans-serif; letter-spacing: 2px;
-  color: var(--text-muted); text-transform: uppercase;
-  transition: color .15s;
-}
-.aa-header:hover { color: var(--text-sec); }
-.aa-chev { font-size: 8px; margin-left: auto; transition: transform .25s; }
-.aa-body { overflow: hidden; max-height: 0; transition: max-height .3s ease; }
-.aa-body.open { max-height: 300px; }
-.aa-row {
-  display: flex; align-items: center;
-  padding: 5px 10px 5px 14px;
-  border-bottom: 1px solid rgba(255,255,255,.03);
-  gap: 6px; cursor: help;
-}
-.aa-row.phase-active { background: var(--imp-tint); }
-.aa-name {
-  font: 600 11px/1 'Rajdhani', sans-serif;
-  color: var(--text-sec); flex: 1; text-transform: uppercase;
-}
-.aa-timing {
-  font: 600 8px/1 'Rajdhani', sans-serif; letter-spacing: 1px;
-  padding: 2px 5px; background: rgba(255,255,255,.04);
-  border: 1px solid var(--text-dis); color: var(--text-muted);
-  text-transform: uppercase; white-space: nowrap;
+/* Pills: outside the grid, pure flex, always left-aligned */
+.weapon-pills{
+  display:flex;gap:.3rem;flex-wrap:wrap;
+  padding:.2rem 0 .4rem;
 }
 
-/* ── COLLAPSED STATE ── */
-#app.collapsed #roster { width: 40px; }
-#app.collapsed .rn,
-#app.collapsed .rc,
-#app.collapsed .faction-label,
-#app.collapsed .faction-band,
-#app.collapsed .faction-chevron,
-#app.collapsed .faction-icon,
-#app.collapsed .aa-section,
-#app.collapsed .roster-title { display: none; }
-#app.collapsed .faction-header { padding: 4px 6px; justify-content: center; border: none; }
-#app.collapsed .rail-unit { padding: 4px 6px; justify-content: center; border-left: none; }
-#app.collapsed .rail-unit.active { background: rgba(0,212,255,.08); }
-#app.collapsed .ri { margin: 0 auto; }
-#app.collapsed .roster-collapse-btn { transform: scaleX(-1); }
-#app.collapsed .roster-header { justify-content: center; padding: 0 4px; }
-
-/* ══════════════════════════════════════════════════════════════
-   BATTLEFIELD
-══════════════════════════════════════════════════════════════ */
-#battlefield { grid-column: 2; position: relative; overflow: hidden; background: var(--bg-primary); }
-
-/* Back to archive */
-.backlink {
-  position: absolute; top: 8px; left: 8px; z-index: 60;
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 5px 10px;
-  font: 700 9px/1 'Rajdhani', sans-serif; letter-spacing: 1.8px; text-transform: uppercase;
-  color: var(--text-sec); text-decoration: none;
-  border: 1px solid rgba(0,212,255,.16);
-  background: rgba(8,12,16,.72);
-  backdrop-filter: blur(4px);
-  transition: all .15s;
-}
-.backlink:hover {
-  color: var(--imp);
-  border-color: rgba(0,212,255,.45);
-  background: rgba(8,12,16,.9);
-  box-shadow: 0 0 14px rgba(0,212,255,.18);
+/* ══════════════════════════════════════════
+   5. ABILITY ROW — pill + inline desc
+══════════════════════════════════════════ */
+.ability{margin-bottom:.75rem;max-width:360px;}
+.ability-pill{
+  display:inline-block;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;padding:3px 10px;
+  background:var(--imp-tint);color:var(--imp);border:1px solid #00d4ff28;
+  cursor:default;margin-bottom:.35rem;
+  transition:background .12s, border-color .12s, transform .12s, box-shadow .12s;
 }
 
-/* ── VP Bar ── */
-#vp-bar {
-  position: absolute; top: 0; left: 0; right: 0; height: 32px;
-  background: rgba(8,12,16,0.94);
-  border-bottom: 1px solid rgba(0,212,255,.08);
-  display: flex; align-items: center; justify-content: center;
-  gap: 20px; z-index: 50; backdrop-filter: blur(8px);
-}
-.vp-faction { display: flex; align-items: center; gap: 8px; font: 600 10px/1 'Rajdhani', sans-serif; letter-spacing: 2px; text-transform: uppercase; }
-.vp-name-imp { color: var(--imp); font-family: 'Rajdhani', sans-serif; }
-.vp-name-ork { color: var(--ork); font-family: 'Rajdhani', sans-serif; }
-.vp-score { font: 700 20px/1 'Anton', sans-serif; }
-.vp-score.imp { color: var(--imp); text-shadow: 0 0 10px rgba(0,212,255,.35); }
-.vp-score.ork { color: var(--ork); text-shadow: 0 0 10px rgba(255,64,32,.4); }
-.vp-vs { font: 600 9px/1 'Rajdhani', sans-serif; color: var(--text-dis); letter-spacing: 3px; }
-.vp-round { font: 600 11px/1 'Rajdhani', sans-serif; letter-spacing: 2px; color: var(--text-dis); text-transform: uppercase; position: absolute; right: 12px; }
-.vp-cp { font: 600 11px/1 'Rajdhani', sans-serif; letter-spacing: 2px; color: var(--text-dis); text-transform: uppercase; position: absolute; left: 12px; }
-.vp-cp span { color: var(--imp); font: 700 16px/1 'Anton', sans-serif; margin-left: 4px; }
-#reset-btn {
-  font: 600 9px/1 'Rajdhani', sans-serif; letter-spacing: 1.5px; text-transform: uppercase;
-  background: rgba(8,12,16,.7); border: 1px solid rgba(0,212,255,.08); color: var(--text-dis);
-  padding: 3px 8px; cursor: pointer; border-radius: 2px; transition: all .15s;
-  position: absolute; right: 80px;
-}
-#reset-btn:hover { border-color: rgba(0,212,255,.3); color: var(--imp); }
+.ability-desc{font-size:12px;color:var(--text-muted);line-height:1.55;}
 
-/* ── Phase Header Pill — v1-D Anton ── */
-#phase-header {
-  position: absolute; top: 32px; left: 0; right: 0; height: 56px;
-  background: transparent; display: flex; align-items: flex-start; justify-content: center;
-  z-index: 10; pointer-events: none;
+/* ══════════════════════════════════════════
+   6. KEYWORD PILLS
+══════════════════════════════════════════ */
+.pill{display:inline-flex;align-items:center;font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;padding:2px 7px;margin:.2rem .2rem 0 0;transition:background .12s,border-color .12s,transform .12s;cursor:default;}
+.pill:hover{transform:translateY(-1px);}
+.pill-kw{background:var(--imp-tint);color:var(--imp);border:1px solid #00d4ff28;}
+.pill-kw:hover{background:var(--imp-tint2);border-color:var(--imp-dim);}
+.pill-neutral{background:#0f1a28;color:var(--text-muted);border:1px solid #1a2a3a;}
+.pill-neutral:hover{background:#162030;border-color:var(--text-dis);}
+.pill-bs{
+  display:inline-flex;align-items:center;gap:4px;
+  font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:600;
+  letter-spacing:.15em;text-transform:uppercase;padding:2px 7px;
+  background:var(--bs-tint);color:var(--bs);border:1px solid #881010;
+  transition:background .12s,border-color .12s,transform .12s;
+  cursor:default;
 }
-.phase-pill {
-  margin-top: 8px;
-  background: rgba(8,12,16,.92);
-  border: 1px solid rgba(0,212,255,.2);
-  border-top: 2px solid var(--imp);
-  padding: 8px 28px;
-  display: flex; flex-direction: column; align-items: center; gap: 3px;
-  pointer-events: auto;
-  box-shadow: 0 0 20px rgba(0,212,255,.08), 0 2px 20px rgba(0,0,0,.8);
-  backdrop-filter: blur(6px);
-}
-.phase-title {
-  font: normal 400 15px/1 'Anton', sans-serif;
-  letter-spacing: 4px; color: var(--imp); text-transform: uppercase;
-}
-.phase-subtitle {
-  font: 600 11px/1 'Rajdhani', sans-serif;
-  letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase;
-}
+.pill-bs:hover{transform:translateY(-1px);}
+.pill-bs::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--bs);flex-shrink:0;}
 
-/* ── Battlefield inner ── */
-#battlefield-inner {
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  transform-origin: center; cursor: grab;
+/* ══════════════════════════════════════════
+   6b. KEYWORD TOOLTIP CARDS
+   CSS-only. Uses V2-B panel chrome.
+   .pill-wrap = positioning context
+══════════════════════════════════════════ */
+.pill-wrap{position:relative;display:inline-block;}
+.pill-wrap .pill{cursor:help;}
+.kw-tip{
+  display:block; /* span needs explicit block */
+  position:absolute;
+  bottom:calc(100% + 8px);
+  left:0; /* JS will override to right:0 when near right edge */
+  width:220px;
+  text-align:left;
+  background:var(--bg-raised);
+  border:1px solid #00d4ff22;
+  border-top:2px solid var(--imp);
+  padding:.6rem .75rem;
+  z-index:100;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .15s;
+  white-space:normal;
 }
-#battlefield-inner.dragging { cursor: grabbing !important; }
-#battlefield-inner.zoom-easing { transition: transform 0.15s cubic-bezier(0.25,0.46,0.45,0.94); }
+/* tooltip show/hide handled by JS */
+.kw-tip-name{
+  display:block;
+  font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--imp);margin-bottom:.3rem;
+  text-align:left;
+}
+.kw-tip-body{display:block;font-size:11px;color:var(--text-muted);line-height:1.55;text-align:left;}
 
-/* Battlefield grid (gold, subtle — neutral element) */
-#battlefield-inner::before {
-  content: ''; position: absolute; inset: 0; z-index: 0;
-  background-image:
-    repeating-linear-gradient(0deg,   transparent 0px, transparent 11px, rgba(201,163,82,.025) 11px, rgba(201,163,82,.025) 12px),
-    repeating-linear-gradient(90deg,  transparent 0px, transparent 11px, rgba(201,163,82,.025) 11px, rgba(201,163,82,.025) 12px),
-    repeating-linear-gradient(0deg,   transparent 0px, transparent 59px, rgba(201,163,82,.055) 59px, rgba(201,163,82,.055) 60px),
-    repeating-linear-gradient(90deg,  transparent 0px, transparent 59px, rgba(201,163,82,.055) 59px, rgba(201,163,82,.055) 60px);
-  pointer-events: none;
-}
+/* ══════════════════════════════════════════
+   7. ARMY ROSTER ROWS — plain rows
+══════════════════════════════════════════ */
+.roster-list{width:220px;border-top:1px solid #0e1520;}
+.roster-section{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;padding:.4rem .75rem;border-bottom:1px solid #0a0f18;display:flex;align-items:center;gap:.4rem;}
+.roster-section.pl{color:var(--imp);}
+.roster-section.en{color:var(--ork);}
+.sdot{width:6px;height:6px;border-radius:50%;background:currentColor;}
 
-/* ── SVG layers ── */
-#bf-svg-terrain { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
-#bf-svg         { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 6; }
-.model-base  { pointer-events: all; cursor: grab; transform-box: fill-box; transform-origin: center; }
-.unit-hull   { pointer-events: all; cursor: grab; transform-box: fill-box; transform-origin: center; }
+.roster-row{
+  display:flex;align-items:center;gap:.55rem;padding:.5rem .75rem;
+  border-bottom:1px solid #0a0f18;border-left:2px solid transparent;
+  cursor:pointer;
+  transition:background .12s, border-left-color .12s;
+}
+.roster-row:hover{background:#ffffff06;border-left-color:var(--text-dis);}
+.roster-row.sel{background:var(--imp-tint);border-left-color:var(--imp);}
+.roster-row.bsr{background:#100808;border-left-color:var(--bs);}
+.roster-row.en-row:hover{border-left-color:var(--ork-dim);}
 
-/* v4 animations — drag lift + drop settle (single model + group) */
-.is-lifted {
-  transform: translateY(-6px) scale(1.18);
-  transition: transform 120ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-.is-settling {
-  animation: token-drop-settle 260ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-@keyframes token-drop-settle {
-  0%   { transform: translateY(-6px) scale(1.18); }
-  45%  { transform: translateY(1px) scale(0.97); }
-  75%  { transform: translateY(0px) scale(1.03); }
-  100% { transform: translateY(0px) scale(1); }
-}
+.ri{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;}
+.ri.pl{background:var(--imp-tint);border:1px solid var(--imp-dim);color:var(--imp);}
+.ri.en{background:var(--ork-tint);border:1px solid var(--ork-dim);color:var(--ork);}
+.rn{font-size:13px;font-weight:500;color:var(--text-primary);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.roster-row.sel .rn{color:var(--imp);}
+.roster-row.bsr .rn{color:var(--bs);}
+.rc{font-size:10px;font-weight:600;color:var(--text-dis);flex-shrink:0;}
 
-/* ── Terrain ── */
-.tp-scatter {
-  background: rgba(40,50,80,.4);
-  border: 1px solid rgba(60,80,120,.2);
-  position: absolute;
+/* ══════════════════════════════════════════
+   8a. MODE SELECTORS (radio toggle)
+       NORMAL MOVE / ADVANCE
+══════════════════════════════════════════ */
+.mode-group{display:flex;gap:0;}
+.mode-btn{
+  font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:.15em;
+  text-transform:uppercase;padding:.45rem 1.1rem;border:1px solid #2a3a4a;
+  background:var(--bg-surface);color:var(--text-muted);cursor:pointer;
+  transition:background .12s,color .12s,border-color .12s;
+  margin-right:-1px; /* collapse borders */
 }
+.mode-btn:hover{background:var(--bg-raised);color:var(--text-primary);z-index:1;position:relative;}
+.mode-btn.active{background:var(--bg-selected);color:var(--imp);border-color:var(--imp);z-index:2;position:relative;}
 
-/* ── Objective area rings ── */
-.obj-area-ring {
-  position: absolute;
-  width: 12.5%; aspect-ratio: 1/1;
-  transform: translate(-50%,-50%);
-  border-radius: 50%;
-  border: 1.5px dashed rgba(74,96,128,.5);
-  background: rgba(8,16,8,.1);
-  pointer-events: none; z-index: 3;
+/* ══════════════════════════════════════════
+   8b. STRATAGEM BUTTON — amber, CP cost
+══════════════════════════════════════════ */
+.btn-strat{
+  font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:.15em;
+  text-transform:uppercase;padding:.45rem 1.1rem;
+  background:var(--strat-tint);color:var(--strat);border:1px solid var(--strat-dim);cursor:pointer;
+  transition:background .12s,border-color .12s,transform .12s,box-shadow .12s;
 }
+.btn-strat:hover{background:#cc880022;border-color:var(--strat);transform:translateY(-1px);box-shadow:0 3px 10px #cc880018;}
+.btn-strat:active{transform:scale(.97);box-shadow:none;}
 
-/* ── CSS Range circles ── */
-.range-circle {
-  position: absolute; border-radius: 50%; pointer-events: none;
-  display: none; z-index: 2; transition: opacity 0.15s ease;
+/* ══════════════════════════════════════════
+   8c. PRIMARY CTA — End phase
+══════════════════════════════════════════ */
+.btn-cta{
+  font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:.15em;
+  text-transform:uppercase;padding:.45rem 1.4rem;
+  background:var(--imp);color:#080c10;border:1px solid var(--imp);cursor:pointer;
+  transition:background .12s,border-color .12s,transform .12s,box-shadow .12s;
 }
-.rc-move    { border: 2px dashed rgba(0,212,255,.45); }
-.rc-advance { border: 1.5px dashed rgba(204,136,0,.45); }
-.rc-charge  { border: 1.5px dashed rgba(204,100,0,.4); }
-.rc-ds      { border: 1.5px dotted rgba(186,126,255,.6); }
-.range-label {
-  position: absolute; pointer-events: none; display: none; z-index: 2;
-  font: 700 10px/1 'Rajdhani', sans-serif; letter-spacing: 1.5px; text-transform: uppercase;
-  transform: translateX(-50%);
-  background: rgba(8,12,16,.75); padding: 1px 5px; border-radius: 2px;
-}
-.rl-move    { color: rgba(0,212,255,.8); }
-.rl-advance { color: rgba(204,136,0,.8); }
-.rl-charge  { color: rgba(204,100,0,.8); }
-.rl-ds      { color: rgba(186,126,255,.9); }
+.btn-cta:hover{background:#18eaff;border-color:#18eaff;transform:translateY(-1px);box-shadow:0 4px 14px #00d4ff28;}
+.btn-cta:active{transform:scale(.97);box-shadow:none;background:var(--imp-dim);}
 
-/* ── Objectives — SVG hex approach for proper visible strokes ── */
-.obj-hex-wrap {
-  position: absolute; transform: translate(-50%,-50%);
-  width: 84px; height: 97px; z-index: 4; cursor: default;
-}
-/* Glow for held objectives applied to the wrapper */
-.obj-hex-wrap.controlled { filter: drop-shadow(0 0 8px rgba(0,212,255,.5)); }
-.obj-hex-wrap.enemy      { filter: drop-shadow(0 0 8px rgba(255,64,32,.5)); }
-
-.obj-svg { display: block; overflow: visible; }
-
-/* hex fill (inner dark area) */
-.obj-bg  { fill: rgba(8,12,16,.92); }
-/* hex stroke ring — colored by state */
-.obj-ring { fill: none; stroke-width: 1.5; }
-
-/* number + label inside SVG */
-.obj-n {
-  font-family: 'Anton', sans-serif; font-size: 22px; font-weight: 400;
-  text-anchor: middle; dominant-baseline: central;
-}
-.obj-l {
-  font-family: 'Rajdhani', sans-serif; font-size: 7px; font-weight: 700;
-  letter-spacing: 2.5px; text-anchor: middle; dominant-baseline: central;
-}
-
-/* ── Neutral ── */
-.obj-hex-wrap.neutral .obj-ring { stroke: rgba(74,96,128,.55); }
-.obj-hex-wrap.neutral .obj-n    { fill: var(--text-sec); }
-.obj-hex-wrap.neutral .obj-l    { fill: var(--text-dis); }
-
-/* ── Player held ── */
-.obj-hex-wrap.controlled .obj-ring { stroke: var(--imp); }
-.obj-hex-wrap.controlled .obj-bg   { fill: rgba(0,212,255,.07); }
-.obj-hex-wrap.controlled .obj-n    { fill: var(--imp); }
-.obj-hex-wrap.controlled .obj-l    { fill: rgba(0,212,255,.65); }
-
-/* ── Enemy held ── */
-.obj-hex-wrap.enemy .obj-ring { stroke: var(--ork); }
-.obj-hex-wrap.enemy .obj-bg   { fill: rgba(255,64,32,.07); }
-.obj-hex-wrap.enemy .obj-n    { fill: var(--ork); }
-.obj-hex-wrap.enemy .obj-l    { fill: rgba(255,64,32,.65); }
-
-/* ══════════════════════════════════════════════════════════════
-   UNIT CARD — v2-B Panel Chrome
-   1px border (low opacity). 2px solid --imp top edge.
-   Header has raised background.
-   Anton for unit name. Rajdhani for everything else.
-══════════════════════════════════════════════════════════════ */
-#unit-card {
-  position: absolute; bottom: 62px; right: 10px; width: 300px;
-  /* v2-B chrome */
-  background: var(--bg-surface);
-  border: 1px solid var(--imp-tint2);
-  border-top: 2px solid var(--imp);
-  overflow: hidden;
-  z-index: 30; display: none;
-  backdrop-filter: blur(12px);
-  max-height: calc(100vh - 120px); overflow-y: auto;
-}
-#unit-card::-webkit-scrollbar { width: 2px; }
-#unit-card::-webkit-scrollbar-thumb { background: rgba(0,212,255,.08); }
-#unit-card.visible { display: block; }
-
-/* v2-B panel header (raised background) */
-.card-hdr {
-  background: var(--bg-raised);
-  padding: 10px 14px;
-  border-bottom: 1px solid rgba(0,212,255,.12);
-  display: flex; align-items: flex-start; justify-content: space-between;
-}
-/* v1-D: Anton for unit name */
-.card-title-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.card-name {
-  font: normal 400 20px/1.1 'Anton', sans-serif;
-  color: var(--text-primary);
-  text-transform: uppercase; letter-spacing: .04em;
-}
-.unit-state-badge {
-  display: none;
-  align-items: center;
-  padding: 4px 8px 3px;
-  border-radius: 999px;
-  border: 1px solid var(--spent-dim);
-  background: var(--spent-tint);
-  color: var(--spent);
-  font: 700 9px/1 'Rajdhani', sans-serif;
-  letter-spacing: 1.8px;
-  text-transform: uppercase;
-}
-.unit-state-badge.visible { display: inline-flex; }
-/* v2-B subtitle */
-.card-faction {
-  font: 500 10px/1 'Rajdhani', sans-serif;
-  letter-spacing: 2px; color: var(--text-muted);
-  text-transform: uppercase; margin-top: 5px;
-}
-.card-close {
-  color: var(--text-muted); cursor: pointer; font-size: 18px;
-  line-height: 1; margin-left: 8px; flex-shrink: 0;
-  transition: color .15s; background: none; border: none;
-}
-.card-close:hover { color: var(--imp); }
-
-/* v3-A stat row inside card */
-.card-stats {
-  display: flex;
-  border-bottom: 1px solid rgba(0,212,255,.06);
-  background: var(--bg-surface);
-}
-.stat-cell { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 10px 2px; }
-.stat-key  { font: 500 9px/1 'Rajdhani', sans-serif; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dis); display: block; margin-bottom: 4px; }
-.stat-val  { font: 700 20px/1 'Rajdhani', sans-serif; color: var(--text-primary); display: block; }
-
-/* Range toggles */
-.card-ranges { display: flex; gap: 4px; padding: 6px 14px; border-bottom: 1px solid rgba(0,212,255,.05); background: var(--bg-surface); }
-.range-toggle {
-  flex: 1; padding: 5px 4px; min-height: 36px;
-  font: 600 9px/1.2 'Rajdhani', sans-serif; letter-spacing: 1px; text-transform: uppercase;
-  background: transparent; border: 1px solid var(--text-dis);
-  color: var(--text-muted); cursor: pointer; transition: all .15s;
-  display: flex; align-items: center; justify-content: center;
-  text-align: center;
-}
-.range-toggle:hover { border-color: var(--text-muted); color: var(--text-sec); }
-.range-toggle.active.move    { background: var(--imp-tint); border-color: var(--imp-dim); color: var(--imp); }
-.range-toggle.active.advance { background: var(--strat-tint); border-color: var(--strat-dim); color: var(--strat); }
-.range-toggle.active.charge  { background: rgba(204,100,0,.1); border-color: rgba(204,100,0,.4); color: #cc6400; }
-.range-toggle.active.ds      { background: rgba(186,126,255,.12); border-color: rgba(186,126,255,.4); color: #ba7eff; }
-
-/* Card sections */
-.card-section { padding: 8px 14px; border-bottom: 1px solid rgba(0,212,255,.05); background: var(--bg-surface); }
-.sec-label {
-  font: 600 9px/1 'Rajdhani', sans-serif; letter-spacing: 2px;
-  color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px;
-}
-
-/* Wargear rows */
-.wg-row {
-  display: flex; align-items: center; gap: 8px;
-  padding: 5px 6px; margin-bottom: 3px; cursor: pointer;
-  border: 1px solid var(--text-dis); font: 600 11px/1 'Rajdhani', sans-serif;
-  color: var(--text-muted); transition: all .15s;
-}
-.wg-row:hover { border-color: var(--text-muted); color: var(--text-sec); }
-.wg-row.active { border-color: var(--imp-dim); background: var(--imp-tint); color: var(--imp); }
-.wg-circle {
-  width: 12px; height: 12px; border-radius: 50%;
-  border: 1.5px solid var(--text-dis);
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  transition: all .15s;
-}
-.wg-row.active .wg-circle { background: var(--imp); border-color: var(--imp); }
-
-/* ── Weapon table (v3-A aligned grid approach via flex) ── */
-.card-weapons { padding: 0 14px 8px; background: var(--bg-surface); }
-.wt-hdr {
-  display: flex; align-items: center; gap: 4px;
-  padding: 8px 0 4px;
-  border-bottom: 1px solid rgba(0,212,255,.1);
-}
-.wt-type { font: 600 9px/1 'Rajdhani', sans-serif; letter-spacing: 2px; color: var(--imp); text-transform: uppercase; flex: 1; }
-.wt-col  { font: 600 8px/1 'Rajdhani', sans-serif; letter-spacing: 1px; color: var(--text-dis); text-transform: uppercase; min-width: 26px; text-align: center; }
-.wt-row  { padding: 4px 0; border-bottom: 1px solid rgba(0,212,255,.04); }
-.wt-row:last-child { border-bottom: none; }
-.wt-name-row { display: flex; align-items: center; gap: 4px; }
-.wt-name { flex: 1; font: 500 13px/1.2 'Rajdhani', sans-serif; color: var(--text-primary); }
-.wt-val  { font: 500 12px/1 'Rajdhani', sans-serif; color: var(--text-muted); min-width: 26px; text-align: center; }
-.wt-val.ap0     { color: var(--text-muted); }
-.wt-val.ap-neg  { color: var(--bs); font-weight: 700; }
-.wt-val.dmg { color: var(--imp); font-weight: 700; }
-.wt-kws { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 3px; }
-
-/* ── v3-A Keyword pills ── */
-.kw-pill {
-  display: inline-block; font: 600 8px/1 'Rajdhani', sans-serif;
-  letter-spacing: .5px; padding: 2px 6px;
-  cursor: help; position: relative; text-transform: uppercase;
-  transition: filter .15s; border: 1px solid;
-}
-.kw-pill:hover { filter: brightness(1.4); }
-.kw-pill.melee    { background: rgba(204,32,32,.1);   color: #cc4444; border-color: rgba(204,32,32,.3); }
-.kw-pill.pistol   { background: var(--imp-tint);       color: var(--imp); border-color: var(--imp-tint2); }
-.kw-pill.assault  { background: var(--imp-tint);       color: var(--imp); border-color: var(--imp-tint2); }
-.kw-pill.heavy    { background: rgba(85,136,204,.1);  color: #5588cc; border-color: rgba(85,136,204,.25); }
-.kw-pill.hazardous{ background: rgba(255,104,32,.1);  color: #ff6820; border-color: rgba(255,104,32,.3); }
-.kw-pill.rapid    { background: rgba(68,170,102,.1);  color: #44aa66; border-color: rgba(68,170,102,.25); }
-.kw-pill.blast    { background: rgba(204,170,0,.1);   color: #ccaa00; border-color: rgba(204,170,0,.25); }
-.kw-pill.melta    { background: rgba(255,64,16,.1);   color: #ff4010; border-color: rgba(255,64,16,.25); }
-.kw-pill.other    { background: rgba(42,58,74,.2);    color: var(--text-muted); border-color: var(--text-dis); }
-
-/* Inline keyword spans */
-.kw-inline { display: inline-block; padding: 1px 5px; font: 700 9px/1.3 'Rajdhani', sans-serif; letter-spacing: .5px; text-transform: uppercase; cursor: help; }
-.kw-inline.melee    { background: rgba(204,32,32,.1);  color: #cc4444; border: 1px solid rgba(204,32,32,.2); }
-.kw-inline.pistol   { background: var(--imp-tint);      color: var(--imp); border: 1px solid var(--imp-tint2); }
-.kw-inline.assault  { background: var(--imp-tint);      color: var(--imp); border: 1px solid var(--imp-tint2); }
-.kw-inline.hazardous{ background: rgba(255,104,32,.1); color: #ff6820; border: 1px solid rgba(255,104,32,.25); }
-.kw-inline.heavy    { background: rgba(85,136,204,.1); color: #5588cc; border: 1px solid rgba(85,136,204,.2); }
-.kw-inline.rapid    { background: rgba(68,170,102,.1); color: #44aa66; border: 1px solid rgba(68,170,102,.2); }
-.kw-inline.other    { background: rgba(42,58,74,.15);  color: var(--text-muted); border: 1px solid var(--text-dis); }
-
-/* ── v3-A Ability rows ── */
-.card-abilities { padding: 8px 14px; background: var(--bg-surface); }
-.ability-row { margin-bottom: 10px; }
-.ability-pill {
-  display: inline-block; cursor: default;
-  font: 700 11px/1 'Rajdhani', sans-serif; letter-spacing: 2px;
-  text-transform: uppercase; padding: 4px 10px;
-  background: var(--imp-tint); color: var(--imp);
-  border: 1px solid rgba(0,212,255,.22);
-  margin-bottom: 5px;
-  transition: background .12s;
-}
-.ability-desc { font: 400 13px/1.55 'Rajdhani', sans-serif; color: var(--text-muted); padding-left: 2px; }
-
-/* ══════════════════════════════════════════════════════════════
-   ACTION BAR — v3-A
-   Phase row: ph-item dots with separator
-   Mode buttons: mode-group radio toggle
-   Stratagem: btn-strat (amber)
-   End phase: btn-cta (primary CTA)
-   Confirm/Cancel: keep action-btn sub-classes
-══════════════════════════════════════════════════════════════ */
-#action-bar {
-  position: absolute; bottom: 0; left: 0; right: 0; height: 52px;
-  background: rgba(8,12,16,.97);
-  border-top: 1px solid var(--border);
-  display: flex; align-items: center;
-  padding: 0 12px; gap: 8px; z-index: 20;
-  backdrop-filter: blur(4px);
-}
-
-/* v3-A Phase indicator */
-.phase-row { display: flex; align-items: center; gap: 0; }
-.ph-item {
-  display: flex; align-items: center; gap: 4px;
-  padding: 2px 6px;
-  font: 600 8px/1 'Rajdhani', sans-serif; letter-spacing: 1.5px; text-transform: uppercase;
-  color: var(--text-dis); cursor: default; user-select: none;
-}
-.ph-item.done   { color: var(--text-muted); }
-.ph-item.active { color: var(--imp); }
-.ph-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: .35; }
-.ph-item.active .ph-dot { opacity: 1; }
-.ph-item.done   .ph-dot { opacity: .5; }
-.ph-sep { color: var(--text-dis); font-size: 9px; opacity: .25; user-select: none; }
-
-/* v3-A Mode group (NORMAL MOVE / ADVANCE radio toggle) */
-.mode-group { display: flex; gap: 0; }
-.mode-btn {
-  font: 600 11px/1 'Rajdhani', sans-serif; letter-spacing: 1.5px; text-transform: uppercase;
-  padding: 0 10px; height: 32px;
-  border: 1px solid var(--text-dis);
-  background: var(--bg-surface); color: var(--text-muted);
-  cursor: pointer; transition: background .12s, color .12s, border-color .12s;
-  margin-right: -1px; /* collapse borders */
-  position: relative;
-}
-.mode-btn:hover   { background: var(--bg-raised); color: var(--text-sec); z-index: 1; }
-.mode-btn.active  { background: var(--bg-selected); color: var(--imp); border-color: var(--imp); z-index: 2; }
-.mode-btn:disabled { opacity: .35; cursor: default; }
-.mode-btn:disabled:hover { background: var(--bg-surface); color: var(--text-muted); }
-
-/* Mode label (shows MOVING / ADVANCING / NO UNIT) */
-#move-mode-label {
-  font: 700 9px/1 'Rajdhani', sans-serif; letter-spacing: 2px; text-transform: uppercase;
-  color: var(--text-dis); padding: 0 4px; min-width: 90px; text-align: center;
-}
-#move-mode-label.active-move    { color: var(--imp); }
-#move-mode-label.active-advance { color: var(--strat); }
-
-/* Confirm / Cancel (keep action-btn structure for CSS compat) */
-.action-btn {
-  height: 32px; min-width: 70px; padding: 0 10px; position: relative;
-  font: 700 9px/1 'Rajdhani', sans-serif; letter-spacing: 2px; text-transform: uppercase;
-  cursor: pointer; transition: all .15s;
-  background: var(--bg-surface); border: 1px solid var(--text-dis); color: var(--text-dis);
-}
-.action-btn:disabled { opacity: .3; cursor: default; }
-.action-btn.active   { background: var(--imp-tint); border-color: var(--imp-dim); color: var(--imp); }
-.action-btn.confirm-move          { background: rgba(0,212,255,.1); border: 1px solid rgba(0,212,255,.5); color: var(--imp); }
-.action-btn.confirm-move:disabled { background: transparent; border-color: var(--border); color: var(--text-dis); cursor: default; }
-.action-btn.cancel-move           { background: rgba(204,32,32,.08); border: 1px solid rgba(204,32,32,.35); color: #cc4444; }
-.action-btn.cancel-move:disabled  { background: transparent; border-color: var(--border); color: var(--text-dis); cursor: default; }
-
-/* Keyboard shortcut tooltip */
-.action-btn[data-shortcut]:hover::after,
-.mode-btn[data-shortcut]:hover::after {
-  content: '[' attr(data-shortcut) ']';
-  position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
-  font: 600 9px/1 'Rajdhani', sans-serif; color: var(--imp);
-  background: rgba(0,0,0,.8); padding: 2px 4px; white-space: nowrap; pointer-events: none;
-}
-
-/* v3-A End phase CTA */
-.btn-cta {
-  font: 700 11px/1 'Rajdhani', sans-serif; letter-spacing: 1.5px; text-transform: uppercase;
-  padding: 0 14px; height: 32px;
-  background: var(--imp); color: #080c10;
-  border: 1px solid var(--imp); cursor: pointer;
-  transition: background .12s, border-color .12s, transform .12s, box-shadow .12s;
-  margin-left: auto;
-}
-.btn-cta:hover  { background: #18eaff; border-color: #18eaff; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,212,255,.25); }
-.btn-cta:active { transform: scale(.97); box-shadow: none; background: var(--imp-dim); }
-
-/* Action bar separator */
-.ab-sep { width: 1px; height: 32px; background: var(--border); margin: 0 2px; flex-shrink: 0; }
-
-/* ══════════════════════════════════════════════════════════════
-   STRATAGEM MODAL — v2-B chrome
-══════════════════════════════════════════════════════════════ */
-/* ── Global Tooltip ── */
-#global-tooltip {
-  position: fixed; z-index: 9999; visibility: hidden; opacity: 0;
-  background: var(--bg-raised);
-  border: 1px solid rgba(0,212,255,.15);
-  border-top: 2px solid var(--imp);
-  color: var(--text-sec); font: 400 12px/1.5 'Rajdhani', sans-serif;
-  padding: 7px 12px; pointer-events: none;
-  box-shadow: 0 4px 16px rgba(0,0,0,.9); max-width: 260px;
-  transition: opacity .15s;
-}
-#global-tooltip .tip-title {
-  font: 600 11px/1 'Rajdhani', sans-serif; letter-spacing: 1px;
-  color: var(--imp); text-transform: uppercase; margin-bottom: 6px;
-}
-#global-tooltip ul { padding-left: 12px; }
-#global-tooltip ul li { margin-bottom: 3px; }
-
-/* ══════════════════════════════════════════════════════════════
-   MOVEMENT-PHASE SPECIFICS
-══════════════════════════════════════════════════════════════ */
-
-/* Movement ghost circles */
-.move-ghost { pointer-events: none; fill: none; stroke-dasharray: 4 3; opacity: .3; }
-
-/* Movement zone circles */
-.move-zone { pointer-events: none; stroke-dasharray: 6 4; }
-.move-zone.zone-move    { fill: rgba(0,212,255,.04); stroke: rgba(0,212,255,.2); stroke-width: 1.5; }
-.move-zone.zone-advance { fill: rgba(204,136,0,.04); stroke: rgba(204,136,0,.2); stroke-width: 1.5; }
-
-/* Ruler lines */
-.move-ruler       { pointer-events: none; stroke-width: 1; stroke-dasharray: 4 3; fill: none; opacity: .6; }
-.move-ruler-label { pointer-events: none; font: 600 9px/1 'Rajdhani', sans-serif; fill: rgba(224,232,240,.45); }
-
-/* Cohesion banner */
-#cohesion-banner {
-  top: 88px !important; left: 50% !important;
-  transform: translateX(-50%) !important;
-  width: auto !important; max-width: 280px !important;
-  padding: 5px 14px !important; font-size: 11px !important;
-  white-space: nowrap !important;
-}
-
-/* Shake on blocked confirm */
-@keyframes shake-err { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
-.shake-error { animation: shake-err 0.4s ease; }
-
-/* ── Advance D6 Dice Overlay ── */
-#advance-dice-overlay {
-  position: fixed; inset: 0; display: none;
-  align-items: center; justify-content: center;
-  z-index: 500; background: rgba(8,12,16,0.75); backdrop-filter: blur(4px);
-}
-#advance-dice-overlay.visible { display: flex; }
-.dice-panel { text-align: center; }
-.dice-d6 {
-  width: 72px; height: 72px; margin: 0 auto 16px;
-  background: linear-gradient(135deg, var(--bg-raised), var(--bg-surface));
-  border: 2px solid var(--text-dis);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 6px 20px rgba(0,0,0,.6);
-  display: flex; align-items: center; justify-content: center;
-  font: normal 400 38px/1 'Anton', sans-serif;
-  color: var(--text-dis); position: relative;
-  transition: all .3s cubic-bezier(.34,1.56,.64,1);
-}
-.dice-d6.rolling {
-  animation: die-roll-in .4s cubic-bezier(.34,1.56,.64,1) both;
-  color: var(--imp); border-color: var(--imp);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 0 24px rgba(0,212,255,.35), 0 6px 20px rgba(0,0,0,.6);
-}
-@keyframes die-roll-in {
-  0%   { transform: scale(.5) rotate(-20deg); opacity: 0; }
-  60%  { transform: scale(1.1) rotate(4deg); opacity: 1; }
-  100% { transform: scale(1) rotate(0); }
-}
-.dice-result-label {
-  font: 700 12px/1 'Rajdhani', sans-serif; letter-spacing: 3px; text-transform: uppercase;
-  color: var(--imp);
-}
-.dice-total-label {
-  font: 600 11px/1 'Rajdhani', sans-serif; letter-spacing: 2px;
-  color: var(--text-muted); margin-top: 6px;
-}
-
-/* ── Version badge ── */
-.v23-badge {
-  position: absolute; top: 32px; right: 12px; z-index: 50;
-  font: 600 9px/1 'Rajdhani', sans-serif; letter-spacing: 2px; text-transform: uppercase;
-  color: var(--text-dis); padding: 3px 8px;
-  border: 1px solid rgba(0,212,255,.06);
-}
-
-/* ══════════════════════════════════════════════════════════════
-   DEMO PAGE SHELL ONLY (not copied from v0.23)
-══════════════════════════════════════════════════════════════ */
-body{overflow:auto;height:auto;min-height:100%;padding:24px;background:var(--bg-primary);}
-.page{max-width:1400px;margin:0 auto;display:grid;gap:18px;}
-.page-header{display:grid;gap:6px;padding:0 2px;}
-.page-title{font:700 11px/1 'Rajdhani',sans-serif;letter-spacing:.28em;text-transform:uppercase;color:var(--imp);}
-.page-note{font:500 12px/1.5 'Rajdhani',sans-serif;color:var(--text-muted);max-width:900px;}
-.showcase-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px;align-items:start;}
-.showcase-card{border:1px solid var(--border);background:var(--bg-surface);min-height:120px;position:relative;overflow:hidden;}
-.showcase-pad{padding:18px;}
-.showcase-frame{position:relative;background:var(--bg-primary);min-height:240px;overflow:hidden;}
-.showcase-frame.tall{min-height:420px;}
-.showcase-frame.battlefield-demo{height:520px;}
-.section-label{font:700 10px/1 'Rajdhani',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dis);margin-bottom:12px;}
-.inline-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
-.demo-static #unit-card{display:block;position:relative;right:auto;bottom:auto;max-height:none;width:300px;}
-.demo-static #action-bar{position:relative;left:auto;right:auto;bottom:auto;}
-.demo-static #vp-bar,.demo-static #phase-header,.demo-static .v23-badge{position:relative;top:auto;left:auto;right:auto;}
-.demo-static #vp-bar{height:32px;}
-.demo-static #phase-header{height:auto;justify-content:flex-start;padding-top:8px;}
-.demo-static .phase-pill{margin-top:0;display:inline-flex;}
-.demo-static .backlink{position:relative;top:auto;left:auto;display:inline-flex;margin-bottom:10px;}
-.roster-demo{height:420px;display:block;}
-.roster-demo #roster{height:100%;}
-.battle-demo-wrap{position:absolute;inset:0;}
-.battle-demo-wrap #battlefield{height:100%;}
+/* ══════════════════════════════════════════
+   9. PHASE INDICATOR — status only
+══════════════════════════════════════════ */
+.phase-row{display:flex;align-items:center;gap:0;}
+.ph-item{display:flex;align-items:center;gap:.35rem;padding:.3rem .55rem;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--text-dis);cursor:default;user-select:none;}
+.ph-item.done{color:var(--text-muted);}
+.ph-item.active{color:var(--imp);}
+.ph-dot{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.35;}
+.ph-item.active .ph-dot{opacity:1;}
+.ph-item.done .ph-dot{opacity:.5;}
+.ph-sep{color:var(--text-dis);font-size:9px;opacity:.25;user-select:none;}
 </style>
 </head>
 <body>
-<div class="page">
-  <div class="page-header">
-    <div class="page-title">V3-A · Exact v0.23 Tokens + Components</div>
-    <div class="page-note">This page now uses the exact token values and component markup/styles copied from <code>move/v0.23</code>. No palette reinterpretation.</div>
+<div class="pg-header">
+  <h1>V3-A · Atomic Components · Rev 3</h1>
+  <p>Rev 4: glow-only hover on tokens (no lift), faction-coloured count badges, keyword tooltip cards (V2-B chrome), weapon row grid.</p>
+</div>
+
+<!-- ═══ 1. UNIT TOKENS ═══ -->
+<h2>1 · Unit Token — Symbol, Size by Model Count</h2>
+<div class="note">Icon only inside token. Name label below. Count badge high-contrast. Hover = lift + glow. Selected = full glow ring.</div>
+
+<h2 style="margin-top:1.5rem">1a · Player tokens</h2>
+<div class="row">
+  <div class="col">
+    <div class="lbl">Default</div>
+    <div class="token-wrap">
+      <div class="token player circle sm">
+        <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2"/></svg></div>
+        <span class="tkn-models">×5</span><span class="token-count">5</span>
+      </div>
+      <div class="token-label">Hellblasters</div>
+    </div>
   </div>
-
-  <div class="showcase-grid">
-    <section class="showcase-card showcase-pad">
-      <div class="section-label">Design tokens</div>
-      <div class="inline-row" style="align-items:flex-start;gap:24px;">
-        <div>
-          <div class="page-note" style="font-size:11px;line-height:1.7;max-width:none;">
-            <div><strong style="color:var(--text-primary)">bg-primary</strong> <code>#080c10</code></div>
-            <div><strong style="color:var(--text-primary)">bg-surface</strong> <code>#0f1520</code></div>
-            <div><strong style="color:var(--text-primary)">bg-raised</strong> <code>#162030</code></div>
-            <div><strong style="color:var(--text-primary)">bg-selected</strong> <code>#1e2d44</code></div>
-          </div>
-        </div>
-        <div>
-          <div class="page-note" style="font-size:11px;line-height:1.7;max-width:none;">
-            <div><strong style="color:var(--imp)">imp</strong> <code>#00d4ff</code></div>
-            <div><strong style="color:var(--ork)">ork</strong> <code>#ff4020</code></div>
-            <div><strong style="color:var(--strat)">strat</strong> <code>#cc8800</code></div>
-            <div><strong style="color:var(--bs)">bs</strong> <code>#cc2020</code></div>
-          </div>
-        </div>
-        <div>
-          <div class="page-note" style="font-size:11px;line-height:1.7;max-width:none;">
-            <div><strong style="color:var(--text-primary)">text-primary</strong> <code>#e0e8f0</code></div>
-            <div><strong style="color:var(--text-sec)">text-sec</strong> <code>#8090a0</code></div>
-            <div><strong style="color:var(--text-muted)">text-muted</strong> <code>#4a6080</code></div>
-            <div><strong style="color:var(--text-dis)">text-dis</strong> <code>#2a3a4a</code></div>
-          </div>
-        </div>
+  <div class="col">
+    <div class="lbl">Selected</div>
+    <div class="token-wrap selected">
+      <div class="token player circle sm selected">
+        <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2"/></svg></div>
+        <span class="tkn-models">×5</span><span class="token-count">5</span>
       </div>
-    </section>
-
-    <section class="showcase-card roster-demo">
-      <aside id="roster">
-        <div class="roster-header">
-          <span class="roster-title">ARMY ROSTER</span>
-          <button class="roster-collapse-btn">◄</button>
-        </div>
-        <div class="roster-scroll">
-          <div class="faction-section">
-            <div class="faction-header">
-              <div class="faction-band imp"></div>
-              <span class="faction-label imp">IMPERIUM</span>
-              <span class="faction-chevron">▾</span>
-            </div>
-            <div class="faction-body">
-              <div class="rail-unit active" data-unit="assault-intercessors">
-                <div class="ri pl"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2.5"/><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2.5"/></svg></div>
-                <span class="rn">Assault Intercessors</span>
-                <span class="rc">5</span>
-              </div>
-              <div class="rail-unit moved" data-unit="hellblasters">
-                <div class="ri pl"><svg viewBox="0 0 24 24" fill="none"><polygon points="12,4 20,12 12,20 4,12" stroke="currentColor" stroke-width="2"/></svg></div>
-                <span class="rn">Hellblasters</span>
-                <span class="rc">5</span>
-                <span class="roster-state-pill">MOVED</span>
-              </div>
-              <div class="aa-section">
-                <div class="aa-header">
-                  <span class="aa-label">ARMY ABILITIES</span>
-                  <span class="aa-chev">▸</span>
-                </div>
-                <div class="aa-body open">
-                  <div class="aa-row"><span class="aa-name">AND THEY SHALL KNOW NO FEAR</span><span class="aa-timing">PASSIVE</span></div>
-                  <div class="aa-row phase-active"><span class="aa-name">SHOCK ASSAULT</span><span class="aa-timing">FIGHT PHASE</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="faction-section">
-            <div class="faction-header">
-              <div class="faction-band ork"></div>
-              <span class="faction-label ork">ORKS</span>
-              <span class="faction-chevron">▾</span>
-            </div>
-            <div class="faction-body">
-              <div class="rail-unit" data-unit="boss-nob">
-                <div class="ri en"><svg viewBox="0 0 24 24" fill="none"><polygon points="12,3 14.5,9 21,9.5 16,14 17.5,21 12,17.5 6.5,21 8,14 3,9.5 9.5,9" stroke="currentColor" stroke-width="1.5"/></svg></div>
-                <span class="rn">Boss Nob</span>
-                <span class="rc">1</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </aside>
-    </section>
-
-    <section class="showcase-card showcase-pad demo-static">
-      <div class="section-label">Top chrome</div>
-      <a class="backlink" href="#">← Mockups</a>
-      <div id="vp-bar">
-        <div class="vp-cp">CP <span>5</span></div>
-        <div class="vp-faction"><span class="vp-name-imp">IMPERIUM</span><span class="vp-score imp">10</span></div>
-        <span class="vp-vs">VS</span>
-        <div class="vp-faction"><span class="vp-score ork">4</span><span class="vp-name-ork">ORKS</span></div>
-        <span class="vp-round">RND 2 / 5</span>
-        <button id="reset-btn">↺ RESET</button>
+      <div class="token-label">Hellblasters</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="lbl">Activated</div>
+    <div class="token-wrap">
+      <div class="token player circle sm activated">
+        <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2"/></svg></div>
+        <span class="tkn-models">×5</span><span class="token-count">5</span>
       </div>
-      <div id="phase-header">
-        <div class="phase-pill">
-          <div class="phase-title">MOVEMENT PHASE</div>
-          <div class="phase-subtitle">Imperium Active · Round 2</div>
-        </div>
+      <div class="token-label">Hellblasters</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="lbl">Battleshocked</div>
+    <div class="token-wrap">
+      <div class="token player circle sm bs">
+        <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2"/></svg></div>
+        <span class="tkn-models">×5</span><span class="token-count">5</span>
       </div>
-    </section>
-
-    <section class="showcase-card showcase-pad demo-static">
-      <div class="section-label">Objective markers + rings</div>
-      <div style="position:relative;height:220px;background:var(--bg-primary);overflow:hidden;">
-        <div class="obj-area-ring" style="left:20%;top:50%;width:90px"></div>
-        <div class="obj-area-ring" style="left:50%;top:50%;width:90px"></div>
-        <div class="obj-area-ring" style="left:80%;top:50%;width:90px"></div>
-
-        <div class="obj-hex-wrap controlled" style="left:20%;top:50%;"><svg class="obj-svg" viewBox="0 0 84 97" width="84" height="97"><polygon class="obj-bg" points="42,3 81,25.5 81,71.5 42,94 3,71.5 3,25.5"/><polygon class="obj-ring" points="42,3 81,25.5 81,71.5 42,94 3,71.5 3,25.5"/><text x="42" y="44" class="obj-n">02</text><text x="42" y="62" class="obj-l">OBJ</text></svg></div>
-        <div class="obj-hex-wrap neutral" style="left:50%;top:50%;"><svg class="obj-svg" viewBox="0 0 84 97" width="84" height="97"><polygon class="obj-bg" points="42,3 81,25.5 81,71.5 42,94 3,71.5 3,25.5"/><polygon class="obj-ring" points="42,3 81,25.5 81,71.5 42,94 3,71.5 3,25.5"/><text x="42" y="44" class="obj-n">03</text><text x="42" y="62" class="obj-l">OBJ</text></svg></div>
-        <div class="obj-hex-wrap enemy" style="left:80%;top:50%;"><svg class="obj-svg" viewBox="0 0 84 97" width="84" height="97"><polygon class="obj-bg" points="42,3 81,25.5 81,71.5 42,94 3,71.5 3,25.5"/><polygon class="obj-ring" points="42,3 81,25.5 81,71.5 42,94 3,71.5 3,25.5"/><text x="42" y="44" class="obj-n">04</text><text x="42" y="62" class="obj-l">OBJ</text></svg></div>
-      </div>
-    </section>
-
-    <section class="showcase-card showcase-pad demo-static">
-      <div class="section-label">Unit card</div>
-      <div id="unit-card" class="visible">
-        <div class="card-hdr">
-          <div style="min-width:0;flex:1;">
-            <div class="card-title-row">
-              <div class="card-name">ASSAULT INTERCESSORS</div>
-              <div class="unit-state-badge visible">MOVED</div>
-            </div>
-            <div class="card-faction">✠ SPACE MARINES · ADEPTUS ASTARTES</div>
-          </div>
-          <button class="card-close">×</button>
-        </div>
-        <div class="card-stats">
-          <div class="stat-cell"><span class="stat-key">M</span><span class="stat-val">6</span></div>
-          <div class="stat-cell"><span class="stat-key">T</span><span class="stat-val">4</span></div>
-          <div class="stat-cell"><span class="stat-key">SV</span><span class="stat-val">3+</span></div>
-          <div class="stat-cell"><span class="stat-key">W</span><span class="stat-val">2</span></div>
-          <div class="stat-cell"><span class="stat-key">LD</span><span class="stat-val">7</span></div>
-          <div class="stat-cell"><span class="stat-key">OC</span><span class="stat-val">2</span></div>
-        </div>
-        <div class="card-ranges">
-          <button class="range-toggle move active">MOVE<br>6&quot;</button>
-          <button class="range-toggle advance">AVG ADV<br>10&quot;</button>
-          <button class="range-toggle charge">AVG CHRG<br>13&quot;</button>
-          <button class="range-toggle ds">DS<br>9&quot;</button>
-        </div>
-        <div class="card-weapons">
-          <div class="wt-hdr"><span class="wt-type">RANGED</span><span class="wt-col">RNG</span><span class="wt-col">A</span><span class="wt-col">BS</span><span class="wt-col">S</span><span class="wt-col">AP</span><span class="wt-col">D</span></div>
-          <div class="wt-row">
-            <div class="wt-name-row"><span class="wt-name">Heavy Bolt Pistol</span><span class="wt-val">18</span><span class="wt-val">2</span><span class="wt-val">3+</span><span class="wt-val">4</span><span class="wt-val ap0">0</span><span class="wt-val dmg">1</span></div>
-            <div class="wt-kws"><span class="kw-pill pistol">Pistol</span></div>
-          </div>
-          <div class="wt-row">
-            <div class="wt-name-row"><span class="wt-name">Astartes Chainsword</span><span class="wt-val">M</span><span class="wt-val">4</span><span class="wt-val">3+</span><span class="wt-val">4</span><span class="wt-val ap-neg">-1</span><span class="wt-val dmg">1</span></div>
-            <div class="wt-kws"><span class="kw-pill melee">Melee</span></div>
-          </div>
-        </div>
-        <div class="card-abilities">
-          <div class="ability-row"><div class="ability-pill">SHOCK ASSAULT</div><div class="ability-desc">On a turn this unit makes a charge move, until end of turn its models get +1 Attack.</div></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="showcase-card showcase-pad demo-static">
-      <div class="section-label">Action bar</div>
-      <div id="action-bar">
-        <div class="phase-row">
-          <div class="ph-item done"><span class="ph-dot"></span>CMD</div>
-          <span class="ph-sep">·</span>
-          <div class="ph-item active"><span class="ph-dot"></span>MOVE</div>
-          <span class="ph-sep">·</span>
-          <div class="ph-item"><span class="ph-dot"></span>SHOOT</div>
-          <span class="ph-sep">·</span>
-          <div class="ph-item"><span class="ph-dot"></span>CHARGE</div>
-          <span class="ph-sep">·</span>
-          <div class="ph-item"><span class="ph-dot"></span>FIGHT</div>
-        </div>
-        <div class="ab-sep"></div>
-        <div class="mode-group">
-          <button class="mode-btn active">NORMAL MOVE</button>
-          <button class="mode-btn">ADVANCE</button>
-        </div>
-        <span id="move-mode-label" class="active-move">MOVING</span>
-        <div class="ab-sep"></div>
-        <button class="action-btn confirm-move">✓ CONFIRM</button>
-        <button class="action-btn cancel-move">✕ CANCEL</button>
-        <div class="ab-sep"></div>
-        <button class="btn-cta">END MOVEMENT →</button>
-      </div>
-    </section>
-
-    <section class="showcase-card showcase-pad">
-      <div class="section-label">Keyword pills</div>
-      <div class="inline-row">
-        <span class="kw-pill pistol">Pistol</span>
-        <span class="kw-pill assault">Assault</span>
-        <span class="kw-pill heavy">Heavy</span>
-        <span class="kw-pill hazardous">Hazardous</span>
-        <span class="kw-pill rapid">Rapid Fire 1</span>
-        <span class="kw-pill blast">Blast</span>
-        <span class="kw-pill melta">Melta 2</span>
-        <span class="kw-pill other">Other</span>
-      </div>
-    </section>
-
-    <section class="showcase-card showcase-pad">
-      <div class="section-label">Advance roll overlay</div>
-      <div id="advance-dice-overlay" class="visible" style="position:relative;inset:auto;height:220px;display:flex;">
-        <div class="dice-panel">
-          <div class="dice-d6 rolling"><span>4</span></div>
-          <div class="dice-result-label">ADVANCE ROLL</div>
-          <div class="dice-total-label">TOTAL MOVE 10&quot;</div>
-        </div>
-      </div>
-    </section>
+      <div class="token-label">Hellblasters</div>
+    </div>
   </div>
 </div>
+
+<h2 style="margin-top:1.5rem">1b · Token Symbols (unit type reference)</h2>
+<div class="row">
+  <div class="col">
+    <div class="lbl">Infantry</div>
+    <div class="token player circle sm">
+      <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2.5"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2.5"/></svg></div>
+      <span class="tkn-models">×5</span><span class="token-count">5</span>
+    </div>
+  </div>
+  <div class="col">
+    <div class="lbl">HQ / Character</div>
+    <div class="token player circle sm">
+      <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><polygon points="12,3 14.5,9 21,9.5 16,14 17.5,21 12,17.5 6.5,21 8,14 3,9.5 9.5,9" stroke="currentColor" stroke-width="1.5"/></svg></div>
+      <span class="tkn-models">×1</span><span class="token-count">1</span>
+    </div>
+  </div>
+  <div class="col">
+    <div class="lbl">Elite</div>
+    <div class="token player circle sm">
+      <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><polygon points="12,4 20,12 12,20 4,12" stroke="currentColor" stroke-width="2"/></svg></div>
+      <span class="tkn-models">×3</span><span class="token-count">3</span>
+    </div>
+  </div>
+  <div class="col">
+    <div class="lbl">Large unit (md)</div>
+    <div class="token player circle md">
+      <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2"/></svg></div>
+      <span class="tkn-models">×20</span><span class="token-count">20</span>
+    </div>
+  </div>
+</div>
+<div class="row" style="margin-top:1rem">
+  <div class="col">
+    <div class="lbl">Vehicle / Monster (square)</div>
+    <div class="token player square md">
+      <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="5" width="14" height="14" rx="1" stroke="currentColor" stroke-width="2"/><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="1"/></svg></div>
+      <span class="tkn-models">×1</span><span class="token-count">1</span>
+    </div>
+  </div>
+  <div class="col">
+    <div class="lbl">Monster (lg)</div>
+    <div class="token enemy square lg">
+      <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 4 L20 10 L17 20 L7 20 L4 10 Z" stroke="currentColor" stroke-width="1.5"/></svg></div>
+      <span class="tkn-models">×1</span><span class="token-count">1</span>
+    </div>
+  </div>
+  <div class="col">
+    <div class="lbl">Enemy infantry</div>
+    <div class="token enemy circle sm">
+      <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M5 20 Q5 14 12 14 Q19 14 19 20" stroke="currentColor" stroke-width="1.5"/></svg></div>
+      <span class="tkn-models">×20</span><span class="token-count">20</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 2. OBJECTIVE MARKER ═══ -->
+<h2>2 · Objective Marker — Hexagon</h2>
+<div class="row">
+  <div class="col"><div class="lbl">Neutral</div>
+    <div class="obj-wrap"><div class="hex"><svg class="hex-bg" viewBox="0 0 60 68" fill="none"><polygon points="30,2 58,17 58,51 30,66 2,51 2,17" stroke="#4a6080" stroke-width="1" fill="#0a0e14"/></svg><div class="hex-content"><div class="hex-num">01</div><div class="hex-sub">OBJ</div></div></div></div>
+  </div>
+  <div class="col"><div class="lbl">Player held</div>
+    <div class="obj-wrap"><div class="hex contested"><svg class="hex-bg" viewBox="0 0 60 68" fill="none"><polygon points="30,2 58,17 58,51 30,66 2,51 2,17" stroke="#00d4ff" stroke-width="1.5" fill="#00d4ff08"/></svg><div class="hex-content"><div class="hex-num">02</div><div class="hex-sub">OBJ</div></div></div></div>
+  </div>
+  <div class="col"><div class="lbl">Enemy held</div>
+    <div class="obj-wrap"><div class="hex enemy-held"><svg class="hex-bg" viewBox="0 0 60 68" fill="none"><polygon points="30,2 58,17 58,51 30,66 2,51 2,17" stroke="#ff4020" stroke-width="1.5" fill="#ff402008"/></svg><div class="hex-content"><div class="hex-num">03</div><div class="hex-sub">OBJ</div></div></div></div>
+  </div>
+</div>
+
+<!-- ═══ 3. STAT ROW ═══ -->
+<h2>3 · Stat Row — uniform</h2>
+<div class="stat-row">
+  <div class="stat-cell"><span class="stat-lbl">M</span><span class="stat-val">6"</span></div>
+  <div class="stat-cell"><span class="stat-lbl">T</span><span class="stat-val">4</span></div>
+  <div class="stat-cell"><span class="stat-lbl">SV</span><span class="stat-val">3+</span></div>
+  <div class="stat-cell"><span class="stat-lbl">W</span><span class="stat-val">2</span></div>
+  <div class="stat-cell"><span class="stat-lbl">LD</span><span class="stat-val">7</span></div>
+  <div class="stat-cell"><span class="stat-lbl">OC</span><span class="stat-val">2</span></div>
+</div>
+
+<!-- ═══ 4. WEAPON ROWS ═══ -->
+<h2>4 · Weapon Rows — CSS grid, aligned columns</h2>
+<div class="weapon-block">
+  <div class="weapon-header">
+    <span>Weapon</span><span>RNG</span><span>A</span><span>BS</span><span>S</span><span>AP</span><span>D</span>
+  </div>
+  <div class="weapon-entry">
+    <div class="weapon-row">
+      <span class="wn">Plasma (std)</span><span>30"</span><span>2</span><span>3+</span><span>7</span><span>-2</span><span>2</span>
+    </div>
+    <div class="weapon-pills">
+      <span class="pill-wrap"><span class="pill pill-kw">Rapid Fire 1</span><span class="kw-tip"><span class="kw-tip-name">Rapid Fire 1</span><span class="kw-tip-body">Each time this weapon targets a unit within half range, the weapon has Attacks +1.</span></span></span>
+      <span class="pill-wrap"><span class="pill pill-kw">Hazardous</span><span class="kw-tip"><span class="kw-tip-name">Hazardous</span><span class="kw-tip-body">Each time a unit shoots or fights with this weapon, after resolving attacks, roll one D6 per model that made attacks. On a 1, that model's unit suffers 3 mortal wounds.</span></span></span>
+    </div>
+  </div>
+  <div class="weapon-entry">
+    <div class="weapon-row">
+      <span class="wn">Plasma (sup)</span><span>30"</span><span>2</span><span>3+</span><span>8</span><span>-3</span><span>3</span>
+    </div>
+    <div class="weapon-pills">
+      <span class="pill-wrap"><span class="pill pill-kw">Rapid Fire 1</span><span class="kw-tip"><span class="kw-tip-name">Rapid Fire 1</span><span class="kw-tip-body">Each time this weapon targets a unit within half range, the weapon has Attacks +1.</span></span></span>
+      <span class="pill-wrap"><span class="pill pill-kw">Hazardous</span><span class="kw-tip"><span class="kw-tip-name">Hazardous</span><span class="kw-tip-body">Each time a unit shoots or fights with this weapon, after resolving attacks, roll one D6 per model that made attacks. On a 1, that model's unit suffers 3 mortal wounds.</span></span></span>
+    </div>
+  </div>
+  <div class="weapon-entry">
+    <div class="weapon-row">
+      <span class="wn">Heavy Bolt Pistol</span><span>18"</span><span>2</span><span>3+</span><span>4</span><span>0</span><span>1</span>
+    </div>
+    <div class="weapon-pills">
+      <span class="pill-wrap"><span class="pill pill-neutral">Pistol</span><span class="kw-tip"><span class="kw-tip-name">Pistol</span><span class="kw-tip-body">Can be used in the Shooting phase even if the bearer's unit is within Engagement Range of one or more enemy units. Cannot target units within Engagement Range of friendly units.</span></span></span>
+    </div>
+  </div>
+  <div class="weapon-entry">
+    <div class="weapon-row">
+      <span class="wn">Astartes Chainsword</span><span>Melee</span><span>4</span><span>3+</span><span>4</span><span>-1</span><span>1</span>
+    </div>
+    <div class="weapon-pills">
+      <span class="pill-wrap"><span class="pill pill-neutral">Melee</span><span class="kw-tip"><span class="kw-tip-name">Melee</span><span class="kw-tip-body">Attack with this weapon in the Fight phase. Models can only use melee weapons against enemies in Engagement Range.</span></span></span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 5. ABILITY ROW ═══ -->
+<h2>5 · Ability Row — pill + inline description + hover</h2>
+<div>
+  <div class="ability"><div class="ability-pill">Shock Assault</div><div class="ability-desc">On a turn this unit makes a charge move, until end of turn its models get +1 Attack.</div></div>
+  <div class="ability"><div class="ability-pill">And They Shall Know No Fear</div><div class="ability-desc">Each time a model in this unit takes a wound, roll D6. On 6, the wound is ignored.</div></div>
+</div>
+
+<!-- ═══ 6. PILLS ═══ -->
+<h2>6 · Keyword Pills — hover for tooltip card (V2-B chrome)</h2>
+<div class="note">Hover each pill to see the rule card. Tooltip uses locked V2-B panel chrome (2px top border, 1px side border).</div>
+<div>
+  <span class="pill-wrap"><span class="pill pill-kw">Rapid Fire 1</span><span class="kw-tip"><span class="kw-tip-name">Rapid Fire 1</span><span class="kw-tip-body">Each time this weapon targets a unit within half range, the weapon has Attacks +1.</div></span></span>
+  <span class="pill-wrap"><span class="pill pill-kw">Hazardous</span><span class="kw-tip"><span class="kw-tip-name">Hazardous</span><span class="kw-tip-body">Each time a unit shoots or fights with this weapon, after resolving attacks, roll one D6 per model. On a 1, that model's unit suffers 3 mortal wounds.</div></span></span>
+  <span class="pill-wrap"><span class="pill pill-kw">Heavy</span><span class="kw-tip"><span class="kw-tip-name">Heavy</span><span class="kw-tip-body">Subtract 1 from Hit rolls unless the bearer Remained Stationary this turn. Add 1 to Hit rolls if the bearer Remained Stationary and this is a ranged weapon.</div></span></span>
+  <span class="pill-wrap"><span class="pill pill-kw">Torrent</span><span class="kw-tip"><span class="kw-tip-name">Torrent</span><span class="kw-tip-body">This weapon automatically hits its target. Do not make Hit rolls.</div></span></span>
+  <span class="pill-wrap"><span class="pill pill-neutral">Pistol</span><span class="kw-tip"><span class="kw-tip-name">Pistol</span><span class="kw-tip-body">Can be used in the Shooting phase even if within Engagement Range of enemies. Cannot target units within Engagement Range of friendly units.</div></span></span>
+  <span class="pill-wrap"><span class="pill pill-neutral">Melee</span><span class="kw-tip"><span class="kw-tip-name">Melee</span><span class="kw-tip-body">Attack with this weapon in the Fight phase against enemies in Engagement Range only.</div></span></span>
+  <span class="pill-bs">Battleshocked</span>
+</div>
+
+<!-- ═══ 7. ROSTER ROWS ═══ -->
+<h2>7 · Army Roster Row — plain rows, no panel chrome</h2>
+<div class="roster-list">
+  <div class="roster-section pl"><span class="sdot"></span>Player</div>
+  <div class="roster-row sel"><div class="ri pl">✛</div><span class="rn">Assault Intercessors</span><span class="rc">5</span></div>
+  <div class="roster-row"><div class="ri pl">★</div><span class="rn">Primaris Lieutenant</span><span class="rc">1</span></div>
+  <div class="roster-row"><div class="ri pl">✛</div><span class="rn">Hellblasters</span><span class="rc">5</span></div>
+  <div class="roster-row bsr"><div class="ri pl">✛</div><span class="rn">Intercessors A</span><span class="pill pill-bs" style="margin:0;font-size:8px;padding:1px 5px">Battleshocked</span></div>
+  <div class="roster-section en"><span class="sdot"></span>Enemy</div>
+  <div class="roster-row en-row"><div class="ri en">☠</div><span class="rn">Boss Nob</span><span class="rc">1</span></div>
+  <div class="roster-row en-row"><div class="ri en">☠</div><span class="rn">Boyz Mob</span><span class="rc">20</span></div>
+</div>
+
+<!-- ═══ 8. ACTION BAR ═══ -->
+<h2>8 · Action Bar Components</h2>
+<div class="note">Mode selectors = radio toggle (one active). Stratagem = amber (CP cost). End phase = primary CTA.</div>
+<div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem">
+  <div class="mode-group">
+    <button class="mode-btn active">Normal Move</button>
+    <button class="mode-btn">Advance</button>
+  </div>
+  <button class="btn-strat">Use Stratagem</button>
+  <button class="btn-cta">End Movement →</button>
+</div>
+<div class="note">Advance selected:</div>
+<div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+  <div class="mode-group">
+    <button class="mode-btn">Normal Move</button>
+    <button class="mode-btn active">Advance</button>
+  </div>
+  <button class="btn-strat">Use Stratagem</button>
+  <button class="btn-cta">End Movement →</button>
+</div>
+
+<!-- ═══ 9. PHASE INDICATOR ═══ -->
+<h2>9 · Phase Indicator — status display only</h2>
+<div class="phase-row">
+  <div class="ph-item done"><span class="ph-dot"></span>Command</div>
+  <span class="ph-sep">·</span>
+  <div class="ph-item active"><span class="ph-dot"></span>Movement</div>
+  <span class="ph-sep">·</span>
+  <div class="ph-item"><span class="ph-dot"></span>Shooting</div>
+  <span class="ph-sep">·</span>
+  <div class="ph-item"><span class="ph-dot"></span>Charge</div>
+  <span class="ph-sep">·</span>
+  <div class="ph-item"><span class="ph-dot"></span>Fight</div>
+</div>
+
+<!-- ═══ 10. RANGE OVERLAYS ═══ -->
+<h2>10 · Range Overlays — shown when unit selected, movement phase</h2>
+<div class="note">Three concentric dashed circles. MOVE=cyan, ADV=cyan wider dash, CHARGE=amber. Labels at top of each arc. Objective control radius uses same pattern but grey/faction-coloured.</div>
+<svg width="400" height="400" viewBox="-10 -10 420 420" style="background:#080c10;display:block;margin-bottom:1rem">
+  <!-- Background grid hint -->
+  <defs>
+    <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#ffffff08" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="400" fill="url(#grid)"/>
+  <!-- CHARGE circle — outermost, amber -->
+  <circle cx="200" cy="200" r="175" fill="none" stroke="#cc8800" stroke-width="1.5" stroke-dasharray="6 5" opacity="0.7"/>
+  <text x="200" y="22" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="11" font-weight="600" letter-spacing="0.18em" fill="#cc8800" opacity="0.9">CHARGE</text>
+  <!-- ADV circle — middle, cyan looser dash -->
+  <circle cx="200" cy="200" r="130" fill="none" stroke="#00d4ff" stroke-width="1.5" stroke-dasharray="8 6" opacity="0.6"/>
+  <text x="200" y="68" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="11" font-weight="600" letter-spacing="0.18em" fill="#00d4ff" opacity="0.8">ADV</text>
+  <!-- MOVE circle — innermost, cyan tighter dash -->
+  <circle cx="200" cy="200" r="88" fill="#00d4ff04" stroke="#00d4ff" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.85"/>
+  <text x="200" y="109" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="11" font-weight="600" letter-spacing="0.18em" fill="#00d4ff">MOVE</text>
+  <!-- Selected unit token at centre -->
+  <circle cx="200" cy="200" r="29" fill="#00d4ff14" stroke="#00d4ff" stroke-width="2.5"/>
+  <circle cx="200" cy="200" r="29" fill="none" stroke="#00d4ff" stroke-width="2.5" style="filter:drop-shadow(0 0 8px #00d4ff)"/>
+</svg>
+
+<div class="note" style="margin-bottom:.75rem">Objective control radius — neutral / player-held / enemy-held. Hex shape matches Section 2 objective marker exactly.</div>
+<svg width="480" height="140" viewBox="0 0 480 140" style="background:#080c10;display:block;margin-bottom:1.5rem">
+  <defs><pattern id="grid2" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M 24 0 L 0 0 0 24" fill="none" stroke="#ffffff08" stroke-width="0.5"/></pattern></defs>
+  <rect width="480" height="140" fill="url(#grid2)"/>
+
+  <!-- Neutral — hex centered at (80,62), scale 60x68 → ~32x36px (scale 0.53), translate (80-16, 62-18) = (64,44) -->
+  <circle cx="80" cy="62" r="45" fill="none" stroke="#4a6080" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.7"/>
+  <g transform="translate(64,44) scale(0.533)">
+    <polygon points="30,2 58,17 58,51 30,66 2,51 2,17" fill="#0a0e14" stroke="#4a6080" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+  </g>
+  <text x="80" y="66" text-anchor="middle" font-family="Anton,sans-serif" font-size="12" fill="#4a6080">01</text>
+  <text x="80" y="74" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="7" fill="#2a3a4a" letter-spacing="0.15em">OBJ</text>
+  <text x="80" y="122" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="9" fill="#2a3a4a" letter-spacing="0.12em">NEUTRAL</text>
+
+  <!-- Player-held — centered at (240,62) -->
+  <circle cx="240" cy="62" r="45" fill="#00d4ff06" stroke="#00d4ff" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.8"/>
+  <g transform="translate(224,44) scale(0.533)">
+    <polygon points="30,2 58,17 58,51 30,66 2,51 2,17" fill="#00d4ff08" stroke="#00d4ff" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+  </g>
+  <text x="240" y="66" text-anchor="middle" font-family="Anton,sans-serif" font-size="12" fill="#00d4ff">02</text>
+  <text x="240" y="74" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="7" fill="#4a6080" letter-spacing="0.15em">OBJ</text>
+  <text x="240" y="122" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="9" fill="#2a3a4a" letter-spacing="0.12em">PLAYER</text>
+
+  <!-- Enemy-held — centered at (400,62) -->
+  <circle cx="400" cy="62" r="45" fill="#ff402006" stroke="#ff4020" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.8"/>
+  <g transform="translate(384,44) scale(0.533)">
+    <polygon points="30,2 58,17 58,51 30,66 2,51 2,17" fill="#ff402008" stroke="#ff4020" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+  </g>
+  <text x="400" y="66" text-anchor="middle" font-family="Anton,sans-serif" font-size="12" fill="#ff4020">03</text>
+  <text x="400" y="74" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="7" fill="#4a6080" letter-spacing="0.15em">OBJ</text>
+  <text x="400" y="122" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="9" fill="#2a3a4a" letter-spacing="0.12em">ENEMY</text>
+</svg>
+
+<!-- ═══ 11. TERRAIN ═══ -->
+<h2>11 · Terrain — actual GW Chapter Approved 2025–26 types</h2>
+<div class="note">Two types from GW Chapter Approved 2025–26. Grey = "Tall terrain ≥4"" (L-shaped ruins, two-tone, blocks LoS). Warm earth = "Low terrain ≤2"" (craters/rubble, can see/shoot over). Blue (#065475) from GW layout file is a planning tool colour — not used in game UI (blue = water/impassable universally).</div>
+<svg width="580" height="160" viewBox="-10 -10 600 180" style="background:#080c10;display:block;margin-bottom:1.5rem">
+  <defs><pattern id="grid3" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M 24 0 L 0 0 0 24" fill="none" stroke="#ffffff06" stroke-width="0.5"/></pattern></defs>
+  <rect x="-10" y="-10" width="600" height="180" fill="url(#grid3)"/>
+
+  <!-- Ruins — L-shaped wall fragment (outer dark gray + inner highlight edge) -->
+  <g transform="translate(30,10)">
+    <rect x="0" y="0" width="120" height="60" fill="#3a4040" stroke="#222" stroke-width="1" vector-effect="non-scaling-stroke"/>
+    <!-- Inner highlight = L-shape showing open corner -->
+    <path d="M 1 1 L 80 1 L 80 6 L 6 6 L 6 42 L 1 42 Z" fill="#6a7272" opacity="0.9"/>
+    <text x="60" y="85" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="10" fill="#4a6080" letter-spacing="0.12em">TALL TERRAIN ≥4"</text>
+    <text x="60" y="96" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="9" fill="#2a3a4a">blocking LoS, rotatable</text>
+  </g>
+
+  <!-- Ruins — rotated variant -->
+  <g transform="translate(210,15) rotate(90,60,25)">
+    <rect x="0" y="0" width="120" height="50" fill="#3a4040" stroke="#222" stroke-width="1" vector-effect="non-scaling-stroke"/>
+    <path d="M 1 1 L 80 1 L 80 6 L 6 6 L 6 36 L 1 36 Z" fill="#6a7272" opacity="0.9"/>
+  </g>
+  <text x="250" y="110" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="9" fill="#2a3a4a">rotated 90°</text>
+
+  <!-- Water / impassable -->
+  <g transform="translate(400,20)">
+    <rect x="0" y="0" width="80" height="80" fill="#3a3018" stroke="#5a5028" stroke-width="1" vector-effect="non-scaling-stroke" opacity="0.9"/>
+    <!-- subtle texture lines suggest rubble/craters -->
+    <line x1="10" y1="20" x2="30" y2="18" stroke="#5a5028" stroke-width="1" opacity="0.5"/>
+    <line x1="40" y1="35" x2="65" y2="38" stroke="#5a5028" stroke-width="1" opacity="0.4"/>
+    <line x1="15" y1="55" x2="45" y2="52" stroke="#5a5028" stroke-width="1" opacity="0.4"/>
+    <text x="40" y="108" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="10" fill="#6a6040" letter-spacing="0.12em">LOW TERRAIN ≤2"</text>
+    <text x="40" y="119" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="9" fill="#3a3020">craters / rubble — see &amp; shoot over</text>
+  </g>
+</svg>
+
+<!-- ═══ 12. BATTLEFIELD GRID ═══ -->
+<h2>12 · Battlefield Grid</h2>
+<div class="note">Fine crosshatch on --bg-primary. Major grid lines every 5 cells slightly brighter. CSS background-image pattern — no SVG overhead.</div>
+<div style="width:300px;height:150px;background-color:#080c10;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px),linear-gradient(#ffffff04 1px,transparent 1px),linear-gradient(90deg,#ffffff04 1px,transparent 1px);background-size:120px 120px,120px 120px,24px 24px,24px 24px;margin-bottom:1.5rem"></div>
+
+<script>
+// Tooltip: explicit show/hide via JS. CSS hover not used (causes sibling bleed).
+document.querySelectorAll('.pill-wrap').forEach(wrap => {
+  const tip = wrap.querySelector('.kw-tip');
+  if (!tip) return;
+  wrap.addEventListener('mouseenter', () => {
+    // Hide all others first
+    document.querySelectorAll('.kw-tip').forEach(t => t.style.opacity = '0');
+    // Position check
+    tip.style.left = '0'; tip.style.right = 'auto';
+    tip.style.opacity = '1';
+    const rect = tip.getBoundingClientRect();
+    if (rect.right > window.innerWidth - 16) {
+      tip.style.left = 'auto'; tip.style.right = '0';
+    }
+  });
+  wrap.addEventListener('mouseleave', () => {
+    tip.style.opacity = '0';
+  });
+});
+</script>
 </body>
 </html>
