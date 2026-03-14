@@ -497,45 +497,18 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 </div>
 
 <!-- 8. FIGHT PHASE: WEAPON STRIKE -->
-<h2>8 · Fight — Weapon Strike</h2>
-<div class="note">Steel edge + score marks + hot-metal sparks. Physical damage on ceramite — chainsword, claws, power fist. No energy glow.</div>
-<div class="demo" style="flex-direction:column;gap:1rem">
-  <div style="display:flex;align-items:center;gap:2.5rem">
-    <div class="col">
-      <span style="font-size:9px;color:var(--text-dis);letter-spacing:.15em">CHAINSWORD</span>
-      <div class="slash-arena" id="slash-single-arena">
-        <div id="slash-single-target" class="token enemy-base" style="width:58px;height:58px">
-          <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M5 20Q5 14 12 14Q19 14 19 20" stroke="currentColor" stroke-width="1.5"/></svg></div>
-          <span class="tkn-models">×10</span>
-          <span id="slash-single-badge" class="token-count" style="background:#180c08;border:1.5px solid var(--ork-dim);color:var(--ork)">10</span>
-        </div>
+<h2>8 · Fight — Weapon Strike (Chainsword)</h2>
+<div class="note">Steel edge + score mark + hot-metal sparks. Physical damage on ceramite. No energy glow.</div>
+<div class="demo">
+  <div class="col">
+    <div class="slash-arena" id="slash-single-arena">
+      <div id="slash-single-target" class="token enemy-base" style="width:58px;height:58px">
+        <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M5 20Q5 14 12 14Q19 14 19 20" stroke="currentColor" stroke-width="1.5"/></svg></div>
+        <span class="tkn-models">×10</span>
+        <span id="slash-single-badge" class="token-count" style="background:#180c08;border:1.5px solid var(--ork-dim);color:var(--ork)">10</span>
       </div>
     </div>
-    <div class="col">
-      <span style="font-size:9px;color:var(--text-dis);letter-spacing:.15em">LIGHTNING CLAWS</span>
-      <div class="slash-arena" id="slash-x-arena">
-        <div id="slash-x-target" class="token enemy-base" style="width:58px;height:58px">
-          <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M5 20Q5 14 12 14Q19 14 19 20" stroke="currentColor" stroke-width="1.5"/></svg></div>
-          <span class="tkn-models">×10</span>
-          <span id="slash-x-badge" class="token-count" style="background:#180c08;border:1.5px solid var(--ork-dim);color:var(--ork)">10</span>
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <span style="font-size:9px;color:var(--text-dis);letter-spacing:.15em">POWER FIST</span>
-      <div class="slash-arena" id="slash-fist-arena">
-        <div id="slash-fist-target" class="token enemy-base" style="width:58px;height:58px">
-          <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M5 20Q5 14 12 14Q19 14 19 20" stroke="currentColor" stroke-width="1.5"/></svg></div>
-          <span class="tkn-models">×10</span>
-          <span id="slash-fist-badge" class="token-count" style="background:#180c08;border:1.5px solid var(--ork-dim);color:var(--ork)">10</span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div style="display:flex;gap:.75rem;flex-wrap:wrap">
-    <button class="replay-btn" onclick="fireSlash('slash-single','single')">↺ Chainsword</button>
-    <button class="replay-btn" onclick="fireSlash('slash-x','x')">↺ Lightning Claws</button>
-    <button class="replay-btn" onclick="fireSlash('slash-fist','fist')">↺ Power Fist</button>
+    <button class="replay-btn" onclick="fireSlash('slash-single','single')">↺ Replay</button>
   </div>
 </div>
 
@@ -766,27 +739,8 @@ function fireSlash(prefix, mode){
   svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
   svg.style.cssText = `position:absolute;left:-20px;top:-20px;width:${w}px;height:${h}px;pointer-events:none;overflow:visible;`;
 
-  // Path definitions per weapon type
-  let paths;
-  if(mode === 'x'){
-    // Lightning claws — two crossing slashes
-    paths = [
-      `M ${w*.12} ${h*.18} Q ${w*.5} ${h*.42} ${w*.88} ${h*.82}`,
-      `M ${w*.88} ${h*.18} Q ${w*.5} ${h*.42} ${w*.12} ${h*.82}`
-    ];
-  } else if(mode === 'fist'){
-    // Power fist — radial crack lines from center
-    const cx=w*.5, cy=h*.5;
-    paths = [];
-    for(let i=0;i<5;i++){
-      const a = (Math.PI*2/5)*i - Math.PI/2 + (Math.random()-.5)*.4;
-      const r = 32 + Math.random()*10;
-      paths.push(`M ${cx} ${cy} L ${cx+Math.cos(a)*r} ${cy+Math.sin(a)*r}`);
-    }
-  } else {
-    // Chainsword — single brutal diagonal
-    paths = [`M ${w*.08} ${h*.18} Q ${w*.45} ${h*.48} ${w*.92} ${h*.82}`];
-  }
+  // Chainsword — single brutal diagonal
+  const paths = [`M ${w*.08} ${h*.18} Q ${w*.45} ${h*.48} ${w*.92} ${h*.82}`];
 
   paths.forEach((d, idx) => {
     // Score mark — dark gouge scored into the armour (renders underneath)
@@ -794,7 +748,7 @@ function fireSlash(prefix, mode){
     score.setAttribute('d', d);
     score.setAttribute('fill','none');
     score.setAttribute('stroke','#1a1e24');
-    score.setAttribute('stroke-width', mode==='fist'?'3':'4');
+    score.setAttribute('stroke-width','4');
     score.setAttribute('stroke-linecap','round');
     score.setAttribute('stroke-dasharray','200');
     score.setAttribute('stroke-dashoffset','200');
@@ -805,8 +759,8 @@ function fireSlash(prefix, mode){
     const edge = document.createElementNS('http://www.w3.org/2000/svg','path');
     edge.setAttribute('d', d);
     edge.setAttribute('fill','none');
-    edge.setAttribute('stroke', mode==='fist'?'#8a9aac':'#c0c8d4');
-    edge.setAttribute('stroke-width', mode==='fist'?'1.5':'1.8');
+    edge.setAttribute('stroke','#c0c8d4');
+    edge.setAttribute('stroke-width','1.8');
     edge.setAttribute('stroke-linecap','round');
     edge.setAttribute('stroke-dasharray','200');
     edge.setAttribute('stroke-dashoffset','200');
@@ -824,8 +778,8 @@ function fireSlash(prefix, mode){
   arena.appendChild(point);
 
   // Hot-metal sparks — orange/amber fragments from ceramite
-  const sparkCount = mode==='x'?10 : mode==='fist'?12 : 6;
-  const sparkDelay = mode==='fist'?60:120;
+  const sparkCount = 6;
+  const sparkDelay = 120;
   setTimeout(()=>{
     for(let i=0;i<sparkCount;i++){
       const spark = document.createElement('div');
@@ -845,7 +799,7 @@ function fireSlash(prefix, mode){
   }, sparkDelay);
 
   // Target recoil + hit flash
-  const hitDelay = mode==='fist'?100:180;
+  const hitDelay = 180;
   setTimeout(()=>{
     target.classList.add('anim-hit','anim-slash-recoil');
     if(badge) badge.classList.add('anim-badge-shake');
