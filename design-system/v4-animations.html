@@ -274,7 +274,68 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 .anim-clash-enemy{animation:clash-lunge-enemy .5s cubic-bezier(.34,1.56,.64,1) forwards;}
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   12. STRATAGEM ACTIVATION
+   FIGHT A: MELEE IMPACT SHOCKWAVE
+   Concentric rings + white flash at contact point.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.sw-arena{position:relative;width:240px;height:100px;}
+.sw-flash{
+  position:absolute;width:24px;height:24px;border-radius:50%;
+  left:50%;top:50%;transform:translate(-50%,-50%) scale(0);
+  background:radial-gradient(circle,#fff 0%,#ffffffaa 30%,#ffffff00 70%);
+  pointer-events:none;opacity:0;
+}
+.sw-ring{
+  position:absolute;border-radius:50%;
+  left:50%;top:50%;pointer-events:none;
+  border:2px solid var(--sw-color,var(--imp));
+  box-shadow:0 0 6px var(--sw-color,var(--imp)),inset 0 0 4px var(--sw-color,var(--imp));
+  opacity:0;width:10px;height:10px;margin-left:-5px;margin-top:-5px;
+}
+@keyframes sw-flash-pop{
+  0%  {opacity:0;transform:translate(-50%,-50%) scale(.3);}
+  20% {opacity:1;transform:translate(-50%,-50%) scale(2);}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(2.8);}
+}
+@keyframes sw-ring-expand{
+  0%  {opacity:.8;width:10px;height:10px;margin-left:-5px;margin-top:-5px;}
+  100%{opacity:0;width:140px;height:140px;margin-left:-70px;margin-top:-70px;}
+}
+.sw-flash.active{animation:sw-flash-pop .4s ease-out forwards;}
+.sw-ring.r1{animation:sw-ring-expand .6s cubic-bezier(.2,.8,.3,1) .05s forwards;}
+.sw-ring.r2{animation:sw-ring-expand .65s cubic-bezier(.2,.8,.3,1) .15s forwards;}
+.sw-ring.r3{animation:sw-ring-expand .7s cubic-bezier(.2,.8,.3,1) .28s forwards;}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   FIGHT B: WEAPON STRIKE SLASH
+   Slash arc sweeps across target with glow + afterimage.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.slash-arena{position:relative;display:inline-block;}
+.slash-svg{position:absolute;inset:-20px;width:calc(100% + 40px);height:calc(100% + 40px);pointer-events:none;overflow:visible;}
+@keyframes slash-draw{
+  0%  {stroke-dashoffset:200;opacity:1;}
+  50% {stroke-dashoffset:0;opacity:1;}
+  80% {stroke-dashoffset:0;opacity:.5;}
+  100%{stroke-dashoffset:0;opacity:0;}
+}
+@keyframes slash-afterimage{
+  0%  {stroke-dashoffset:200;opacity:0;}
+  25% {stroke-dashoffset:140;opacity:.35;}
+  70% {stroke-dashoffset:0;opacity:.15;}
+  100%{stroke-dashoffset:0;opacity:0;}
+}
+@keyframes slash-spark{
+  0%  {opacity:1;transform:translate(var(--sx),var(--sy)) scale(1);}
+  100%{opacity:0;transform:translate(calc(var(--sx) + var(--dx)),calc(var(--sy) + var(--dy))) scale(0);}
+}
+.slash-spark{
+  position:absolute;width:3px;height:3px;border-radius:50%;
+  background:var(--slash-color,var(--imp));
+  box-shadow:0 0 4px var(--slash-color,var(--imp));
+  pointer-events:none;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   14. STRATAGEM ACTIVATION
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 @keyframes strat-flash{
   0%  {background:var(--strat-tint,#cc880015);border-color:var(--strat-dim,#886000);}
@@ -300,7 +361,7 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 </head>
 <body>
 <div class="pg-header">
-  <h1>V4 · Animations — 10th Edition Full Set</h1>
+  <h1>V4 · Animations — 10th Edition Full Set (14)</h1>
   <p>@keyframes only. CSS transitions (hover) defined in V3. Click Replay on each.</p>
 </div>
 
@@ -444,8 +505,64 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
   <button class="replay-btn" style="margin-top:1rem" onclick="rollAttackSequence()">↺ Roll attack sequence</button>
 </div>
 
-<!-- 8. PHASE TRANSITION -->
-<h2>8 · Phase Transition — dot pulses, label slides in</h2>
+<!-- 8. FIGHT PHASE A: MELEE IMPACT SHOCKWAVE -->
+<h2>8 · Fight — Melee Impact Shockwave</h2>
+<div class="note">Concentric rings erupt from contact point between engaged tokens. --sw-color recolors per faction. Close-combat counterpart to projectile.</div>
+<div class="demo" style="flex-direction:column;gap:1rem">
+  <div class="sw-arena" id="sw-arena">
+    <!-- Attacker -->
+    <div id="sw-attacker" class="token player-base" style="position:absolute;left:20px;top:21px;width:48px;height:48px">
+      <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2.5"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2.5"/></svg></div>
+    </div>
+    <!-- Target -->
+    <div id="sw-target" class="token enemy-base" style="position:absolute;right:20px;top:21px;width:48px;height:48px">
+      <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M5 20Q5 14 12 14Q19 14 19 20" stroke="currentColor" stroke-width="1.5"/></svg></div>
+    </div>
+    <!-- Shockwave effects container -->
+    <div id="sw-fx" style="position:absolute;inset:0;pointer-events:none"></div>
+  </div>
+  <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+    <button class="replay-btn" onclick="fireShockwave('var(--imp)')">↺ Player (cyan)</button>
+    <button class="replay-btn" onclick="fireShockwave('var(--ork)')">↺ Enemy (red)</button>
+  </div>
+</div>
+
+<!-- 9. FIGHT PHASE B: WEAPON STRIKE SLASH -->
+<h2>9 · Fight — Weapon Strike Slash</h2>
+<div class="note">Slash arc sweeps across target with glow trail + spark particles. Variants: single diagonal (sword), X-cross (claws). Colour follows attacker faction.</div>
+<div class="demo" style="flex-direction:column;gap:1rem">
+  <div style="display:flex;align-items:center;gap:2.5rem">
+    <div class="col">
+      <span style="font-size:9px;color:var(--text-dis);letter-spacing:.15em">SINGLE SLASH</span>
+      <div class="slash-arena" id="slash-single-arena">
+        <div id="slash-single-target" class="token enemy-base" style="width:58px;height:58px">
+          <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M5 20Q5 14 12 14Q19 14 19 20" stroke="currentColor" stroke-width="1.5"/></svg></div>
+          <span class="tkn-models">×10</span>
+          <span id="slash-single-badge" class="token-count" style="background:#180c08;border:1.5px solid var(--ork-dim);color:var(--ork)">10</span>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <span style="font-size:9px;color:var(--text-dis);letter-spacing:.15em">X-CROSS (CLAWS)</span>
+      <div class="slash-arena" id="slash-x-arena">
+        <div id="slash-x-target" class="token enemy-base" style="width:58px;height:58px">
+          <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M5 20Q5 14 12 14Q19 14 19 20" stroke="currentColor" stroke-width="1.5"/></svg></div>
+          <span class="tkn-models">×10</span>
+          <span id="slash-x-badge" class="token-count" style="background:#180c08;border:1.5px solid var(--ork-dim);color:var(--ork)">10</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+    <button class="replay-btn" onclick="fireSlash('slash-single','single','var(--imp)')">↺ Sword (cyan)</button>
+    <button class="replay-btn" onclick="fireSlash('slash-x','x','var(--imp)')">↺ Claws (cyan)</button>
+    <button class="replay-btn" onclick="fireSlash('slash-single','single','var(--ork)')">↺ Sword (red)</button>
+    <button class="replay-btn" onclick="fireSlash('slash-x','x','var(--ork)')">↺ Claws (red)</button>
+  </div>
+</div>
+
+<!-- 10. PHASE TRANSITION -->
+<h2>10 · Phase Transition — dot pulses, label slides in</h2>
 <div class="demo" style="flex-direction:column;gap:1rem">
   <div id="phase-row" class="ph-row">
     <div class="ph-item active"><span class="ph-dot"></span>Command</div>
@@ -462,7 +579,7 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 </div>
 
 <!-- 9. SCORE COUNTER TICK -->
-<h2>9 · Score Counter Tick — on VP score</h2>
+<h2>11 · Score Counter Tick — on VP score</h2>
 <div class="demo">
   <div style="display:flex;align-items:center;gap:.5rem">
     <span style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:.15em;color:var(--text-muted);text-transform:uppercase">Imperium</span>
@@ -472,7 +589,7 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 </div>
 
 <!-- 10. MELEE CLASH -->
-<h2>10 · Melee Clash — tokens lunge toward each other</h2>
+<h2>12 · Melee Clash — tokens lunge toward each other</h2>
 <div class="demo" style="gap:1.5rem">
   <div id="clash-p" class="token player-base anim-breathe">
     <div class="tkn-icon"><svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="2.5"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2.5"/></svg></div>
@@ -487,7 +604,7 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 </div>
 
 <!-- 11. RANGE CIRCLES -->
-<h2>11 · Range Circles Appear — spring in on select</h2>
+<h2>13 · Range Circles Appear — spring in on select</h2>
 <div class="demo">
   <svg id="range-svg" width="280" height="280" viewBox="-10 -10 300 300" style="background:#080c10">
     <defs><pattern id="rg" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M 24 0 L 0 0 0 24" fill="none" stroke="#ffffff06" stroke-width=".5"/></pattern></defs>
@@ -504,7 +621,7 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 </div>
 
 <!-- 12. STRATAGEM ACTIVATION -->
-<h2>12 · Stratagem Activation — amber flash, CP cost signal</h2>
+<h2>14 · Stratagem Activation — amber flash, CP cost signal</h2>
 <div class="demo">
   <div id="strat-btn" class="strat-btn">Use Stratagem</div>
   <button class="replay-btn" onclick="replay('strat-btn','anim-strat')">↺ Activate</button>
@@ -649,6 +766,120 @@ function tickScore(){
     el.classList.remove('ticking-out');
     el.classList.add('ticking-in');
   },200);
+}
+
+/* ── Fight A: Melee Impact Shockwave ── */
+function fireShockwave(color){
+  const fx = document.getElementById('sw-fx');
+  const target = document.getElementById('sw-target');
+  fx.innerHTML = '';
+  target.classList.remove('anim-hit');
+
+  // White flash
+  const flash = document.createElement('div');
+  flash.className = 'sw-flash active';
+  fx.appendChild(flash);
+
+  // 3 concentric rings
+  for(let i=1;i<=3;i++){
+    const ring = document.createElement('div');
+    ring.className = 'sw-ring r'+i;
+    ring.style.cssText = `--sw-color:${color};border-color:${color};box-shadow:0 0 6px ${color},inset 0 0 4px ${color};`;
+    fx.appendChild(ring);
+  }
+
+  // Hit flash on target after rings start
+  setTimeout(()=>{
+    target.classList.add('anim-hit');
+  }, 200);
+
+  // Clean up
+  setTimeout(()=>{ fx.innerHTML=''; }, 900);
+}
+
+/* ── Fight B: Weapon Strike Slash ── */
+function fireSlash(prefix, mode, color){
+  const arena = document.getElementById(prefix+'-arena');
+  const target = document.getElementById(prefix+'-target');
+  const badge = document.getElementById(prefix+'-badge');
+
+  // Clear previous
+  arena.querySelectorAll('.slash-svg,.slash-spark').forEach(e=>e.remove());
+  target.classList.remove('anim-hit');
+  if(badge) badge.classList.remove('anim-badge-shake');
+
+  const w=98, h=98; // SVG viewBox with padding
+  const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('class','slash-svg');
+  svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
+  svg.style.cssText = `position:absolute;left:-20px;top:-20px;width:${w}px;height:${h}px;pointer-events:none;overflow:visible;`;
+
+  const paths = mode === 'x'
+    ? [
+        `M ${w*.15} ${h*.15} Q ${w*.5} ${h*.45} ${w*.85} ${h*.85}`,
+        `M ${w*.85} ${h*.15} Q ${w*.5} ${h*.45} ${w*.15} ${h*.85}`
+      ]
+    : [`M ${w*.1} ${h*.15} Q ${w*.5} ${h*.5} ${w*.9} ${h*.85}`];
+
+  paths.forEach((d, idx) => {
+    // Afterimage (wider, dimmer, slightly delayed)
+    const after = document.createElementNS('http://www.w3.org/2000/svg','path');
+    after.setAttribute('d', d);
+    after.setAttribute('fill','none');
+    after.setAttribute('stroke', color);
+    after.setAttribute('stroke-width','6');
+    after.setAttribute('stroke-linecap','round');
+    after.setAttribute('stroke-dasharray','200');
+    after.setAttribute('stroke-dashoffset','200');
+    after.setAttribute('filter',`drop-shadow(0 0 6px ${color})`);
+    after.style.animation = `slash-afterimage .5s ease ${idx*0.08}s forwards`;
+    svg.appendChild(after);
+
+    // Main slash (sharp, bright)
+    const main = document.createElementNS('http://www.w3.org/2000/svg','path');
+    main.setAttribute('d', d);
+    main.setAttribute('fill','none');
+    main.setAttribute('stroke','#fff');
+    main.setAttribute('stroke-width','2.5');
+    main.setAttribute('stroke-linecap','round');
+    main.setAttribute('stroke-dasharray','200');
+    main.setAttribute('stroke-dashoffset','200');
+    main.setAttribute('filter',`drop-shadow(0 0 4px ${color}) drop-shadow(0 0 10px ${color})`);
+    main.style.animation = `slash-draw .4s ease-out ${idx*0.08}s forwards`;
+    svg.appendChild(main);
+  });
+
+  arena.appendChild(svg);
+
+  // Spark particles at impact
+  const sparks = mode === 'x' ? 8 : 5;
+  setTimeout(()=>{
+    for(let i=0;i<sparks;i++){
+      const spark = document.createElement('div');
+      spark.className = 'slash-spark';
+      const angle = (Math.PI*2/sparks)*i + Math.random()*.4;
+      const dist = 12 + Math.random()*14;
+      spark.style.cssText = `
+        --sx:${29}px;--sy:${29}px;
+        --dx:${Math.cos(angle)*dist}px;--dy:${Math.sin(angle)*dist}px;
+        --slash-color:${color};
+        left:0;top:0;
+        animation:slash-spark .35s ease-out ${Math.random()*.08}s forwards;
+      `;
+      arena.appendChild(spark);
+    }
+  }, mode==='x'?120:180);
+
+  // Hit flash + badge shake on target
+  setTimeout(()=>{
+    target.classList.add('anim-hit');
+    if(badge) badge.classList.add('anim-badge-shake');
+  }, mode==='x'?200:250);
+
+  // Cleanup
+  setTimeout(()=>{
+    arena.querySelectorAll('.slash-svg,.slash-spark').forEach(e=>e.remove());
+  }, 800);
 }
 
 function replayClash(){
