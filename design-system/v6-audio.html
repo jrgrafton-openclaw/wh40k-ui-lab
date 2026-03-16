@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>V6 · Audio Lab</title>
+<title>V6 · SFX + Music</title>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg-primary:#080c10;--bg-surface:#0f1520;--bg-raised:#162030;
   --imp:#00d4ff;--text-primary:#e0e8f0;--text-sec:#8090a0;--text-muted:#4a6080;--text-dis:#2a3a4a;
+  --strat:#cc8800;--ork:#ff4020;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg-primary);color:var(--text-sec);font-family:'Rajdhani',sans-serif;padding:2rem;max-width:900px;}
@@ -22,201 +23,324 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 .setup-box p { color:#a09070; font-size:13px; line-height:1.5; margin-bottom:.5rem; }
 .setup-box code { background:#0a0e05; border:1px solid #554000; padding:2px 6px; color:#ffcc40; font-size:11px; }
 
+.note { color:var(--text-muted); font-size:12px; margin-bottom:1rem; line-height:1.5; }
+
 .sfx-grid { display:grid; grid-template-columns:1fr; gap:1rem; }
 .sfx-item { display:flex; align-items:center; justify-content:space-between; background:var(--bg-surface); border:1px solid #162030; padding:1rem; border-left:2px solid var(--text-dis); }
+.sfx-item.music { border-left-color: var(--strat); }
+.sfx-item.ambient { border-left-color: #22c55e; }
 .sfx-info { display:flex; flex-direction:column; gap:.2rem; flex:1; padding-right:2rem;}
 .sfx-name { font-size:14px; font-weight:700; color:var(--text-primary); letter-spacing:.1em; text-transform:uppercase; }
 .sfx-prompt { font-size:11px; color:var(--text-muted); font-family:'Courier New',monospace; }
+.sfx-meta { font-size:10px; color:var(--text-dis); margin-top:2px; letter-spacing:.1em; text-transform:uppercase; }
 
 .play-btn {
   font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:.15em;
   text-transform:uppercase;padding:.4rem 1.2rem;border:1px solid var(--imp);
   background:var(--bg-primary);color:var(--imp);cursor:pointer; transition:all .15s;
-  min-width:100px; text-align:center;
+  min-width:100px; text-align:center; flex-shrink:0;
 }
 .play-btn:hover { background:var(--imp); color:#080c10; }
+.play-btn.active { background:var(--imp); color:#080c10; }
 .play-btn.disabled { border-color:var(--text-dis); color:var(--text-dis); cursor:not-allowed; background:transparent;}
+
+.strategy-box { background:var(--bg-surface); border:1px solid #1a2535; padding:1.5rem; border-radius:4px; margin:1.5rem 0; }
+.strategy-box h3 { color:var(--imp); font-family:'Anton',sans-serif; font-size:16px; letter-spacing:.05em; margin-bottom:.8rem; }
+.strategy-box ul { list-style:none; padding:0; }
+.strategy-box li { color:var(--text-sec); font-size:12px; line-height:1.8; padding-left:1rem; position:relative; }
+.strategy-box li::before { content:'▸'; position:absolute; left:0; color:var(--text-dis); }
 </style>
 </head>
 <body>
 
 <div class="pg-header">
-  <h1>V6 · Audio Lab (SFX Prototypes)</h1>
-  <p>Workspace for reviewing AI-generated Warhammer 40k UI and combat audio assets.<br><span style="color:#22c55e">Asset status: Active (ElevenLabs SFX Engine)</span></p>
+  <h1>V6 · SFX + Music</h1>
+  <p>Audio design workspace for Warhammer 40,000 Battle Simulator.<br>
+  SFX via <span style="color:#22c55e">ElevenLabs Text-to-SFX API</span>. Music via <span style="color:var(--strat)">ElevenLabs + ffmpeg normalization</span>.<br>
+  All assets normalized to -1dB peak. Stored in <code>assets/sfx/</code> and <code>assets/music/</code>.</p>
 </div>
 
-<div class="setup-box" style="border-color:#112211;background:#050c05">
-  <h3 style="color:#4cc040">Assets Generated Successfully</h3>
-  <p style="color:#6a8060">These sounds were uniquely generated using the ElevenLabs Text-to-SFX API based on the exact prompt concepts below. The raw <code>.mp3</code> assets are stored in the repo's <code>assets/sfx/</code> directory ready for integration.</p>
+<!-- ═══════════════════════════════════════════════════════
+     BACKGROUND MUSIC
+═══════════════════════════════════════════════════════ -->
+<h2>1 · Background Music — Gameplay Tracks</h2>
+
+<div class="strategy-box">
+  <h3>Music Strategy — SOTA Best Practice</h3>
+  <ul>
+    <li><b>XCOM / Chaos Gate pattern:</b> 4-8 tracks per gameplay context (tactical, overworld, combat). Random selection per phase/turn. Crossfade on transition.</li>
+    <li><b>Adaptive layers:</b> Base ambient drone always plays. Combat intensity layer fades in during Shooting/Charge/Fight. Fades out during Command/Movement.</li>
+    <li><b>Loop design:</b> Each track is 20-30s, seamlessly loopable. Multiple tracks feel like continuous composition when shuffled.</li>
+    <li><b>Volume hierarchy:</b> Music at 15-25% (background texture). SFX at 25-35% (foreground events). Never compete.</li>
+    <li><b>Phase-aware mixing:</b> Tactical phases (Command, Deploy, Move) get ambient/drone tracks. Combat phases (Shoot, Charge, Fight) get percussive/tense tracks.</li>
+    <li><b>Our approach for v1:</b> 3 tracks shuffled randomly. All loop. Play at ~20% volume behind SFX. Future: expand to 6-8 tracks with phase-aware selection.</li>
+  </ul>
 </div>
 
-<h2>1 · UI & Tactical Sounds</h2>
 <div class="sfx-grid">
-  
+  <div class="sfx-item music">
+    <div class="sfx-info">
+      <span class="sfx-name">Gothic Cathedral Drone</span>
+      <span class="sfx-prompt">Prompt: "Dark gothic cathedral pipe organ drone in D minor, deep reverberating bass notes with distant ethereal choir voices, slow grinding industrial machinery undertones, ominous and oppressive atmosphere, grimdark sci-fi, seamless loop, 60 BPM"</span>
+      <span class="sfx-meta">22s · Loopable · Tactical/Ambient</span>
+    </div>
+    <button class="play-btn" onclick="playLoop('../assets/music/bg-gothic-drone.mp3', this)">▶ LOOP</button>
+  </div>
+
+  <div class="sfx-item music">
+    <div class="sfx-info">
+      <span class="sfx-name">War March</span>
+      <span class="sfx-prompt">Prompt: "Slow heavy military war drums march rhythm, deep taiko-style percussion with metallic anvil strikes, distant brass horns playing a somber melody, industrial battlefield atmosphere, dark cinematic tension, seamless loop, 70 BPM"</span>
+      <span class="sfx-meta">22s · Loopable · Combat/Percussive</span>
+    </div>
+    <button class="play-btn" onclick="playLoop('../assets/music/bg-war-march.mp3', this)">▶ LOOP</button>
+  </div>
+
+  <div class="sfx-item music">
+    <div class="sfx-info">
+      <span class="sfx-name">Tactical Tension</span>
+      <span class="sfx-prompt">Prompt: "Tense sci-fi tactical strategy game background music, low pulsing synthesizer bass with sparse string tremolo, subtle electronic glitch textures, anxious atmosphere building slowly, minimal and brooding, similar to XCOM soundtrack, seamless loop, 65 BPM"</span>
+      <span class="sfx-meta">22s · Loopable · Tactical/XCOM-style</span>
+    </div>
+    <button class="play-btn" onclick="playLoop('../assets/music/bg-tactical-tension.mp3', this)">▶ LOOP</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     AMBIENT / ATMOSPHERE
+═══════════════════════════════════════════════════════ -->
+<h2>2 · Ambient / Atmosphere</h2>
+<div class="sfx-grid">
+  <div class="sfx-item ambient">
+    <div class="sfx-info">
+      <span class="sfx-name">Start Screen — Ambient Drone Loop</span>
+      <span class="sfx-prompt">From start-game mockup. Low ominous drone with distant industrial hum. Used behind the splash screen with lightning VFX.</span>
+      <span class="sfx-meta">~55s · Seamless loop · Start screen</span>
+    </div>
+    <button class="play-btn" onclick="playLoop('../assets/music/ambient-loop.mp3', this)">▶ LOOP</button>
+  </div>
+
+  <div class="sfx-item ambient">
+    <div class="sfx-info">
+      <span class="sfx-name">Lightning Crack — Variation 1</span>
+      <span class="sfx-prompt">Pink noise crack with quick decay (0.5s). Generated via ffmpeg synthesis.</span>
+    </div>
+    <button class="play-btn" onclick="play('../assets/sfx/lightning-1.mp3')">▶ PLAY</button>
+  </div>
+
+  <div class="sfx-item ambient">
+    <div class="sfx-info">
+      <span class="sfx-name">Lightning Crack — Variation 2</span>
+      <span class="sfx-prompt">Longer brown noise rumble with double-crack echo (0.8s). Generated via ffmpeg synthesis.</span>
+    </div>
+    <button class="play-btn" onclick="play('../assets/sfx/lightning-2.mp3')">▶ PLAY</button>
+  </div>
+
+  <div class="sfx-item ambient">
+    <div class="sfx-info">
+      <span class="sfx-name">Lightning Crack — Variation 3</span>
+      <span class="sfx-prompt">Short white noise snap (0.3s). Generated via ffmpeg synthesis.</span>
+    </div>
+    <button class="play-btn" onclick="play('../assets/sfx/lightning-3.mp3')">▶ PLAY</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     UI & TACTICAL SFX
+═══════════════════════════════════════════════════════ -->
+<h2>3 · UI & Tactical Sounds</h2>
+<div class="sfx-grid">
   <div class="sfx-item">
     <div class="sfx-info">
       <span class="sfx-name">Select Unit (Click)</span>
-      <span class="sfx-promptPrompt">Prompt: "Heavy analog mechanical toggle switch clack, solid thick metal engaging, tactical military equipment"</span>
+      <span class="sfx-prompt">Prompt: "Heavy analog mechanical toggle switch clack, solid thick metal engaging, tactical military equipment"</span>
     </div>
     <button class="play-btn" onclick="play('../assets/sfx/ui-select.mp3')">▶ PLAY</button>
   </div>
-  
+
   <div class="sfx-item">
     <div class="sfx-info">
       <span class="sfx-name">End Phase / Transition</span>
-      <span class="sfx-promptPrompt">Prompt: "Deep resonant metallic thud echoing in a huge hangar, heavy blast door closing, cinematic impact, grimdark"</span>
+      <span class="sfx-prompt">Prompt: "Deep resonant metallic thud echoing in a huge hangar, heavy blast door closing, cinematic impact, grimdark"</span>
     </div>
     <button class="play-btn" onclick="play('../assets/sfx/ui-transition.mp3')">▶ PLAY</button>
   </div>
+
   <div class="sfx-item">
     <div class="sfx-info">
       <span class="sfx-name">Score Tick (+VP)</span>
-      <span class="sfx-promptPrompt">Prompt: "Sharp metal punch card stamp, loud clack, heavy mechanical typewriter processing"</span>
+      <span class="sfx-prompt">Prompt: "Sharp metal punch card stamp, loud clack, heavy mechanical typewriter processing"</span>
     </div>
     <button class="play-btn" onclick="play('../assets/sfx/ui-score.mp3')">▶ PLAY</button>
   </div>
 </div>
 
-<h2>2 · Weapon & Combat SFX</h2>
+<!-- ═══════════════════════════════════════════════════════
+     WEAPON & COMBAT SFX
+═══════════════════════════════════════════════════════ -->
+<h2>4 · Weapon & Combat SFX</h2>
 <div class="sfx-grid">
   <div class="sfx-item">
     <div class="sfx-info">
       <span class="sfx-name">Bolter Fire (V2)</span>
-      <span class="sfx-promptPrompt">Prompt: "Rapid-fire heavy explosive automatic weapon, loud deafening THUD-CRACK THUD-CRACK THUD-CRACK, large caliber shells blowing up on impact, sci-fi assault rifle, crisp, unclipped tail"</span>
+      <span class="sfx-prompt">Prompt: "Rapid-fire heavy explosive automatic weapon, loud deafening THUD-CRACK THUD-CRACK THUD-CRACK, large caliber shells blowing up on impact, sci-fi assault rifle, crisp, unclipped tail"</span>
     </div>
     <button class="play-btn" onclick="play('../assets/sfx/weapon-bolter-v2.mp3')">▶ PLAY</button>
   </div>
+
   <div class="sfx-item">
     <div class="sfx-info">
       <span class="sfx-name">Plasma Gun Fire</span>
-      <span class="sfx-promptPrompt">Prompt: "High-pitch magnetic whine charging up into a sudden resonant explosive thunderclap, trailing off into a heavy pressurized cooling hiss, sci-fi energy weapon"</span>
+      <span class="sfx-prompt">Prompt: "High-pitch magnetic whine charging up into a sudden resonant explosive thunderclap, trailing off into a heavy pressurized cooling hiss, sci-fi energy weapon"</span>
     </div>
     <button class="play-btn" onclick="play('../assets/sfx/weapon-plasma.mp3')">▶ PLAY</button>
   </div>
+
   <div class="sfx-item">
     <div class="sfx-info">
       <span class="sfx-name">Lasgun Fire</span>
-      <span class="sfx-promptPrompt">Prompt: "Deafening sharp electrical whip-crack tearing the air, extremely loud lightning snap, no pew-pew sound, military laser"</span>
+      <span class="sfx-prompt">Prompt: "Deafening sharp electrical whip-crack tearing the air, extremely loud lightning snap, no pew-pew sound, military laser"</span>
     </div>
     <button class="play-btn" onclick="play('../assets/sfx/weapon-lasgun.mp3')">▶ PLAY</button>
   </div>
+
   <div class="sfx-item">
     <div class="sfx-info">
-      <span class="sfx-name">Chainsword (V5 Foley Raw)</span>
-      <span class="sfx-promptPrompt">Prompt: "A large heavy-duty mechanical chainsaw revving once aggressively, then the engine sputters, decelerates, and smoothly powers down into absolute silence. No sudden stops."</span>
+      <span class="sfx-name">Chainsword (V6 Faded — Production)</span>
+      <span class="sfx-prompt">Prompt: V5 foley raw + ffmpeg 1-second fade-out at tail</span>
     </div>
-    <button class="play-btn" onclick="play('../assets/sfx/weapon-chainsword-v5.mp3')">▶ PLAY</button>
+    <button class="play-btn" onclick="play('../assets/sfx/weapon-chainsword-v6-faded.mp3')">▶ PLAY</button>
   </div>
-  <div class="sfx-item">
-    <div class="sfx-info">
-      <span class="sfx-name">Chainsword (V4 Faded)</span>
-      <span class="sfx-promptPrompt">Prompt: V3 prompt + hardware ffmpeg 1-second math fade-out at the tail</span>
-    </div>
-    <button class="play-btn" onclick="play('../assets/sfx/weapon-chainsword-v4.mp3')">▶ PLAY</button>
-  </div>
+
   <div class="sfx-item">
     <div class="sfx-info">
       <span class="sfx-name">Power Axe / Choppa</span>
-      <span class="sfx-promptPrompt">Prompt: "Heavy metallic whoosh through air followed by a devastating, sharp electrical crack and a massive heavy blunt impact on steel armor"</span>
+      <span class="sfx-prompt">Prompt: "Heavy metallic whoosh through air followed by a devastating, sharp electrical crack and a massive heavy blunt impact on steel armor"</span>
     </div>
     <button class="play-btn" onclick="play('../assets/sfx/weapon-poweraxe.mp3')">▶ PLAY</button>
   </div>
+
   <div class="sfx-item">
     <div class="sfx-info">
       <span class="sfx-name">Powerfist</span>
-      <span class="sfx-promptPrompt">Prompt: "Huge hydraulic motorized wind-up, followed by an earth-shattering concussive punch that sounds like a concrete building exploding, deep bass heavy impact"</span>
+      <span class="sfx-prompt">Prompt: "Huge hydraulic motorized wind-up, followed by an earth-shattering concussive punch that sounds like a concrete building exploding, deep bass heavy impact"</span>
     </div>
     <button class="play-btn" onclick="play('../assets/sfx/weapon-powerfist.mp3')">▶ PLAY</button>
   </div>
 </div>
 
-<h2>3 · Dice Resolution</h2>
+<!-- ═══════════════════════════════════════════════════════
+     DICE RESOLUTION
+═══════════════════════════════════════════════════════ -->
+<h2>5 · Dice Resolution</h2>
 <div class="sfx-grid">
   <div class="sfx-item">
     <div class="sfx-info">
       <span class="sfx-name">Dice Roll Clatter</span>
-      <span class="sfx-promptPrompt">Prompt: "Handful of heavy solid resin casino dice thrown and clattering across a hard wooden table, highly realistic"</span>
+      <span class="sfx-prompt">Prompt: "Handful of heavy solid resin casino dice thrown and clattering across a hard wooden table, highly realistic"</span>
     </div>
     <button class="play-btn" onclick="play('../assets/sfx/dice-roll.mp3')">▶ PLAY</button>
   </div>
+
   <div class="sfx-item">
     <div class="sfx-info">
       <span class="sfx-name">Save Failed (Wound Inflicted)</span>
-      <span class="sfx-promptPrompt">Prompt: "Visceral heavy armor shattering and thick metal crunching wet impact, devastating damage inflicted"</span>
+      <span class="sfx-prompt">Prompt: "Visceral heavy armor shattering and thick metal crunching wet impact, devastating damage inflicted"</span>
     </div>
     <button class="play-btn" onclick="play('../assets/sfx/dice-fail.mp3')">▶ PLAY</button>
   </div>
+
   <div class="sfx-item">
     <div class="sfx-info">
       <span class="sfx-name">Save Passed (Blocked)</span>
-      <span class="sfx-promptPrompt">Prompt: "Dull heavy tank armor bullet ricochet ping, thick metal deflection, no damage"</span>
+      <span class="sfx-prompt">Prompt: "Dull heavy tank armor bullet ricochet ping, thick metal deflection, no damage"</span>
     </div>
     <button class="play-btn" onclick="play('../assets/sfx/dice-pass.mp3')">▶ PLAY</button>
   </div>
 </div>
 
-
-
-<h2>4 · Iterations & Graveyard</h2>
-<div class="note">These are the previous iterations of the Chainsword to show the prompting evolution and the raw API cut-off issues before ffmpeg filtering.</div>
+<!-- ═══════════════════════════════════════════════════════
+     ITERATIONS & GRAVEYARD
+═══════════════════════════════════════════════════════ -->
+<h2>6 · Iterations & Graveyard</h2>
+<div class="note">Previous iterations of the Chainsword showing the prompting evolution and raw API cut-off issues before ffmpeg filtering.</div>
 <div class="sfx-grid">
-  <!-- Original -->
   <div class="sfx-item" style="opacity:0.7">
     <div class="sfx-info">
       <span class="sfx-name">Chainsword (V1 Original)</span>
-      <span class="sfx-promptPrompt">Prompt: "Sputtering two-stroke heavy engine idling spiking into a violent high-rpm roaring chainsaw tearing metal and meat"</span>
+      <span class="sfx-prompt">Prompt: "Sputtering two-stroke heavy engine idling spiking into a violent high-rpm roaring chainsaw tearing metal and meat"</span>
       <div style="color:#ffcc40;font-size:10px;margin-top:4px"><b>ISSUE:</b> Clipped hard at the end.</div>
     </div>
     <button class="play-btn" onclick="play('../assets/sfx/weapon-chainsword.mp3')">▶ PLAY</button>
   </div>
-  
-  <!-- V2 -->
+
   <div class="sfx-item" style="opacity:0.7">
     <div class="sfx-info">
       <span class="sfx-name">Chainsword (V2)</span>
-      <span class="sfx-promptPrompt">Prompt: "Violent mechanical chainsaw revving instantly followed by a high-pitch screeching tear of grinding metal and wet flesh, harsh motor noise grinding through armor"</span>
-      <div style="color:#ffcc40;font-size:10px;margin-top:4px"><b>ISSUE:</b> Still clipped. The algorithm hated the "wet flesh" + "grinding" combo.</div>
+      <span class="sfx-prompt">Prompt: "Violent mechanical chainsaw revving instantly followed by a high-pitch screeching tear of grinding metal and wet flesh, harsh motor noise grinding through armor"</span>
+      <div style="color:#ffcc40;font-size:10px;margin-top:4px"><b>ISSUE:</b> Still clipped.</div>
     </div>
     <button class="play-btn" onclick="play('../assets/sfx/weapon-chainsword-v2.mp3')">▶ PLAY</button>
   </div>
-  
-  <!-- V3 -->
+
   <div class="sfx-item" style="opacity:0.7">
     <div class="sfx-info">
       <span class="sfx-name">Chainsword (V3 Raw)</span>
-      <span class="sfx-promptPrompt">Prompt: "Violent roaring heavy mechanical chainsaw tearing into thick steel armor, violently grinding, sparks flying, long fading motor deceleration rounding off to silence, uninterrupted tail"</span>
-      <div style="color:#ffcc40;font-size:10px;margin-top:4px"><b>ISSUE:</b> Much better mechanical sound, but still didn't safely decay to zero.</div>
+      <span class="sfx-prompt">Prompt: "Violent roaring heavy mechanical chainsaw tearing into thick steel armor, violently grinding, sparks flying, long fading motor deceleration rounding off to silence, uninterrupted tail"</span>
+      <div style="color:#ffcc40;font-size:10px;margin-top:4px"><b>ISSUE:</b> Better mechanical sound, still didn't safely decay to zero.</div>
     </div>
     <button class="play-btn" onclick="play('../assets/sfx/weapon-chainsword-v3.mp3')">▶ PLAY</button>
   </div>
-  
-  <!-- V5 (V4 was the faded V3) -->
+
   <div class="sfx-item" style="opacity:0.7">
     <div class="sfx-info">
       <span class="sfx-name">Chainsword (V5 Foley Raw)</span>
-      <span class="sfx-promptPrompt">Prompt: "A large heavy-duty mechanical chainsaw revving once aggressively, then the engine sputters, decelerates, and smoothly powers down into absolute silence. No sudden stops."</span>
-      <div style="color:#ffcc40;font-size:10px;margin-top:4px"><b>NOTE:</b> The raw 4-second render of the purely mechanical prompt, before the ffmpeg fade was applied.</div>
+      <span class="sfx-prompt">Prompt: "A large heavy-duty mechanical chainsaw revving once aggressively, then the engine sputters, decelerates, and smoothly powers down into absolute silence. No sudden stops."</span>
+      <div style="color:#ffcc40;font-size:10px;margin-top:4px"><b>NOTE:</b> The raw 4-second render before ffmpeg fade.</div>
     </div>
     <button class="play-btn" onclick="play('../assets/sfx/weapon-chainsword-v5.mp3')">▶ PLAY</button>
   </div>
 </div>
 
 <script>
+let currentAudio = null;
+let currentBtn = null;
 
-  let currentAudio = null;
-  function play(src) {
-    if(currentAudio) {
-      currentAudio.pause();
-      currentAudio.currentTime = 0;
-    }
-    currentAudio = new Audio(src);
-    // If it's the loop file, let it loop
-    if (src.includes('loop')) {
-      currentAudio.loop = true;
-    }
-    currentAudio.play().catch(e => console.error("Error playing audio: ", e));
+function stopCurrent() {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    currentAudio = null;
   }
+  if (currentBtn) {
+    currentBtn.classList.remove('active');
+    currentBtn.textContent = currentBtn.dataset.origLabel || '▶ PLAY';
+    currentBtn = null;
+  }
+}
+
+function play(src) {
+  stopCurrent();
+  currentAudio = new Audio(src);
+  currentAudio.play().catch(e => console.error(e));
+}
+
+function playLoop(src, btn) {
+  // Toggle off if same track is playing
+  if (currentBtn === btn && currentAudio && !currentAudio.paused) {
+    stopCurrent();
+    return;
+  }
+  stopCurrent();
+  currentAudio = new Audio(src);
+  currentAudio.loop = true;
+  currentAudio.volume = 0.3;
+  currentAudio.play().catch(e => console.error(e));
+  currentBtn = btn;
+  btn.dataset.origLabel = btn.textContent;
+  btn.classList.add('active');
+  btn.textContent = '■ STOP';
+}
 </script>
 </body>
-
 </html>
