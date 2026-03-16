@@ -34,6 +34,10 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 .sfx-prompt { font-size:11px; color:var(--text-muted); font-family:'Courier New',monospace; }
 .sfx-meta { font-size:10px; color:var(--text-dis); margin-top:2px; letter-spacing:.1em; text-transform:uppercase; }
 
+.track-controls { display:flex; align-items:center; gap:.6rem; flex-shrink:0; }
+.seek-bar { width:120px; height:4px; accent-color:var(--imp); cursor:pointer; }
+.time-display { font-size:10px; color:var(--text-dis); font-family:'Courier New',monospace; min-width:80px; }
+
 .play-btn {
   font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:.15em;
   text-transform:uppercase;padding:.4rem 1.2rem;border:1px solid var(--imp);
@@ -57,49 +61,142 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
   <h1>V6 · SFX + Music</h1>
   <p>Audio design workspace for Warhammer 40,000 Battle Simulator.<br>
   SFX via <span style="color:#22c55e">ElevenLabs Text-to-SFX API</span>. Music via <span style="color:var(--strat)">ElevenLabs + ffmpeg normalization</span>.<br>
-  All assets normalized to -1dB peak. Stored in <code>assets/sfx/</code> and <code>assets/music/</code>.</p>
+  All assets normalized to -1dB peak. Stored in <code>assets/sfx/</code> and <code>assets/music/</code>.<br>
+  Suno tracks via <span style="color:#e040fb">Suno v5</span> (Custom Mode, instrumental).</p>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════
      BACKGROUND MUSIC
 ═══════════════════════════════════════════════════════ -->
-<h2>1 · Background Music — Gameplay Tracks</h2>
+<h2>1 · Background Music — Suno v5 Tracks</h2>
 
 <div class="strategy-box">
   <h3>Music Strategy — SOTA Best Practice</h3>
   <ul>
     <li><b>XCOM / Chaos Gate pattern:</b> 4-8 tracks per gameplay context (tactical, overworld, combat). Random selection per phase/turn. Crossfade on transition.</li>
     <li><b>Adaptive layers:</b> Base ambient drone always plays. Combat intensity layer fades in during Shooting/Charge/Fight. Fades out during Command/Movement.</li>
-    <li><b>Loop design:</b> Each track is 20-30s, seamlessly loopable. Multiple tracks feel like continuous composition when shuffled.</li>
     <li><b>Volume hierarchy:</b> Music at 15-25% (background texture). SFX at 25-35% (foreground events). Never compete.</li>
     <li><b>Phase-aware mixing:</b> Tactical phases (Command, Deploy, Move) get ambient/drone tracks. Combat phases (Shoot, Charge, Fight) get percussive/tense tracks.</li>
-    <li><b>Our approach for v1:</b> 3 tracks shuffled randomly. All loop. Play at ~20% volume behind SFX. Future: expand to 6-8 tracks with phase-aware selection.</li>
+    <li><b>Current pool:</b> 7 Suno tracks + 3 ElevenLabs originals. Goal: 8-10 curated tracks with phase-aware selection.</li>
   </ul>
 </div>
 
 <div class="sfx-grid">
+  <!-- ─── SUNO TRACKS ─── -->
   <div class="sfx-item music">
     <div class="sfx-info">
-      <span class="sfx-name">Gothic Cathedral Drone</span>
-      <span class="sfx-prompt">Prompt: "Dark gothic cathedral pipe organ drone in D minor, deep reverberating bass notes with distant ethereal choir voices, slow grinding industrial machinery undertones, ominous and oppressive atmosphere, grimdark sci-fi, seamless loop, 60 BPM"</span>
+      <span class="sfx-name">🏛 Cathedrals of the Dying Stars — V1</span>
+      <span class="sfx-prompt">Suno v5 · Dark ambient cathedral atmosphere</span>
+      <span class="sfx-meta">3:08 · Suno v5 · Ambient/Tactical</span>
+    </div>
+    <div class="track-controls">
+      <button class="play-btn" onclick="playWithSeek('../assets/music/suno-cathedrals-v1.mp3', this)">▶ PLAY</button>
+      <input type="range" class="seek-bar" min="0" max="100" value="0" step="0.1">
+      <span class="time-display">0:00 / 0:00</span>
+    </div>
+  </div>
+
+  <div class="sfx-item music">
+    <div class="sfx-info">
+      <span class="sfx-name">🏛 Cathedrals of the Dying Stars — V2</span>
+      <span class="sfx-prompt">Suno v5 · Dark ambient cathedral atmosphere (variation)</span>
+      <span class="sfx-meta">3:12 · Suno v5 · Ambient/Tactical</span>
+    </div>
+    <div class="track-controls">
+      <button class="play-btn" onclick="playWithSeek('../assets/music/suno-cathedrals-v2.mp3', this)">▶ PLAY</button>
+      <input type="range" class="seek-bar" min="0" max="100" value="0" step="0.1">
+      <span class="time-display">0:00 / 0:00</span>
+    </div>
+  </div>
+
+  <div class="sfx-item music">
+    <div class="sfx-info">
+      <span class="sfx-name">⚔️ Iron Within the Void — V1</span>
+      <span class="sfx-prompt">Suno v5 · Epic dark orchestral / industrial</span>
+      <span class="sfx-meta">6:38 · Suno v5 · Combat/Epic</span>
+    </div>
+    <div class="track-controls">
+      <button class="play-btn" onclick="playWithSeek('../assets/music/suno-iron-within-the-void-v1.mp3', this)">▶ PLAY</button>
+      <input type="range" class="seek-bar" min="0" max="100" value="0" step="0.1">
+      <span class="time-display">0:00 / 0:00</span>
+    </div>
+  </div>
+
+  <div class="sfx-item music">
+    <div class="sfx-info">
+      <span class="sfx-name">⚔️ Iron Within the Void — V2</span>
+      <span class="sfx-prompt">Suno v5 · Epic dark orchestral / industrial (variation)</span>
+      <span class="sfx-meta">6:38 · Suno v5 · Combat/Epic</span>
+    </div>
+    <div class="track-controls">
+      <button class="play-btn" onclick="playWithSeek('../assets/music/suno-iron-within-the-void-v2.mp3', this)">▶ PLAY</button>
+      <input type="range" class="seek-bar" min="0" max="100" value="0" step="0.1">
+      <span class="time-display">0:00 / 0:00</span>
+    </div>
+  </div>
+
+  <div class="sfx-item music">
+    <div class="sfx-info">
+      <span class="sfx-name">🥁 Grim March of the Forty-First Millennium</span>
+      <span class="sfx-prompt">Suno v5 · Heavy war march / percussion</span>
+      <span class="sfx-meta">4:44 · Suno v5 · Combat/March</span>
+    </div>
+    <div class="track-controls">
+      <button class="play-btn" onclick="playWithSeek('../assets/music/suno-grim-march.mp3', this)">▶ PLAY</button>
+      <input type="range" class="seek-bar" min="0" max="100" value="0" step="0.1">
+      <span class="time-display">0:00 / 0:00</span>
+    </div>
+  </div>
+
+  <div class="sfx-item music">
+    <div class="sfx-info">
+      <span class="sfx-name">🔥 Ashes of the Iron Throne — V1</span>
+      <span class="sfx-prompt">Suno v5 · Dark cinematic / orchestral</span>
+      <span class="sfx-meta">4:40 · Suno v5 · Tactical/Cinematic</span>
+    </div>
+    <div class="track-controls">
+      <button class="play-btn" onclick="playWithSeek('../assets/music/suno-ashes-iron-throne-v1.mp3', this)">▶ PLAY</button>
+      <input type="range" class="seek-bar" min="0" max="100" value="0" step="0.1">
+      <span class="time-display">0:00 / 0:00</span>
+    </div>
+  </div>
+
+  <div class="sfx-item music">
+    <div class="sfx-info">
+      <span class="sfx-name">🔥 Ashes of the Iron Throne — V2</span>
+      <span class="sfx-prompt">Suno v5 · Dark cinematic / orchestral (variation)</span>
+      <span class="sfx-meta">4:46 · Suno v5 · Tactical/Cinematic</span>
+    </div>
+    <div class="track-controls">
+      <button class="play-btn" onclick="playWithSeek('../assets/music/suno-ashes-iron-throne-v2.mp3', this)">▶ PLAY</button>
+      <input type="range" class="seek-bar" min="0" max="100" value="0" step="0.1">
+      <span class="time-display">0:00 / 0:00</span>
+    </div>
+  </div>
+
+  <!-- ─── ELEVENLABS ORIGINALS ─── -->
+  <div class="sfx-item music" style="opacity:0.6">
+    <div class="sfx-info">
+      <span class="sfx-name">Gothic Cathedral Drone <span style="color:var(--text-dis)">(ElevenLabs)</span></span>
+      <span class="sfx-prompt">ElevenLabs · "Dark gothic cathedral pipe organ drone in D minor…"</span>
       <span class="sfx-meta">22s · Loopable · Tactical/Ambient</span>
     </div>
     <button class="play-btn" onclick="playLoop('../assets/music/bg-gothic-drone.mp3', this)">▶ LOOP</button>
   </div>
 
-  <div class="sfx-item music">
+  <div class="sfx-item music" style="opacity:0.6">
     <div class="sfx-info">
-      <span class="sfx-name">War March</span>
-      <span class="sfx-prompt">Prompt: "Slow heavy military war drums march rhythm, deep taiko-style percussion with metallic anvil strikes, distant brass horns playing a somber melody, industrial battlefield atmosphere, dark cinematic tension, seamless loop, 70 BPM"</span>
+      <span class="sfx-name">War March <span style="color:var(--text-dis)">(ElevenLabs)</span></span>
+      <span class="sfx-prompt">ElevenLabs · "Slow heavy military war drums march rhythm…"</span>
       <span class="sfx-meta">22s · Loopable · Combat/Percussive</span>
     </div>
     <button class="play-btn" onclick="playLoop('../assets/music/bg-war-march.mp3', this)">▶ LOOP</button>
   </div>
 
-  <div class="sfx-item music">
+  <div class="sfx-item music" style="opacity:0.6">
     <div class="sfx-info">
-      <span class="sfx-name">Tactical Tension</span>
-      <span class="sfx-prompt">Prompt: "Tense sci-fi tactical strategy game background music, low pulsing synthesizer bass with sparse string tremolo, subtle electronic glitch textures, anxious atmosphere building slowly, minimal and brooding, similar to XCOM soundtrack, seamless loop, 65 BPM"</span>
+      <span class="sfx-name">Tactical Tension <span style="color:var(--text-dis)">(ElevenLabs)</span></span>
+      <span class="sfx-prompt">ElevenLabs · "Tense sci-fi tactical strategy game background music…"</span>
       <span class="sfx-meta">22s · Loopable · Tactical/XCOM-style</span>
     </div>
     <button class="play-btn" onclick="playLoop('../assets/music/bg-tactical-tension.mp3', this)">▶ LOOP</button>
@@ -305,8 +402,18 @@ h2{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.25em;text-
 <script>
 let currentAudio = null;
 let currentBtn = null;
+let currentSeekBar = null;
+let currentTimeDisplay = null;
+let seekRAF = null;
+
+function fmt(s) {
+  if (!s || isNaN(s)) return '0:00';
+  var m = Math.floor(s / 60), sec = Math.floor(s % 60);
+  return m + ':' + (sec < 10 ? '0' : '') + sec;
+}
 
 function stopCurrent() {
+  if (seekRAF) { cancelAnimationFrame(seekRAF); seekRAF = null; }
   if (currentAudio) {
     currentAudio.pause();
     currentAudio.currentTime = 0;
@@ -317,29 +424,73 @@ function stopCurrent() {
     currentBtn.textContent = currentBtn.dataset.origLabel || '▶ PLAY';
     currentBtn = null;
   }
+  if (currentSeekBar) { currentSeekBar.value = 0; currentSeekBar = null; }
+  if (currentTimeDisplay) { currentTimeDisplay.textContent = '0:00 / 0:00'; currentTimeDisplay = null; }
+}
+
+function updateSeek() {
+  if (currentAudio && currentSeekBar && !currentAudio.paused) {
+    var pct = (currentAudio.currentTime / currentAudio.duration) * 100;
+    currentSeekBar.value = isNaN(pct) ? 0 : pct;
+    if (currentTimeDisplay) {
+      currentTimeDisplay.textContent = fmt(currentAudio.currentTime) + ' / ' + fmt(currentAudio.duration);
+    }
+  }
+  seekRAF = requestAnimationFrame(updateSeek);
 }
 
 function play(src) {
   stopCurrent();
   currentAudio = new Audio(src);
-  currentAudio.play().catch(e => console.error(e));
+  currentAudio.play().catch(function(e) { console.error(e); });
 }
 
 function playLoop(src, btn) {
-  // Toggle off if same track is playing
   if (currentBtn === btn && currentAudio && !currentAudio.paused) {
-    stopCurrent();
-    return;
+    stopCurrent(); return;
   }
   stopCurrent();
   currentAudio = new Audio(src);
   currentAudio.loop = true;
   currentAudio.volume = 0.3;
-  currentAudio.play().catch(e => console.error(e));
+  currentAudio.play().catch(function(e) { console.error(e); });
   currentBtn = btn;
   btn.dataset.origLabel = btn.textContent;
   btn.classList.add('active');
   btn.textContent = '■ STOP';
+}
+
+function playWithSeek(src, btn) {
+  var controls = btn.parentElement;
+  var seekBar = controls.querySelector('.seek-bar');
+  var timeDisp = controls.querySelector('.time-display');
+
+  // Toggle off
+  if (currentBtn === btn && currentAudio && !currentAudio.paused) {
+    stopCurrent(); return;
+  }
+  stopCurrent();
+
+  currentAudio = new Audio(src);
+  currentAudio.volume = 0.5;
+  currentBtn = btn;
+  currentSeekBar = seekBar;
+  currentTimeDisplay = timeDisp;
+  btn.dataset.origLabel = btn.textContent;
+  btn.classList.add('active');
+  btn.textContent = '■ STOP';
+
+  currentAudio.addEventListener('ended', function() { stopCurrent(); });
+
+  // Seek bar interaction
+  seekBar.addEventListener('input', function() {
+    if (currentAudio && currentAudio.duration) {
+      currentAudio.currentTime = (seekBar.value / 100) * currentAudio.duration;
+    }
+  });
+
+  currentAudio.play().catch(function(e) { console.error(e); });
+  seekRAF = requestAnimationFrame(updateSeek);
 }
 </script>
 </body>
